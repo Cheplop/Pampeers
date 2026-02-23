@@ -1,0 +1,45 @@
+html{
+    height: 100%;
+}
+
+body{
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* parent frame on the right */
+.login {
+    position: absolute;    
+    top: 0;              
+    right: 0px;            
+    width: 582px;          
+    height: 100vh;        
+    overflow: hidden;     
+    background-color: #FFF8DE;
+    border-radius: 88.81px 0px 0px 88.81px;
+
+
+}
+
+/* child login box inside the frame */
+.form {
+    position: absolute;
+    top: 100px;           /* distance from top of parent frame */
+    left: 50px;           /* distance from left inside frame */
+    width: 100vh;          /* normal login box width */
+    height: 750px;         /* normal login box height */
+    padding: 20px;
+
+}
+
+.content{
+    overflow: hidden;
+}
+
+.content-background img{
+    position: absolute;
+    top: -80%;
+    left: -5%;
+    z-index: -1;
+}
