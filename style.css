@@ -6,7 +6,7 @@ html, body {
 }
 
 .main-container {
-    height: 100vh; /* full viewport height */
+    min-height: 100vh; /* full viewport height */
 }
 
 /* ===== LEFT SIDE HERO ===== */
@@ -18,7 +18,7 @@ html, body {
     justify-content: start;        /* vertical centering */
     align-items: flex-start;        /* push content to left side */
     padding: 1.5rem;
-    height: 100%;
+    min-height: 100vh;
     text-align: left;
     overflow: visible;
     z-index: 1;                     /* ensures content is above background */
@@ -68,10 +68,11 @@ html, body {
 
 /* ===== LOGIN PANEL ===== */
 
-.col-md-5 {
+.right-side {
+    padding: 1rem;
     background-color: #FFF8DE;
-    /* box-shadow: inset 10px 0 10px -5px rgba(0,0,0,0.5); */
-    border-radius: 80px 0px 0px 50px;
+    min-height: 100vh;
+    /* box-shadow: inset 10px 0 10px -5px rgba(0,0,0,0.5); */ 
     overflow: hidden;
     z-index: 3;
 }
@@ -87,7 +88,8 @@ html, body {
     flex-direction: column;
 }
 
-.login-panel input,span{
+.login-panel input,
+.lospan{
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 
