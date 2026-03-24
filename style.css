@@ -105,7 +105,12 @@ html, body {
     padding: 0.5rem;
     margin-top: 1rem;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
 
+.login-panel button:hover {
+    background-color: #8CA9FF;
+    transform: translateY(1px);
+    box-shadow: 0 2px 0 #92addb;
 }
 
 .login-panel h4 {
