@@ -14,7 +14,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="public/style.css">
 </head>
 
 <body>
@@ -70,7 +70,7 @@
                     <button class="btn btn-primary w-100 mt-3">CONTINUE</button>
 
                     <p class="signup">
-                        New User? <a href="/public/createUser.html">Sign up now</a>
+                        New User? <a href="createUser.php">Sign up now</a>
                     </p>
                 </div>
             </div>

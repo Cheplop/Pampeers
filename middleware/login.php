@@ -20,8 +20,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = mysqli_real_escape_string($conn, $_POST['email']);
         $password = $_POST['password'];
 
-        // 3. SQL EXECUTION: Fetch user data including firstname for personalized UI
-        $sql = "SELECT id, password, role, firstname FROM users WHERE email = '$email'";
+        // 3. SQL EXECUTION: Fetch user data including firstName for personalized UI
+        $sql = "SELECT id, password, role, firstName FROM users WHERE email = '$email'";
         $result = mysqli_query($conn, $sql);
 
         if ($result && $user = mysqli_fetch_assoc($result)) {
@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Store essential data in the session
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['role'] = $user['role'];
-                $_SESSION['firstname'] = $user['firstname']; 
+                $_SESSION['firstName'] = $user['firstName']; 
                 
                 header("Location: dashboard.php");
                 exit();

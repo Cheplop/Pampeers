@@ -5,7 +5,7 @@ include '../config/db_connect.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // 1. DATA VALIDATION: Check if the required fields exist in the form
-    if (isset($_POST['email'], $_POST['password'], $_POST['firstname'], $_POST['lastname'], $_POST['role'])) {
+    if (isset($_POST['email'], $_POST['password'], $_POST['firstName'], $_POST['lastName'], $_POST['role'])) {
         
         // 2. SANITIZE CORE ACCOUNT INFO
         $email     = mysqli_real_escape_string($conn, $_POST['email']);
@@ -13,8 +13,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sex       = mysqli_real_escape_string($conn, isset($_POST['sex']) ? $_POST['sex'] : ''); 
         
         // 3. SANITIZE NAME FIELDS
-        $firstname = mysqli_real_escape_string($conn, $_POST['firstname']);
-        $lastname  = mysqli_real_escape_string($conn, $_POST['lastname']);
+        $firstName = mysqli_real_escape_string($conn, $_POST['firstName']);
+        $lastName  = mysqli_real_escape_string($conn, $_POST['lastName']);
         
         // 4. SANITIZE ADDRESS FIELDS (Handle blanks if partner forgot a field)
         $street    = mysqli_real_escape_string($conn, isset($_POST['street']) ? $_POST['street'] : '');
@@ -25,8 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
         // 6. SQL EXECUTION
-        $sql = "INSERT INTO users (firstname, lastname, email, password, role, sex, street, city, country) 
-                VALUES ('$firstname', '$lastname', '$email', '$password', '$role', '$sex', '$street', '$city', '$country')";
+        $sql = "INSERT INTO users (firstName, lastName, email, password, role, sex, street, city, country) 
+                VALUES ('$firstName', '$lastName', '$email', '$password', '$role', '$sex', '$street', '$city', '$country')";
 
         if (mysqli_query($conn, $sql)) {
             // Redirect to login page inside the 'app' folder
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         
     } else {
-        die("Error: Form fields are missing. Please ensure your partner added name='firstname', etc.");
+        die("Error: Form fields are missing. Please ensure your partner added name='firstName', etc.");
     }
 }
 ?>
