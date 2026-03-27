@@ -12,6 +12,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $role      = mysqli_real_escape_string($conn, $_POST['role']);
         $sex       = mysqli_real_escape_string($conn, isset($_POST['sex']) ? $_POST['sex'] : ''); 
         
+        // 2.5 SANITIZE BIRTHDATE
+        $birthdate = mysqli_real_escape_string($conn, $_POST['birthdate']);
+
         // 3. SANITIZE NAME FIELDS
         $firstName = mysqli_real_escape_string($conn, $_POST['firstName']);
         $lastName  = mysqli_real_escape_string($conn, $_POST['lastName']);
@@ -25,12 +28,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
         // 6. SQL EXECUTION
-        $sql = "INSERT INTO users (firstName, lastName, email, password, role, sex, street, city, country) 
-                VALUES ('$firstName', '$lastName', '$email', '$password', '$role', '$sex', '$street', '$city', '$country')";
+        $sql = "INSERT INTO users (firstName, lastName, email, password, role, sex, street, city, country, birthdate) 
+            VALUES ('$firstName', '$lastName', '$email', '$password', '$role', '$sex', '$street', '$city', '$country', '$birthdate')";
 
         if (mysqli_query($conn, $sql)) {
             // Redirect to login page inside the 'app' folder
-            header("Location: ../login.php?registration=success");
+            header("Location: ../public/login.php?registration=success");
             exit();
         } else {
             // Debugging error for your rubric!
