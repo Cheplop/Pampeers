@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pampeers</title>
-    <link rel="icon" type="image/x-icon" href="/uploads/pampeerlogo.png">
+    <link rel="icon" type="image/x-icon" href="../uploads/pampeerlogo.png">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Ribeye&display=swap" rel="stylesheet">    
@@ -14,7 +14,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="public/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -27,7 +27,7 @@
                 <div class="my-background"></div>
                 <div class="hero-content p-2">
                     <div class="d-flex align-items-center gap-2 mb-0">
-                        <img src="/uploads/pampeerlogo.png" alt="Pampeer Logo" class="logo">
+                        <img src="/Pampeers/public/uploads/pampeerlogo.png" alt="Pampeer Logo" class="logo">
                         <h1 class="mb-0">Pampeers</h1>
                     </div>
                     <p>Hire a babysitter right at your hand!</p>
@@ -44,33 +44,35 @@
             <div class="col-12 col-md-5 right-side d-flex align-items-center justify-content-center">
                 <div class="login-panel">
                     <div class="d-flex d-md-none justify-content-center gap-2 mb-3">
-                        <img src="/uploads/pampeerlogo.png" alt="Pampeer Logo" class="logo">
+                        <img src="/Pampeers/public/uploads/pampeerlogo.png" alt="Pampeer Logo" class="logo">
                     </div>
 
                     <h4>LOGIN</h4>
 
+                    <form action="middleware/login.php" method="POST">
                    <div class="input-group mb-3">
                         <span class="input-group-text">@</span>
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="floatingInputGroup1" placeholder="Username">
-                            <label for="floatingInputGroup1">Username</label>
+                            <input type="email" name="email" class="form-control" id="floatingInputGroup1" placeholder="Email" required>
+                            <label for="floatingInputGroup1">Email</label>
                         </div>
                     </div>
 
                    <div class="input-group mb-3">
                         <span class="input-group-text">🔒︎</span>
                         <div class="form-floating">
-                            <input type="password" class="form-control" id="floatingInputGroup2" placeholder="Password">
+                            <input type="password" name="password" class="form-control" id="floatingInputGroup2" placeholder="Password" required>
                             <label for="floatingInputGroup2">Password</label>
                         </div>
                     </div>
 
                     <small class="forgot mt-0">Forgot Password?</small>
 
-                    <button class="btn btn-primary w-100 mt-3">CONTINUE</button>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">CONTINUE</button>
+                    </form>
 
                     <p class="signup">
-                        New User? <a href="createUser.php">Sign up now</a>
+                        New User? <a href="/Pampeers/public/createUser.php">Sign up now</a>
                     </p>
                 </div>
             </div>

@@ -17,6 +17,6 @@ if (ini_get("session.use_cookies")) {
 session_destroy();
 
 // 4. FIX: Redirect to login inside the middleware folder
-header("Location: ../middleware/login.php");
+header("Location: ../login.php");
 exit();
 ?>

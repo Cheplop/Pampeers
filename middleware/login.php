@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['role'] = $user['role'];
                 $_SESSION['firstName'] = $user['firstName']; 
                 
-                header("Location: dashboard.php");
+                header("Location: ../controllers/dashboard.php");
                 exit();
             } else {
                 $error = "Invalid password.";

@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (mysqli_query($conn, $sql)) {
             // Redirect to login page inside the 'app' folder
-            header("Location: ../app/login.php?registration=success");
+            header("Location: ../login.php?registration=success");
             exit();
         } else {
             // Debugging error for your rubric!
