@@ -18,19 +18,19 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 $user_id = $_SESSION['user_id'];
 
 // Fetch the new columns (firstname, lastname, and address info)
-$sql = "SELECT firstname, lastname, email, role, sex, street, city, country FROM users WHERE id = '$user_id'";
+// Fetch the columns including birthdate
+$sql = "SELECT firstname, lastname, email, role, sex, street, city, country, birthdate FROM users WHERE id = '$user_id'";
 $result = mysqli_query($conn, $sql);
 
 if ($result && mysqli_num_rows($result) > 0) {
     $user = mysqli_fetch_assoc($result);
     
-    // Create clean variables for your partner to use in the HTML
+    // Clean variables for HTML
     $full_name = $user['firstname'] . " " . $user['lastname'];
-    $full_address = $user['street'] . ", " . $user['city'] . ", " . $user['country'];
-    $user_role = ucfirst($user['role']); // Capitalizes 'parent' or 'sitter'
-} else {
-    // If user record is missing or deleted, force logout
-    header("Location: logout.php");
-    exit();
+    $birthdate_raw = $user['birthdate'];
+    
+    // OPTIONAL: Calculate Age for a better UI
+    $bday = new DateTime($birthdate_raw);
+    $today = new DateTime('today');
+    $age = $bday->diff($today)->y;
 }
-?>

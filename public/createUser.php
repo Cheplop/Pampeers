@@ -20,7 +20,7 @@
                     <h1 class="brand-name">Pampeers</h1>
                 </div>
 
-            <form action="controllers/register.php"  method="POST" class="row g-3">
+            <form action="../controllers/register.php" method="POST" class="row g-3">
                 <div class="col-md-12">
                     <label class="form-label">First Name</label>
                     <input type="text" name="firstName" class="form-control">
