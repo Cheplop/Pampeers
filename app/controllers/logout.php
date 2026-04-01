@@ -4,6 +4,6 @@ session_start();
 session_unset();
 session_destroy();
 
-header("Location: /pampeers/login");
+header("Location: ../../public/login.php");
 exit();
 ?>
