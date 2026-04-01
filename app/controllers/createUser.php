@@ -10,7 +10,19 @@ if (isset($_SESSION['user_id'])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $requiredFields = ['firstName', 'lastName', 'email', 'password', 'role'];
+    $requiredFields = [
+        'firstName',
+        'lastName',
+        'email',
+        'password',
+        'role',
+        'birthdate',
+        'sex',
+        'street',
+        'city',
+        'country',
+        'contactNumber'
+    ];
 
     foreach ($requiredFields as $field) {
         if (!isset($_POST[$field]) || trim($_POST[$field]) === '') {
@@ -24,17 +36,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $plainPassword = $_POST['password'];
     $role = trim($_POST['role']);
 
-    $birthdate = !empty($_POST['birthdate']) ? $_POST['birthdate'] : null;
-    $sex = !empty($_POST['sex']) ? trim($_POST['sex']) : null;
+    $birthdate = trim($_POST['birthdate']);
+    $sex = trim($_POST['sex']);
 
-    $street = !empty($_POST['street']) ? trim($_POST['street']) : null;
-    $city = !empty($_POST['city']) ? trim($_POST['city']) : null;
-    $country = !empty($_POST['country']) ? trim($_POST['country']) : null;
-    $contactNumber = !empty($_POST['contactNumber']) ? trim($_POST['contactNumber']) : null;
+    $street = trim($_POST['street']);
+    $city = trim($_POST['city']);
+    $country = trim($_POST['country']);
+    $contactNumber = trim($_POST['contactNumber']);
 
-    $hourlyRate = isset($_POST['hourlyRate']) && $_POST['hourlyRate'] !== '' ? (float) $_POST['hourlyRate'] : 0.00;
-    $bio = !empty($_POST['bio']) ? trim($_POST['bio']) : null;
-    $experience = isset($_POST['experience']) && $_POST['experience'] !== '' ? (int) $_POST['experience'] : 0;
+    $hourlyRate = isset($_POST['hourlyRate']) && $_POST['hourlyRate'] !== ''
+        ? (float) $_POST['hourlyRate']
+        : 0.00;
+
+    $bio = !empty($_POST['bio']) ? trim($_POST['bio']) : '';
+    $experience = isset($_POST['experience']) && $_POST['experience'] !== ''
+        ? (int) $_POST['experience']
+        : 0;
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         die("Error: Invalid email address.");
@@ -43,6 +60,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $allowedRoles = ['guardian', 'sitter', 'admin'];
     if (!in_array($role, $allowedRoles, true)) {
         die("Error: Invalid role selected.");
+    }
+
+    $allowedSex = ['male', 'female', 'other'];
+    if (!in_array(strtolower($sex), $allowedSex, true)) {
+        die("Error: Invalid sex selected.");
     }
 
     $checkStmt = $conn->prepare("SELECT uID FROM users WHERE email = ?");
@@ -95,11 +117,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     try {
         $userStmt = $conn->prepare("
-            INSERT INTO users (firstName, lastName, email, birthdate, sex, password, role, profilePic)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO users (
+                firstName,
+                lastName,
+                email,
+                birthdate,
+                sex,
+                password,
+                role,
+                profilePic,
+                street,
+                city,
+                country,
+                contactNumber
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
+
         $userStmt->bind_param(
-            "ssssssss",
+            "ssssssssssss",
             $firstName,
             $lastName,
             $email,
@@ -107,35 +143,49 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $sex,
             $passwordHashed,
             $role,
-            $profilePic
+            $profilePic,
+            $street,
+            $city,
+            $country,
+            $contactNumber
         );
-        $userStmt->execute();
 
+        $userStmt->execute();
         $uID = $conn->insert_id;
         $userStmt->close();
 
         if ($role === 'guardian') {
             $guardianStmt = $conn->prepare("
-                INSERT INTO guardians (uID, street, city, country, contactNumber)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO guardians (uID)
+                VALUES (?)
             ");
-            $guardianStmt->bind_param("issss", $uID, $street, $city, $country, $contactNumber);
+            $guardianStmt->bind_param("i", $uID);
             $guardianStmt->execute();
             $guardianStmt->close();
         }
 
         if ($role === 'sitter') {
             $sitterStmt = $conn->prepare("
-                INSERT INTO sitters (uID, street, city, country, contactNumber, hourlyRate, bio, experience)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO sitters (uID, hourlyRate, bio, experience, isAvailable)
+                VALUES (?, ?, ?, ?, ?)
             ");
-            $sitterStmt->bind_param("issssdsi", $uID, $street, $city, $country, $contactNumber, $hourlyRate, $bio, $experience);
+
+            $isAvailable = 1;
+
+            $sitterStmt->bind_param(
+                "idsii",
+                $uID,
+                $hourlyRate,
+                $bio,
+                $experience,
+                $isAvailable
+            );
             $sitterStmt->execute();
             $sitterStmt->close();
         }
 
         $conn->commit();
-        header("Location: /pampeers/public/user/login.php");
+        header("Location: /pampeers/public/login.php?registration=success");
         exit();
 
     } catch (Exception $e) {

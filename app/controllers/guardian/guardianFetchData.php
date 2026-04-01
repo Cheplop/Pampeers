@@ -10,16 +10,16 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 $userId = $_SESSION['user_id'];
 
 $stmt = $conn->prepare("
-    SELECT 
+    SELECT
         u.firstName,
         u.lastName,
         u.email,
         u.birthdate,
         u.profilePic,
-        g.street,
-        g.city,
-        g.country,
-        g.contactNumber
+        u.street,
+        u.city,
+        u.country,
+        u.contactNumber
     FROM users u
     INNER JOIN guardians g ON u.uID = g.uID
     WHERE u.uID = ?
