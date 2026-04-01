@@ -1,6 +1,6 @@
 Options -Indexes
 RewriteEngine On
-RewriteBase /Pampeers_copyRepo/
+RewriteBase /Pampeers/
 
 RewriteRule ^login$ public/user/login.php [L]
 RewriteRule ^register$ public/register.php [L]

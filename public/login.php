@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pampeers - Login</title>
-    <link rel="icon" type="image/x-icon" href="/Pampeers_copyRepo/uploads/profiles/pampeerlogo.png">
+    <link rel="icon" type="image/x-icon" href="../app/uploads/pampeerlogo.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Ribeye&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/Pampeers_copyRepo/public/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container-fluid main-container p-0">
@@ -20,7 +20,7 @@
 
                 <div class="hero-content p-2">
                     <div class="d-flex align-items-center gap-2 mb-0">
-                        <img src="/Pampeers_copyRepo/uploads/pampeerlogo.png" alt="Pampeer Logo" class="logo">
+                        <img src="../app/uploads/pampeerlogo.png" alt="Pampeer Logo" class="logo">
                         <h1 class="mb-0">Pampeers</h1>
                     </div>
                     <p>Hire a babysitter right at your hand!</p>
@@ -37,7 +37,7 @@
                 <div class="login-panel">
 
                     <div class="d-flex d-md-none justify-content-center gap-2 mb-3">
-                        <img src="/Pampeers_copyRepo/uploads/profiles/pampeerlogo.png" alt="Pampeer Logo" class="logo">
+                        <img src="/pampeers/uploads/pampeerlogo.png" alt="Pampeer Logo" class="logo">
                     </div>
 
                     <h4>LOGIN</h4>
@@ -71,7 +71,7 @@
                         </div>
                     <?php endif; ?>
 
-                    <form action="/Pampeers_copyRepo/app/middleware/loginLogic.php" method="POST">
+                    <form action="/pampeers/app/middleware/loginLogic.php" method="POST">
                         <div class="input-group mb-3">
                             <span class="input-group-text">@</span>
                             <div class="form-floating">
@@ -93,7 +93,7 @@
                     </form>
 
                     <p class="signup">
-                        New User? <a href="/Pampeers_copyRepo/register">Sign up now</a>
+                        New User? <a href="../public/register.php">Sign up now</a>
                     </p>
                 </div>
             </div>

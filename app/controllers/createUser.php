@@ -1,11 +1,15 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
+session_start();
 require_once __DIR__ . '/../config/db_connect.php';
 
+// Clear any existing session to prevent login confusion
+if (isset($_SESSION['user_id'])) {
+    session_unset();
+    session_destroy();
+    session_start();
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    echo "POST received<br>";
     $requiredFields = ['firstName', 'lastName', 'email', 'password', 'role'];
 
     foreach ($requiredFields as $field) {
@@ -48,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($checkStmt->num_rows > 0) {
         $checkStmt->close();
-        header("Location: /Pampeers_copyRepo/public/register.php?error=email_exists");
+        header("Location: /pampeers/public/register.php?error=email_exists");
         exit();
     }
     $checkStmt->close();
@@ -131,7 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         $conn->commit();
-        header("Location: /Pampeers_copyRepo/public/user/login.php?registration=success");
+        header("Location: /pampeers/public/user/login.php");
         exit();
 
     } catch (Exception $e) {

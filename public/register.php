@@ -1,25 +1,37 @@
+<?php
+session_start();
+
+// If user is already logged in, log them out to register a new account
+if (isset($_SESSION['user_id'])) {
+    session_unset();
+    session_destroy();
+    // Restart session for the register page
+    session_start();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pampeers - Create Account</title>
-    <link rel="icon" type="image/x-icon" href="/Pampeers_copyRepo/uploads/profiles/pampeerlogo.png">
+    <link rel="icon" type="image/x-icon" href="/pampeers/uploads/pampeerlogo.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Ribeye&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/Pampeers_copyRepo/public/register.css">
+    <link rel="stylesheet" href="./register.css">
 </head>
 <body>
     <div class="container d-flex justify-content-center align-items-center min-vh-100">
         <div class="signup-panel">
             <div class="text-center mb-4">
-                <img src="/Pampeers_copyRepo/uploads/pampeerlogo.png" alt="Pampeer Logo">
+                <img src="/pampeers/uploads/pampeerlogo.png" alt="Pampeer Logo">
                 <p class="small text-muted mb-0">Get started with us</p>
                 <h1 class="brand-name">Pampeers</h1>
             </div>
 
-            <form action="/Pampeers_copyRepo/app/controllers/createUser.php" method="POST" enctype="multipart/form-data" class="row g-3">
+            <form action="/pampeers/app/controllers/createUser.php" method="POST" enctype="multipart/form-data" class="row g-3">
 
                 <div class="col-md-12">
                     <label class="form-label">First Name</label>
@@ -116,7 +128,7 @@
             </form>
 
             <p class="login-link mt-3 text-center">
-                Already have an account? <a href="/Pampeers_copyRepo/login">LOGIN</a>
+                Already have an account? <a href="./user/login.php">LOGIN</a>
             </p>
         </div>
     </div>

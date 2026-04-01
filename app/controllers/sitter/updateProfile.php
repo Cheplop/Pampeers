@@ -144,3 +144,137 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_profile'])) {
 header("Location: sitterDashboard.php");
 exit();
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Profile - Sitter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f5f5f5; }
+        .form-section { background: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .btn-back { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <a href="sitterDashboard.php" class="btn btn-secondary btn-back">&larr; Back to Dashboard</a>
+
+        <div class="form-section">
+            <h2 class="mb-4">Update Your Profile</h2>
+
+            <?php
+            // Fetch current sitter data
+            $userId = $_SESSION['user_id'];
+            $stmt = $conn->prepare("
+                SELECT u.firstName, u.lastName, u.email, u.birthdate, u.sex, 
+                       s.street, s.city, s.country, s.contactNumber, s.hourlyRate, s.bio, s.experience
+                FROM users u
+                INNER JOIN sitters s ON u.uID = s.uID
+                WHERE u.uID = ?
+            ");
+            $stmt->bind_param("i", $userId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $userData = $result->fetch_assoc();
+            $stmt->close();
+            ?>
+
+            <form action="updateProfile.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="update_profile" value="1">
+
+                <h5 class="mb-3">Personal Information</h5>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">First Name</label>
+                        <input type="text" name="firstName" class="form-control" value="<?= htmlspecialchars($userData['firstName'] ?? '') ?>" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" name="lastName" class="form-control" value="<?= htmlspecialchars($userData['lastName'] ?? '') ?>" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($userData['email'] ?? '') ?>" required>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Birthdate</label>
+                        <input type="date" name="birthdate" class="form-control" value="<?= htmlspecialchars($userData['birthdate'] ?? '') ?>">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Gender</label>
+                        <select name="sex" class="form-select">
+                            <option value="">Choose...</option>
+                            <option value="male" <?= ($userData['sex'] === 'male' ? 'selected' : '') ?>>Male</option>
+                            <option value="female" <?= ($userData['sex'] === 'female' ? 'selected' : '') ?>>Female</option>
+                            <option value="other" <?= ($userData['sex'] === 'other' ? 'selected' : '') ?>>Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <hr>
+                <h5 class="mb-3">Address Information</h5>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Country</label>
+                        <input type="text" name="country" class="form-control" value="<?= htmlspecialchars($userData['country'] ?? '') ?>">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">City</label>
+                        <input type="text" name="city" class="form-control" value="<?= htmlspecialchars($userData['city'] ?? '') ?>">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Street</label>
+                        <input type="text" name="street" class="form-control" value="<?= htmlspecialchars($userData['street'] ?? '') ?>">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Contact Number</label>
+                    <input type="text" name="contactNumber" class="form-control" placeholder="09xxxxxxxxx" value="<?= htmlspecialchars($userData['contactNumber'] ?? '') ?>">
+                </div>
+
+                <hr>
+                <h5 class="mb-3">Professional Information</h5>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Hourly Rate (₱)</label>
+                        <input type="number" step="0.01" min="0" name="hourlyRate" class="form-control" value="<?= htmlspecialchars($userData['hourlyRate'] ?? '0.00') ?>">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Experience (Years)</label>
+                        <input type="number" min="0" name="experience" class="form-control" value="<?= htmlspecialchars($userData['experience'] ?? '0') ?>">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Bio</label>
+                    <textarea name="bio" class="form-control" rows="4" placeholder="Tell clients about yourself..."><?= htmlspecialchars($userData['bio'] ?? '') ?></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Profile Picture</label>
+                    <input type="file" name="profilePic" class="form-control" accept=".jpg,.jpeg,.png,.webp">
+                    <small class="text-muted">Max 5MB. Formats: JPG, PNG, WEBP</small>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="sitterDashboard.php" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

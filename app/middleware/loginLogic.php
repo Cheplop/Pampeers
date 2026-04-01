@@ -2,17 +2,18 @@
 session_start();
 require_once __DIR__ . '/../config/db_connect.php';
 
-if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
-    redirectBasedOnRole($_SESSION['role']);
-}
-
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Clear any existing session when attempting to login with new credentials
+    session_unset();
+    session_destroy();
+    session_start();
+    
     if (!empty($_POST['email']) && !empty($_POST['password'])) {
         $email = trim($_POST['email']);
         $password = $_POST['password'];
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            header("Location: /Pampeers_copyRepo/login?error=invalid");
+            header("Location: /pampeers/login?error=invalid");
             exit();
         }
 
@@ -34,25 +35,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->close();
     }
 
-    header("Location: /Pampeers_copyRepo/login?error=invalid");
+    header("Location: /pampeers/login?error=invalid");
     exit();
+}
+
+// Only check for existing session if NOT submitting login form
+if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
+    redirectBasedOnRole($_SESSION['role']);
 }
 
 function redirectBasedOnRole($role) {
     switch ($role) {
         case 'admin':
-            header("Location: /Pampeers_copyRepo/app/controllers/admin/adminDashboard.php");
+            header("Location: /pampeers/public/admin/adminDashboard.php");
             break;
         case 'guardian':
-            header("Location: /Pampeers_copyRepo/app/controllers/guardian/guardianDashboard.php");
+            header("Location: /pampeers/public/guardian/guardianDashboard.php");
             break;
         case 'sitter':
-            header("Location: /Pampeers_copyRepo/app/controllers/sitter/sitterDashboard.php");
+            header("Location: /pampeers/public/sitter/sitterDashboard.php");
             break;
         default:
             session_unset();
             session_destroy();
-            header("Location: /Pampeers_copyRepo/login?error=role_not_found");
+            header("Location: /pampeers/login?error=role_not_found");
             break;
     }
     exit();
