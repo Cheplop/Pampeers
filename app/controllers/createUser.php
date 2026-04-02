@@ -82,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $profilePic = "default.jpg";
 
     if (isset($_FILES['profilePic']) && $_FILES['profilePic']['error'] === 0) {
-        $uploadDir = __DIR__ . '/../../uploads/profiles/';
+        $uploadDir = __DIR__ . '/../uploads/profiles';
 
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
