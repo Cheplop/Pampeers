@@ -10,23 +10,24 @@ $stmt = $conn->prepare("
         u.profilePic,
         u.city,
         s.hourlyRate,
-        s.bio,
-        s.isAvailable
-    FROM users u
-    INNER JOIN sitters s ON u.uID = s.uID
-    WHERE s.isAvailable = 1
+        s.bio
+    FROM sitters s
+    INNER JOIN users u ON s.uID = u.uID
+    WHERE u.city = ? AND s.isAvailable = 1
 " );
+
+$stmt->bind_param('s', $userCity);
 
 $stmt->execute();
 $result = $stmt->get_result();
 
-$sitters = [];
+$sittersNear = [];
 
 while ($row = $result->fetch_assoc()) {
 
     $fullName = trim(($row['firstName'] ?? '') . ' ' . ($row['lastName'] ?? ''));
 
-    $sitters[] = [
+    $sittersNear[] = [
         'id' => $row['uID'],
         'name' => $fullName,
         'img' => $row['profilePic'],

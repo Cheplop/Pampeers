@@ -30,7 +30,7 @@ require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchAvail.php';
             <a class="navbar-brand" href="#">Pampeers</a>
             <div class="ms-auto">
                 <span class="me-3">Welcome, <?= htmlspecialchars($user['firstName'] ?? '') ?>!</span>
-                <a class="btn btn-outline-danger btn-sm" href="/pampeers/app/controllers/logout.php">Logout</a>
+                <a class="btn btn-outline-danger btn-sm" href="../../app/controllers/logout.php">Logout</a>
             </div>
         </div>
     </nav>
