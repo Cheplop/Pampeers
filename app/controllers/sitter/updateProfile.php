@@ -10,8 +10,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_profile'])) {
     $firstName = trim($_POST['firstName'] ?? '');
     $lastName = trim($_POST['lastName'] ?? '');
     $email = trim($_POST['email'] ?? '');
-    $birthdate = !empty($_POST['birthdate']) ? $_POST['birthdate'] : null;
-    $sex = !empty($_POST['sex']) ? trim($_POST['sex']) : null;
+    $birthdate = trim($_POST['birthdate'] ?? '');
+    $sex = trim($_POST['sex'] ?? '');
 
     $street = trim($_POST['street'] ?? '');
     $city = trim($_POST['city'] ?? '');
@@ -21,7 +21,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_profile'])) {
     $bio = trim($_POST['bio'] ?? '');
     $experience = isset($_POST['experience']) && $_POST['experience'] !== '' ? (int) $_POST['experience'] : 0;
 
-    if ($firstName === '' || $lastName === '' || $email === '') {
+    if (
+        $firstName === '' ||
+        $lastName === '' ||
+        $email === '' ||
+        $birthdate === '' ||
+        $sex === '' ||
+        $street === '' ||
+        $city === '' ||
+        $country === '' ||
+        $contactNumber === ''
+    ) {
         header("Location: sitterDashboard.php?status=missing_fields");
         exit();
     }
@@ -31,8 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_profile'])) {
         exit();
     }
 
-    $allowedSex = ['male', 'female', 'other', ''];
-    if (!in_array($sex ?? '', $allowedSex, true)) {
+    $allowedSex = ['male', 'female', 'other'];
+    if (!in_array(strtolower($sex), $allowedSex, true)) {
         header("Location: sitterDashboard.php?status=invalid_sex");
         exit();
     }
@@ -95,17 +105,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_profile'])) {
     try {
         $userStmt = $conn->prepare("
             UPDATE users
-            SET firstName = ?, lastName = ?, email = ?, birthdate = ?, sex = ?, profilePic = ?
+            SET firstName = ?, lastName = ?, email = ?, birthdate = ?, sex = ?, profilePic = ?,
+                street = ?, city = ?, country = ?, contactNumber = ?
             WHERE uID = ?
         ");
         $userStmt->bind_param(
-            "ssssssi",
+            "ssssssssssi",
             $firstName,
             $lastName,
             $email,
             $birthdate,
             $sex,
             $profilePic,
+            $street,
+            $city,
+            $country,
+            $contactNumber,
             $userId
         );
         $userStmt->execute();
@@ -113,15 +128,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_profile'])) {
 
         $sitterStmt = $conn->prepare("
             UPDATE sitters
-            SET street = ?, city = ?, country = ?, contactNumber = ?, hourlyRate = ?, bio = ?, experience = ?
+            SET hourlyRate = ?, bio = ?, experience = ?
             WHERE uID = ?
         ");
         $sitterStmt->bind_param(
-            "ssssdssi",
-            $street,
-            $city,
-            $country,
-            $contactNumber,
+            "dsii",
             $hourlyRate,
             $bio,
             $experience,
@@ -166,11 +177,21 @@ exit();
             <h2 class="mb-4">Update Your Profile</h2>
 
             <?php
-            // Fetch current sitter data
             $userId = $_SESSION['user_id'];
             $stmt = $conn->prepare("
-                SELECT u.firstName, u.lastName, u.email, u.birthdate, u.sex, 
-                       s.street, s.city, s.country, s.contactNumber, s.hourlyRate, s.bio, s.experience
+                SELECT
+                    u.firstName,
+                    u.lastName,
+                    u.email,
+                    u.birthdate,
+                    u.sex,
+                    u.street,
+                    u.city,
+                    u.country,
+                    u.contactNumber,
+                    s.hourlyRate,
+                    s.bio,
+                    s.experience
                 FROM users u
                 INNER JOIN sitters s ON u.uID = s.uID
                 WHERE u.uID = ?
@@ -206,15 +227,15 @@ exit();
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Birthdate</label>
-                        <input type="date" name="birthdate" class="form-control" value="<?= htmlspecialchars($userData['birthdate'] ?? '') ?>">
+                        <input type="date" name="birthdate" class="form-control" value="<?= htmlspecialchars($userData['birthdate'] ?? '') ?>" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Gender</label>
-                        <select name="sex" class="form-select">
+                        <select name="sex" class="form-select" required>
                             <option value="">Choose...</option>
-                            <option value="male" <?= ($userData['sex'] === 'male' ? 'selected' : '') ?>>Male</option>
-                            <option value="female" <?= ($userData['sex'] === 'female' ? 'selected' : '') ?>>Female</option>
-                            <option value="other" <?= ($userData['sex'] === 'other' ? 'selected' : '') ?>>Other</option>
+                            <option value="male" <?= (($userData['sex'] ?? '') === 'male' ? 'selected' : '') ?>>Male</option>
+                            <option value="female" <?= (($userData['sex'] ?? '') === 'female' ? 'selected' : '') ?>>Female</option>
+                            <option value="other" <?= (($userData['sex'] ?? '') === 'other' ? 'selected' : '') ?>>Other</option>
                         </select>
                     </div>
                 </div>
@@ -225,21 +246,21 @@ exit();
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label class="form-label">Country</label>
-                        <input type="text" name="country" class="form-control" value="<?= htmlspecialchars($userData['country'] ?? '') ?>">
+                        <input type="text" name="country" class="form-control" value="<?= htmlspecialchars($userData['country'] ?? '') ?>" required>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">City</label>
-                        <input type="text" name="city" class="form-control" value="<?= htmlspecialchars($userData['city'] ?? '') ?>">
+                        <input type="text" name="city" class="form-control" value="<?= htmlspecialchars($userData['city'] ?? '') ?>" required>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Street</label>
-                        <input type="text" name="street" class="form-control" value="<?= htmlspecialchars($userData['street'] ?? '') ?>">
+                        <input type="text" name="street" class="form-control" value="<?= htmlspecialchars($userData['street'] ?? '') ?>" required>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Contact Number</label>
-                    <input type="text" name="contactNumber" class="form-control" placeholder="09xxxxxxxxx" value="<?= htmlspecialchars($userData['contactNumber'] ?? '') ?>">
+                    <input type="text" name="contactNumber" class="form-control" placeholder="09xxxxxxxxx" value="<?= htmlspecialchars($userData['contactNumber'] ?? '') ?>" required>
                 </div>
 
                 <hr>

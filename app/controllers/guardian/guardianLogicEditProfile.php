@@ -8,17 +8,17 @@ $userId = $_SESSION['user_id'];
 
 // FETCH CURRENT GUARDIAN DATA
 $stmt = $conn->prepare("
-    SELECT 
+    SELECT
         u.firstName,
         u.lastName,
         u.email,
         u.birthdate,
         u.sex,
         u.profilePic,
-        g.street,
-        g.city,
-        g.country,
-        g.contactNumber
+        u.street,
+        u.city,
+        u.country,
+        u.contactNumber
     FROM users u
     INNER JOIN guardians g ON u.uID = g.uID
     WHERE u.uID = ?
@@ -39,15 +39,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $firstName = trim($_POST['firstName'] ?? '');
     $lastName = trim($_POST['lastName'] ?? '');
     $email = trim($_POST['email'] ?? '');
-    $birthdate = !empty($_POST['birthdate']) ? $_POST['birthdate'] : null;
-    $sex = !empty($_POST['sex']) ? trim($_POST['sex']) : null;
+    $birthdate = trim($_POST['birthdate'] ?? '');
+    $sex = trim($_POST['sex'] ?? '');
 
     $street = trim($_POST['street'] ?? '');
     $city = trim($_POST['city'] ?? '');
     $country = trim($_POST['country'] ?? '');
     $contactNumber = trim($_POST['contactNumber'] ?? '');
 
-    if ($firstName === '' || $lastName === '' || $email === '') {
+    if (
+        $firstName === '' ||
+        $lastName === '' ||
+        $email === '' ||
+        $birthdate === '' ||
+        $sex === '' ||
+        $street === '' ||
+        $city === '' ||
+        $country === '' ||
+        $contactNumber === ''
+    ) {
         header("Location: updateProfile.php?status=missing_fields");
         exit();
     }
@@ -57,8 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    $allowedSex = ['male', 'female', 'other', ''];
-    if (!in_array($sex ?? '', $allowedSex, true)) {
+    $allowedSex = ['male', 'female', 'other'];
+    if (!in_array(strtolower($sex), $allowedSex, true)) {
         header("Location: updateProfile.php?status=invalid_sex");
         exit();
     }
@@ -114,37 +124,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $userStmt = $conn->prepare("
             UPDATE users
-            SET firstName = ?, lastName = ?, email = ?, birthdate = ?, sex = ?, profilePic = ?
+            SET firstName = ?, lastName = ?, email = ?, birthdate = ?, sex = ?, profilePic = ?,
+                street = ?, city = ?, country = ?, contactNumber = ?
             WHERE uID = ?
         ");
         $userStmt->bind_param(
-            "ssssssi",
+            "ssssssssssi",
             $firstName,
             $lastName,
             $email,
             $birthdate,
             $sex,
             $profilePic,
-            $userId
-        );
-        $userStmt->execute();
-        $userStmt->close();
-
-        $guardianStmt = $conn->prepare("
-            UPDATE guardians
-            SET street = ?, city = ?, country = ?, contactNumber = ?
-            WHERE uID = ?
-        ");
-        $guardianStmt->bind_param(
-            "ssssi",
             $street,
             $city,
             $country,
             $contactNumber,
             $userId
         );
-        $guardianStmt->execute();
-        $guardianStmt->close();
+        $userStmt->execute();
+        $userStmt->close();
 
         $conn->commit();
         header("Location: updateProfile.php?status=updated");

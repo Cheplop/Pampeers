@@ -10,17 +10,17 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 $userId = $_SESSION['user_id'];
 
 $stmt = $conn->prepare("
-    SELECT 
+    SELECT
         u.firstName,
         u.lastName,
         u.email,
         u.birthdate,
         u.sex,
         u.profilePic,
-        s.street,
-        s.city,
-        s.country,
-        s.contactNumber,
+        u.street,
+        u.city,
+        u.country,
+        u.contactNumber,
         s.hourlyRate,
         s.bio,
         s.experience,
