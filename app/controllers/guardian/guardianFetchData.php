@@ -18,7 +18,8 @@ $stmt = $conn->prepare("
         u.profilePic,
         u.street,
         u.city,
-        u.country
+        u.country,
+        u.contactNumber
     FROM users u
     INNER JOIN guardians g ON u.uID = g.uID
     WHERE u.uID = ?
@@ -36,7 +37,6 @@ $user = $result->fetch_assoc();
 $stmt->close();
 
 $fullName = trim(($user['firstName'] ?? '') . ' ' . ($user['lastName'] ?? ''));
-$user['fullName'] = $fullName;
 
 $locationParts = array_filter([
     $user['street'] ?? '',
@@ -51,9 +51,4 @@ if (!empty($user['birthdate'])) {
     $today = new DateTime('today');
     $age = $bday->diff($today)->y;
 }
-
-$userCity = trim($user['city'] ?? '');
-
-require_once __DIR__ . '/../sitter/sitterFetchAvail.php';
-require_once __DIR__ . '/../sitter/sitterFetchNear.php';
 ?>
