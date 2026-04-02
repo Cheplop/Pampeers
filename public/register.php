@@ -16,17 +16,17 @@ if (isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pampeers - Create Account</title>
-    <link rel="icon" type="image/x-icon" href="/pampeers/uploads/pampeerlogo.png">
+    <link rel="icon" type="image/x-icon" href="/pampeers/app/uploads/pampeerlogo.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Ribeye&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./register.css">
+    <link rel="stylesheet" href="css/register.css">
 </head>
 <body>
     <div class="container d-flex justify-content-center align-items-center min-vh-100">
         <div class="signup-panel">
             <div class="text-center mb-4">
-                <img src="/pampeers/uploads/pampeerlogo.png" alt="Pampeer Logo">
+                <img src="/pampeers/app/uploads/pampeerlogo.png" alt="Pampeer Logo">
                 <p class="small text-muted mb-0">Get started with us</p>
                 <h1 class="brand-name">Pampeers</h1>
             </div>

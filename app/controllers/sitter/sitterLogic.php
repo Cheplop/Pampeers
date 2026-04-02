@@ -29,8 +29,8 @@ if (isset($_POST['update_profile'])) {
     $firstName = trim($_POST['firstName'] ?? '');
     $lastName = trim($_POST['lastName'] ?? '');
     $email = trim($_POST['email'] ?? '');
-    $birthdate = !empty($_POST['birthdate']) ? $_POST['birthdate'] : null;
-    $sex = !empty($_POST['sex']) ? trim($_POST['sex']) : null;
+    $birthdate = trim($_POST['birthdate'] ?? '');
+    $sex = trim($_POST['sex'] ?? '');
 
     $street = trim($_POST['street'] ?? '');
     $city = trim($_POST['city'] ?? '');
@@ -40,7 +40,17 @@ if (isset($_POST['update_profile'])) {
     $bio = trim($_POST['bio'] ?? '');
     $experience = isset($_POST['experience']) && $_POST['experience'] !== '' ? (int) $_POST['experience'] : 0;
 
-    if ($firstName === '' || $lastName === '' || $email === '') {
+    if (
+        $firstName === '' ||
+        $lastName === '' ||
+        $email === '' ||
+        $birthdate === '' ||
+        $sex === '' ||
+        $street === '' ||
+        $city === '' ||
+        $country === '' ||
+        $contactNumber === ''
+    ) {
         header("Location: updateProfile.php?status=missing_fields");
         exit();
     }
@@ -50,8 +60,8 @@ if (isset($_POST['update_profile'])) {
         exit();
     }
 
-    $allowedSex = ['male', 'female', 'other', ''];
-    if (!in_array($sex ?? '', $allowedSex, true)) {
+    $allowedSex = ['male', 'female', 'other'];
+    if (!in_array(strtolower($sex), $allowedSex, true)) {
         header("Location: updateProfile.php?status=invalid_sex");
         exit();
     }
@@ -114,17 +124,22 @@ if (isset($_POST['update_profile'])) {
     try {
         $userStmt = $conn->prepare("
             UPDATE users
-            SET firstName = ?, lastName = ?, email = ?, birthdate = ?, sex = ?, profilePic = ?
+            SET firstName = ?, lastName = ?, email = ?, birthdate = ?, sex = ?, profilePic = ?,
+                street = ?, city = ?, country = ?, contactNumber = ?
             WHERE uID = ?
         ");
         $userStmt->bind_param(
-            "ssssssi",
+            "ssssssssssi",
             $firstName,
             $lastName,
             $email,
             $birthdate,
             $sex,
             $profilePic,
+            $street,
+            $city,
+            $country,
+            $contactNumber,
             $userId
         );
         $userStmt->execute();
@@ -132,15 +147,11 @@ if (isset($_POST['update_profile'])) {
 
         $sitterStmt = $conn->prepare("
             UPDATE sitters
-            SET street = ?, city = ?, country = ?, contactNumber = ?, hourlyRate = ?, bio = ?, experience = ?
+            SET hourlyRate = ?, bio = ?, experience = ?
             WHERE uID = ?
         ");
         $sitterStmt->bind_param(
-            "ssssdssi",
-            $street,
-            $city,
-            $country,
-            $contactNumber,
+            "dsii",
             $hourlyRate,
             $bio,
             $experience,
