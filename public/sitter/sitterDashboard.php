@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../app/middleware/authCheck.php';
-require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchData.php';
+require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchAvail.php';
 
 ?>
 
