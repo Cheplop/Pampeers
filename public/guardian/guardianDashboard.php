@@ -26,27 +26,45 @@ require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchAvail.php';
     <span>Who</span>
 </div>
 
+<hr>
+
 <!-- AVAILABLE SITTERS -->
 <div class="container mt-4">
     <div class="section-title text-start">AVAILABLE SITTERS</div>
-    <div class="row">
+
+    <?php if (!empty($sitters)): ?>
+
+    <div class="carousel-wrapper">
+
         <?php foreach ($sitters as $peer): ?>
-        <div class="col-sm-4 col-md-4 col-lg-2 mb-3 ml-4">
+        <div class="carousel-card">
             <div class="small-card">
-                <img src="../../app/uploads/profiles/<?= $peer['img'] ?>">
 
-                <h6><?= $peer['name'] ?></h6>
+                <!-- IMAGE (with fallback) -->
+                <img src="../../app/uploads/profiles/<?= !empty($peer['img']) ? $peer['img'] : 'default.jpg' ?>">
 
-                <p><?= $peer['city'] ?></p>
-                <p>₱<?= $peer['rate'] ?>/hr</p>
-                <p><?= $peer['bio'] ?></p>
+                <h6><?= htmlspecialchars($peer['name']) ?></h6>
 
-                <button class="btn btn-outline-dark">GET IN TOUCH</button>
+                <p class="city">
+                    <?= htmlspecialchars($peer['city']) ?>
+                </p>
+                
+                <p>₱<?= htmlspecialchars($peer['rate']) ?>/hr</p>
+
+                <button class="btn">
+                    GET IN TOUCH
+                </button>
 
             </div>
         </div>
         <?php endforeach; ?>
+
     </div>
+
+    <?php else: ?>
+        <p class="text-center mt-4">No available sitters found.</p>
+    <?php endif; ?>
+
 </div>
 
 </body>
