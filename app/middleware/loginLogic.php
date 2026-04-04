@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->close();
     }
 
-    header("Location: /pampeers/login?error=invalid");
+    header("Location: /pampeers/public/login.php?error=invalid");
     exit();
 }
 

@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . '/../../app/middleware/authCheck.php';
 require_once __DIR__ . '/../../app/controllers/guardian/guardianFetchData.php';
+
+// prevent undefined errors
+$sitters = $sitters ?? [];
+$sittersNear = $sittersNear ?? [];
 ?>
 
 <!DOCTYPE html>
@@ -22,10 +26,7 @@ require_once __DIR__ . '/../../app/controllers/guardian/guardianFetchData.php';
     <div class="nav-container d-flex align-items-center justify-content-between px-4">
 
         <!-- Brand -->
-        <div class="d-flex justify-content-center align-items-center gap-2">
-            <img src="../../app/uploads/pampeerlogo.png" alt="logo" class="logo-img">
-            <p class ="brand m-0">Pampeers</p>
-        </div>
+        <p>Welcome back, <?= htmlspecialchars($user['firstName'] ?? '') ?>!</p>
 
         <!-- Search Bar -->
         <div class="search-bar d-flex justify-content-center align-items-center gap-5">
@@ -42,8 +43,12 @@ require_once __DIR__ . '/../../app/controllers/guardian/guardianFetchData.php';
             <a href="../../app/controllers/logout.php" class="logout-btn">
                 Logout
             </a>
+
             <?php $userPic = !empty($user['profilePic']) ? $user['profilePic'] : 'default.jpg'; ?>
-            <img src="../../app/uploads/profiles/<?php echo htmlspecialchars($userPic); ?>" class="profile-img" alt="Profile Picture">
+
+            <img src="/pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" 
+                 class="profile-img" 
+                 alt="Profile Picture">
         </div>
     </div>
 </header>
@@ -53,21 +58,21 @@ require_once __DIR__ . '/../../app/controllers/guardian/guardianFetchData.php';
     <div class="section-title text-start">Available Babysitters</div>
 
     <?php if (!empty($sitters)): ?>
-    <div class="carousel-wrapper ">
+    <div class="carousel-wrapper">
         <?php foreach ($sitters as $peer): ?>
         <div class="carousel-card">
             <div class="small-card">
 
-                <!-- IMAGE (with fallback) -->
-                <img src="/pampeers/app/uploads/profiles/<?php echo !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter Profile Picture">
+                <img src="/pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" 
+                     alt="Sitter Profile Picture">
 
-                <h6><?php echo htmlspecialchars($peer['name']); ?></h6>
+                <h6><?= htmlspecialchars($peer['name'] ?? '') ?></h6>
 
                 <p class="city">
-                    <?= htmlspecialchars($peer['city']) ?>
+                    <?= htmlspecialchars($peer['city'] ?? '') ?>
                 </p>
-                
-                <p>₱<?= htmlspecialchars($peer['rate']) ?>/hr</p>
+               
+                <p>₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
 
                 <button class="btn">
                     GET IN TOUCH
@@ -83,6 +88,7 @@ require_once __DIR__ . '/../../app/controllers/guardian/guardianFetchData.php';
 
 </div>
 
+<!-- NEAR YOU -->
 <div class="container-fluid mt-4">
     <div class="section-title text-start">Near You</div>
 
@@ -92,16 +98,16 @@ require_once __DIR__ . '/../../app/controllers/guardian/guardianFetchData.php';
         <div class="carousel-card">
             <div class="small-card">
 
-                <!-- IMAGE (with fallback) -->
-                <img src="../../app/uploads/profiles/<?php echo !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter Profile Picture">
+                <img src="/pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" 
+                     alt="Sitter Profile Picture">
 
-                <h6><?php echo htmlspecialchars($peer['name']); ?></h6>
+                <h6><?= htmlspecialchars($peer['name'] ?? '') ?></h6>
 
                 <p class="city">
-                    <?= htmlspecialchars($peer['city']) ?>
+                    <?= htmlspecialchars($peer['city'] ?? '') ?>
                 </p>
-                
-                <p>₱<?= htmlspecialchars($peer['rate']) ?>/hr</p>
+               
+                <p>₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
 
                 <button class="btn">
                     GET IN TOUCH

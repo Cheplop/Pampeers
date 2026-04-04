@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $profilePic = "default.jpg";
 
-    if (isset($_FILES['profilePic']) && $_FILES['profilePic']['error'] === 0) {
+        if (isset($_FILES['profilePic']) && $_FILES['profilePic']['error'] === 0) {
         $uploadDir = __DIR__ . '/../uploads/profiles/';
 
         if (!is_dir($uploadDir)) {
@@ -185,7 +185,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         $conn->commit();
-        header("Location: ../../public/login.php");
+        header("Location: /pampeers/public/login.php?registration=success");
         exit();
 
     } catch (Exception $e) {
