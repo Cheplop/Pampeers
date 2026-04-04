@@ -2,6 +2,6 @@ Options -Indexes
 RewriteEngine On
 RewriteBase /Pampeers/
 
-RewriteRule ^login$ public/user/login.php [L]
-RewriteRule ^register$ public/register.php [L]
+RewriteRule ^login$ login.php [L]
+RewriteRule ^register$ register.php [L]
 RewriteRule ^$ index.php [L]
