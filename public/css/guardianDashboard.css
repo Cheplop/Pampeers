@@ -19,6 +19,7 @@ body {
     font-size: 15px;
     font-weight: bold;
     letter-spacing: 1px;
+    margin-left: 20px;
     margin-bottom: 10px;
 }
 
@@ -28,7 +29,9 @@ body {
     gap: 20px;
 
     overflow-x: auto;
+    margin-left: 20px;
     padding: 10px;
+    border-radius: 15px;
 
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
@@ -117,10 +120,23 @@ body {
     color: white; 
 }
 
+/* Header */
+
+
+.logo-img{
+    width: 50px;
+    height: 50px;
+}
+
+.brand{
+    font-size: 20px;
+    font-family: 'Ribeye';
+}
+
 .custom-header {
-    background: #ffffff;
+    background: #FFFDF7;
     border-bottom: 1px solid #eee;
-    padding: 10px 0;
+    padding: 10px 10px 10px 10px;
 }
 
 /* Brand */
@@ -161,7 +177,7 @@ body {
 
 /* Search Button */
 .search-btn {
-    background: #ff385c; /* Airbnb pink */
+    background: #AAC4F5; /* Airbnb pink */
     color: white;
     border: none;
     border-radius: 50%;
@@ -171,12 +187,12 @@ body {
 }
 
 .search-btn:hover {
-    background: #e03150;
+    background: #3C56A2;
 }
 
 /* Logout */
 .logout-btn {
-    font-size: 14px;
+    font-size: 15px;
     color: #555;
     text-decoration: none;
     padding: 6px 10px;
@@ -190,8 +206,8 @@ body {
 
 /* Profile */
 .profile-img {
-    width: 34px;
-    height: 34px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     object-fit: cover;
     border: 1px solid #ddd;

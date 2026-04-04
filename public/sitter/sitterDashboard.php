@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../app/middleware/authCheck.php';
-require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchAvail.php';
+require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchData.php';
 
 ?>
 
@@ -40,7 +40,7 @@ require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchAvail.php';
             <div class="row">
                 <div class="col-md-3 text-center">
                     <?php if (!empty($user['profilePic'])): ?>
-                        <img src="/pampeers/uploads/profiles/<?= htmlspecialchars($user['profilePic']) ?>" alt="Profile" class="profile-img mb-3">
+                        <img src="/pampeers/app/uploads/profiles/<?= htmlspecialchars($user['profilePic']) ?>" alt="Profile" class="profile-img mb-3">
                     <?php else: ?>
                         <div class="mb-3">
                             <div class="profile-img mx-auto d-flex align-items-center justify-content-center bg-light">
