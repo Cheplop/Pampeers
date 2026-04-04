@@ -2,6 +2,13 @@
 require_once __DIR__ . '/../../app/middleware/authCheck.php';
 require_once __DIR__ . '/../../app/controllers/guardian/guardianFetchData.php';
 
+// Fetch available sitters
+require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchAvail.php';
+
+// Fetch sitters near the guardian
+$userCity = $user['city'] ?? '';
+require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchNear.php';
+
 // prevent undefined errors
 $sitters = $sitters ?? [];
 $sittersNear = $sittersNear ?? [];
@@ -23,11 +30,13 @@ $sittersNear = $sittersNear ?? [];
 
 <body>
 <header class="sticky-top custom-header">
-    <div class="nav-container d-flex align-items-center justify-content-between px-4">
+    <div class="nav-container d-flex align-items-center justify-content-between px-2">
 
         <!-- Brand -->
-        <p>Welcome back, <?= htmlspecialchars($user['firstName'] ?? '') ?>!</p>
-
+        <div class="d-flex justify-content-center align-items-center gap-2">
+            <img src="../../app/uploads/pampeerlogo.png" alt="logo" class="logo-img">
+            <p class ="brand m-0">Pampeers</p>
+        </div>
         <!-- Search Bar -->
         <div class="search-bar d-flex justify-content-center align-items-center gap-5">
             <span>Where</span>
@@ -46,7 +55,7 @@ $sittersNear = $sittersNear ?? [];
 
             <?php $userPic = !empty($user['profilePic']) ? $user['profilePic'] : 'default.jpg'; ?>
 
-            <img src="/pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" 
+            <img src="../../app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" 
                  class="profile-img" 
                  alt="Profile Picture">
         </div>
@@ -63,7 +72,7 @@ $sittersNear = $sittersNear ?? [];
         <div class="carousel-card">
             <div class="small-card">
 
-                <img src="/pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" 
+                <img src="/Pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" 
                      alt="Sitter Profile Picture">
 
                 <h6><?= htmlspecialchars($peer['name'] ?? '') ?></h6>
@@ -98,7 +107,7 @@ $sittersNear = $sittersNear ?? [];
         <div class="carousel-card">
             <div class="small-card">
 
-                <img src="/pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" 
+                <img src="/Pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" 
                      alt="Sitter Profile Picture">
 
                 <h6><?= htmlspecialchars($peer['name'] ?? '') ?></h6>

@@ -6,7 +6,6 @@ body {
 /* SEARCH BAR */
 .search-bar {
     width: 450px;
-    margin: 20px auto;
     background: #fff;
     border-radius: 30px;
     padding: 10px 20px;
@@ -177,8 +176,7 @@ body {
 
 /* Search Button */
 .search-btn {
-    background: #AAC4F5; /* Airbnb pink */
-    color: white;
+    background: #AAC4F5;
     border: none;
     border-radius: 50%;
     padding: 6px 10px;
