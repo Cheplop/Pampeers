@@ -20,7 +20,7 @@ require_once __DIR__ . '/../../app/controllers/guardian/guardianFetchData.php';
     <div class="nav-container d-flex align-items-center justify-content-between px-4">
 
         <!-- Brand -->
-        <p>Welcome back, <?= htmlspecialchars($user['fullName']) ?>!</p>
+        <p>Welcome back, <?= htmlspecialchars($user['firstName']) ?>!</p>
 
         <!-- Search Bar -->
         <div class="search-bar d-flex align-items-center">
