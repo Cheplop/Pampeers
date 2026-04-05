@@ -20,25 +20,30 @@ $sittersNear = $sittersNear ?? [];
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Available Sitters</title>
+<title>Pampeers - Guardian Dashboard</title>
+<link rel="icon" type="image/x-icon" href="../../app/uploads/pampeerlogo.png">
+
 
 <link href="https://fonts.googleapis.com/css2?family=Ribeye&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../css/guardianDashboard.css">
-
 </head>
 
 <body>
+
 <header class="sticky-top custom-header">
-    <div class="nav-container d-flex align-items-center justify-content-between px-2">
+    <!-- ✅ only added flex-wrap -->
+    <div class="nav-container d-flex flex-wrap align-items-center justify-content-between px-2">
 
         <!-- Brand -->
         <div class="d-flex justify-content-center align-items-center gap-2">
             <img src="../../app/uploads/pampeerlogo.png" alt="logo" class="logo-img">
-            <p class ="brand m-0">Pampeers</p>
+            <p class="brand m-0">Pampeers</p>
         </div>
+
         <!-- Search Bar -->
-        <div class="search-bar d-flex justify-content-center align-items-center gap-5">
+        <!-- ✅ no layout change, just allow wrap -->
+        <div class="search-bar d-flex align-items-center gap-3 flex-wrap">
             <span>Where</span>
             <div class="divider"></div>
             <span>When</span>
@@ -48,7 +53,7 @@ $sittersNear = $sittersNear ?? [];
         </div>
 
         <!-- Right Side -->
-        <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center gap-3 mt-2 mt-md-0">
             <a href="../../app/controllers/logout.php" class="logout-btn">
                 Logout
             </a>

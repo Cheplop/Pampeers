@@ -163,3 +163,50 @@ body {
         margin-bottom: 10px;
     }
 }
+
+/* 📱 MOBILE FIXES ONLY */
+@media (max-width: 768px) {
+
+    .nav-container {
+        gap: 10px;
+    }
+
+    .search-bar {
+        width: 100%;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 5px;
+    }
+
+    .logo-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .brand {
+        font-size: 16px;
+    }
+
+    .profile-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* carousel scroll fix */
+    .carousel-wrapper {
+        display: flex;
+        overflow-x: auto;
+        gap: 10px;
+        padding-bottom: 10px;
+    }
+
+    .carousel-card {
+        min-width: 160px;
+        flex: 0 0 auto;
+    }
+
+    .small-card img {
+        width: 100%;
+        height: auto;
+    }
+}
