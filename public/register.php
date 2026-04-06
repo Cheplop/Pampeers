@@ -34,18 +34,18 @@ if (isset($_SESSION['user_id'])) {
             <form action="/pampeers/app/controllers/createUser.php" method="POST" enctype="multipart/form-data" class="row g-3">
 
                 <div class="col-md-12">
-                    <label class="form-label">First Name</label>
-                    <input type="text" name="firstName" class="form-control" required>
+                    <label class="form-label">First Name <span class="text-danger">*</span></label>
+                    <input type="text" name="firstName" class="form-control" placeholder="e.g. Juan" required>
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label">Last Name</label>
-                    <input type="text" name="lastName" class="form-control" required>
+                    <input type="text" name="lastName" class="form-control" placeholder="e.g. Dela Cruz" required>
                 </div>
 
                 <div class="col-12">
                     <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" required>
+                    <input type="email" name="email" class="form-control" placeholder="e.g. juandelacruz@example.com" required>
                 </div>
 
                 <div class="col-12">
