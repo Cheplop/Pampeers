@@ -89,7 +89,7 @@
                         </div>
 
                         <small class="forgot mt-0">Forgot Password?</small>
-                        <button type="submit" class="btn btn-primary w-100 mt-3">CONTINUE</button>
+                        <button type="submit" class="btn btn-primary w-100 mt-3">LOG IN</button>
                     </form>
 
                     <p class="signup">
