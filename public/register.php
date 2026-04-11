@@ -128,7 +128,7 @@ if (isset($_SESSION['user_id'])) {
             </form>
 
             <p class="login-link mt-3 text-center">
-                Already have an account? <a href="./guestDashboard.php">LOGIN</a>
+                Already have an account? <a href="guestDashboard.php">LOGIN</a>
             </p>
         </div>
     </div>

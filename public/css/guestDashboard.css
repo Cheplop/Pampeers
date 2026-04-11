@@ -11,15 +11,24 @@ body {
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     border: 1px solid #ccc;
+}
+
+/* Search Labels */
+.search-labels {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    justify-content: center;
+    flex-grow: 1;
 }
 
 .section-title {
 
-    font-size: 15px;
+    font-size: 20px;
     font-weight: bold;
-    letter-spacing: 1px;
-    margin-left: 20px;
+    margin-left: 50px;
     margin-bottom: 10px;
 }
 
@@ -44,7 +53,9 @@ body {
 /* CARD SIZE CONTROL */
 .carousel-card {
     flex: 0 0 auto;
-    width: 200px;
+    width: 250px;
+    height:300px;
+    min-width: 220px;
     scroll-snap-align: start;
 }
 
@@ -55,7 +66,7 @@ body {
     padding: 12px;
     box-shadow: 0 2px 3px rgba(0,0,0,0.2);
 
-
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -70,7 +81,7 @@ body {
 /* IMAGE */
 .small-card img {
     width: 100%;
-    height: 160px;
+    height: 200px;
     border-radius: 10px;
     object-fit: cover;
 }
@@ -102,24 +113,6 @@ body {
     color: black;
 }
 
-/* BUTTON */
-.small-card button {
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-    width: 100%;
-    border-radius: 20px;
-    box-shadow: 0 2px 3px rgba(0,0,0,0.2);
-
-    font-size: 12px;
-    font-weight: bold;
-    background-color: #AAC4F5; /* Text color on hover */
-}
-
-.btn:hover {
-    background-color: #3C56A2;
-    color: white; 
-}
-
 /* Header */
 
 .left-side {
@@ -132,29 +125,27 @@ body {
 }
 
 .brand{
-    font-size: 20px;
+    font-size: 25px;
     font-family: 'Ribeye';
 }
 
 .custom-header {
     background: #FFFDF7;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #000000;
     padding: 10px 10px 10px 10px;
-}
-
-/* Brand */
-.brand-label {
-    font-weight: 600;
-    font-size: 18px;
-    color: #222;
 }
 
 /* Search Bar */
 .search-bar {
+    height: 55px;
+
+    text-align: center;
+    justify-content: center;
+    
     background: #fff;
-    border: 1px solid #ddd;
+    border: 1px solid black;
     border-radius: 40px;
-    padding: 6px 10px;
+    padding: 10px 10px 10px 10px;
     gap: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     transition: 0.2s ease;
@@ -166,8 +157,14 @@ body {
 
 /* Search Text */
 .search-bar span {
-    font-size: 14px;
-    color: #555;
+    display: inline-flex;
+    justify-content: center;
+    text-align: center;
+    min-width: 70px;
+    font-size: 19px;
+    font-weight: 550;
+    letter-spacing: 1px;
+    color: black;
     cursor: pointer;
 }
 
@@ -175,21 +172,26 @@ body {
 .divider {
     width: 1px;
     height: 18px;
-    background: #ddd;
+    background: black;
+    margin: 0 4px;
 }
 
 /* Search Button */
 .search-btn {
-    background: #AAC4F5;
-    border: none;
-    border-radius: 50%;
+    width: 55px;
+    height: 35px;
+
+    background: #F0F8FF;
+    border: 1px solid black;
+    border-radius: 18px;
     padding: 6px 10px;
     font-size: 14px;
     transition: 0.2s ease;
 }
 
 .search-btn:hover {
-    background: #3C56A2;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.2);
+
 }
 
 /* Login */
@@ -208,45 +210,38 @@ body {
     margin-right:20px;
 }
 
-.login-btn {
-    font-size: 15px;
-    color: white;
-    background-color: #3C56A2;
-    text-decoration: none;
-    padding: 6px 10px;
-    border-radius: 20px;
-    transition: 0.2s ease;
-}
-
-.login-btn:hover {
-    background-color: #f7f7f7;
-}
 
 .login-btn {
     font-size: 15px;
     font-weight: bold;
-    color: white;
-    background-color: #3C56A2;
+    color: black;
+    background-color: #F0F8FF;
     text-decoration: none;
     padding: 6px 10px;
-    border-radius: 20px;
+    border: solid 1px black;
+    border-radius: 15px;
     transition: 0.2s ease;
 }
 
 .login-btn:hover {
-    background-color: #3C56A2;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.2);
 }
 
 .signup-btn{
     font-size: 15px;
     font-weight: bold;
-    color: #3C56A2;
+    color: black;
     background-color: transparent;
     text-decoration: none;
     padding: 6px 10px;
     border: 0px;
     border-radius: 20px;
     transition: 0.2s ease;
+}
+
+.signup-btn:hover {
+    background-color: #F0F8FF;
+
 }
 
 

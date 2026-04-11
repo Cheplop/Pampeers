@@ -42,13 +42,15 @@ $sittersNear = $sittersNear ?? [];
 
         <!-- Search Bar -->
         <!-- ✅ no layout change, just allow wrap -->
-        <div class="search-bar d-flex align-items-center gap-3 flex-wrap">
-            <span>Where</span>
-            <div class="divider"></div>
-            <span>When</span>
-            <div class="divider"></div>
-            <span>Who</span>
-            <button class="search-btn">🔍</button>
+        <div class="search-bar d-flex align-items-center justify-content-between mt-3 mb-3">
+            <div class="search-labels d-flex align-items-center gap-3 justify-content-center flex-grow-1">
+                <span>Where</span>
+                <div class="divider"></div>
+                <span>When</span>
+                <div class="divider"></div>
+                <span>Who</span>
+            </div>
+            <button class="search-btn"><img src="../app/uploads/search.png" alt=""></button>
         </div>
 
         <!-- Right Side -->
@@ -137,7 +139,7 @@ $sittersNear = $sittersNear ?? [];
 
 <!-- AVAILABLE SITTERS -->
 <div class="container-fluid mt-4">
-    <div class="section-title text-start">Available Babysitters</div>
+    <div class="section-title text-start">Available Sitters</div>
 
     <?php if (!empty($sitters)): ?>
     <div class="carousel-wrapper">

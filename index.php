@@ -21,6 +21,6 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
     exit();
 }
 
-header("Location: /pampeers/public/login.php");
+header("Location: /pampeers/login");
 exit();
 ?>
