@@ -37,7 +37,7 @@
                 <div class="login-panel">
 
                     <div class="d-flex d-md-none justify-content-center gap-2 mb-3">
-                        <img src="/pampeers/uploads/pampeerlogo.png" alt="Pampeer Logo" class="logo">
+                        <img src="../app/uploads/pampeerlogo.png" alt="Pampeer Logo" class="logo">
                     </div>
 
                     <h4>LOGIN</h4>

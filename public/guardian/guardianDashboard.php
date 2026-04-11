@@ -88,10 +88,6 @@ $sittersNear = $sittersNear ?? [];
                
                 <p>₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
 
-                <button class="btn">
-                    GET IN TOUCH
-                </button>
-
             </div>
         </div>
         <?php endforeach; ?>
@@ -122,10 +118,6 @@ $sittersNear = $sittersNear ?? [];
                 </p>
                
                 <p>₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
-
-                <button class="btn">
-                    GET IN TOUCH
-                </button>
 
             </div>
         </div>

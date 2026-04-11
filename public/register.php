@@ -39,17 +39,17 @@ if (isset($_SESSION['user_id'])) {
                 </div>
 
                 <div class="col-md-12">
-                    <label class="form-label">Last Name</label>
+                    <label class="form-label">Last Name <span class="text-danger">*</span></label>
                     <input type="text" name="lastName" class="form-control" placeholder="e.g. Dela Cruz" required>
                 </div>
 
                 <div class="col-12">
-                    <label class="form-label">Email</label>
+                    <label class="form-label">Email <span class="text-danger">*</span></label>
                     <input type="email" name="email" class="form-control" placeholder="e.g. juandelacruz@example.com" required>
                 </div>
 
                 <div class="col-12">
-                    <label class="form-label">Password</label>
+                    <label class="form-label">Password <span class="text-danger">*</span></label>
                     <input type="password" name="password" class="form-control" required minlength="8">
                     <div class="form-text">Must be at least 8 characters</div>
                 </div>
@@ -128,7 +128,7 @@ if (isset($_SESSION['user_id'])) {
             </form>
 
             <p class="login-link mt-3 text-center">
-                Already have an account? <a href="./login.php">LOGIN</a>
+                Already have an account? <a href="./guestDashboard.php">LOGIN</a>
             </p>
         </div>
     </div>

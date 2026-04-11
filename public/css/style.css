@@ -68,9 +68,9 @@ html, body {
 
 /* ===== LOGIN PANEL ===== */
 
-.right-side {
+#staticBackdrop .modal-body {
     padding: 1rem;
-    background-color: #FFF8DE;
+    background-color: #FFFDF7;
     min-height: 100vh;
     /* box-shadow: inset 10px 0 10px -5px rgba(0,0,0,0.5); */ 
     overflow: hidden;
