@@ -37,7 +37,7 @@
                 <div class="login-panel">
 
                     <div class="d-flex d-md-none justify-content-center gap-2 mb-3">
-                        <img src="/pampeers/uploads/pampeerlogo.png" alt="Pampeer Logo" class="logo">
+                        <img src="/Pampeers/uploads/pampeerlogo.png" alt="Pampeer Logo" class="logo">
                     </div>
 
                     <h4>LOGIN</h4>
@@ -71,7 +71,7 @@
                         </div>
                     <?php endif; ?>
 
-                    <form action="/pampeers/app/middleware/loginLogic.php" method="POST">
+                    <form action="/Pampeers/app/middleware/loginLogic.php" method="POST">
                         <div class="input-group mb-3">
                             <span class="input-group-text">@</span>
                             <div class="form-floating">

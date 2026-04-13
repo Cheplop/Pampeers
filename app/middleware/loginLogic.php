@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $password = $_POST['password'];
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            header("Location: /pampeers/login?error=invalid");
+            header("Location: /Pampeers/login?error=invalid");
             exit();
         }
 
@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->close();
     }
 
-    header("Location: /pampeers/public/login.php?error=invalid");
+    header("Location: /Pampeers/public/login.php?error=invalid");
     exit();
 }
 
@@ -47,18 +47,18 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
 function redirectBasedOnRole($role) {
     switch ($role) {
         case 'admin':
-            header("Location: /pampeers/public/admin/adminDashboard.php");
+            header("Location: /Pampeers/public/admin/adminDashboard.php");
             break;
         case 'guardian':
-            header("Location: /pampeers/public/guardian/guardianDashboard.php");
+            header("Location: /Pampeers/public/guardian/guardianDashboard.php");
             break;
         case 'sitter':
-            header("Location: /pampeers/public/sitter/sitterDashboard.php");
+            header("Location: /Pampeers/public/sitter/sitterDashboard.php");
             break;
         default:
             session_unset();
             session_destroy();
-            header("Location: /pampeers/login?error=role_not_found");
+            header("Location: /Pampeers/login?error=role_not_found");
             break;
     }
     exit();

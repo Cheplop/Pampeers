@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($checkStmt->num_rows > 0) {
         $checkStmt->close();
-        header("Location: /pampeers/public/register.php?error=email_exists");
+        header("Location: /Pampeers/public/register.php?error=email_exists");
         exit();
     }
     $checkStmt->close();
@@ -185,7 +185,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         $conn->commit();
-        header("Location: /pampeers/public/login.php?registration=success");
+        header("Location: /Pampeers/public/login.php?registration=success");
         exit();
 
     } catch (Exception $e) {

@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 function checkAuth($requiredRole) {
     if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
-        header("Location: /pampeers/login?error=unauthorized");
+        header("Location: /Pampeers/login?error=unauthorized");
         exit();
     }
 
@@ -17,18 +17,18 @@ function checkAuth($requiredRole) {
 function redirectToOwnDashboard($role) {
     switch ($role) {
         case 'admin':
-            header("Location: /pampeers/public/admin/adminDashboard.php");
+            header("Location: /Pampeers/public/admin/adminDashboard.php");
             break;
         case 'guardian':
-            header("Location: /pampeers/public/guardian/guardianDashboard.php");
+            header("Location: /Pampeers/public/guardian/guardianDashboard.php");
             break;
         case 'sitter':
-            header("Location: /pampeers/public/sitter/sitterDashboard.php");
+            header("Location: /Pampeers/public/sitter/sitterDashboard.php");
             break;
         default:
             session_unset();
             session_destroy();
-            header("Location: /pampeers/login?error=invalid_role");
+            header("Location: /Pampeers/login?error=invalid_role");
             break;
     }
     exit();
