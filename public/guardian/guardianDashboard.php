@@ -26,15 +26,14 @@ $sittersNear = $sittersNear ?? [];
 
 <link href="https://fonts.googleapis.com/css2?family=Ribeye&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="../css/guardianDashboard.css">
+<link rel="stylesheet" href="../css/guestDashboard.css">
 </head>
 
 <body>
 
 <header class="sticky-top custom-header">
     <!-- ✅ only added flex-wrap -->
-    <div class="nav-container d-flex flex-wrap align-items-center justify-content-between px-2">
-
+    <div class="left-side nav-container d-flex align-items-center justify-content-between px-3">
         <!-- Brand -->
         <div class="d-flex justify-content-center align-items-center gap-2">
             <img src="../../app/uploads/pampeerlogo.png" alt="logo" class="logo-img">
@@ -43,18 +42,21 @@ $sittersNear = $sittersNear ?? [];
 
         <!-- Search Bar -->
         <!-- ✅ no layout change, just allow wrap -->
-        <div class="search-bar d-flex align-items-center gap-3 flex-wrap">
-            <span>Where</span>
-            <div class="divider"></div>
-            <span>When</span>
-            <div class="divider"></div>
-            <span>Who</span>
-            <button class="search-btn">🔍</button>
+        <div class="search-bar d-flex align-items-center justify-content-between mt-3 mb-3">
+            <div class="search-labels d-flex align-items-center gap-3 justify-content-center flex-grow-1">
+                <span>Where</span>
+                <div class="divider"></div>
+                <span>When</span>
+                <div class="divider"></div>
+                <span>Who</span>
+            </div>
+            <button class="search-btn"><img src="../../app/uploads/search.png" alt=""></button>
         </div>
 
         <!-- Right Side -->
-        <div class="d-flex align-items-center gap-3 mt-2 mt-md-0">
-            <a href="../../app/controllers/logout.php" class="logout-btn">
+        <div class="right-side-p d-flex align-items-center gap-3 mt-2 mt-md-0">
+
+             <a href="../../app/controllers/logout.php" class="logout-btn">
                 Logout
             </a>
 
@@ -128,6 +130,7 @@ $sittersNear = $sittersNear ?? [];
     <?php endif; ?>
 
 </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
