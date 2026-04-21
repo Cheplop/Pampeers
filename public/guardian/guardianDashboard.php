@@ -62,9 +62,9 @@ $sittersNear = $sittersNear ?? [];
 
             <?php $userPic = !empty($user['profilePic']) ? $user['profilePic'] : 'default.jpg'; ?>
 
-            <img src="../../app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" 
-                 class="profile-img" 
-                 alt="Profile Picture">
+            <div class="profile-wrapper">
+                <img src="../../app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" class="profile-img">
+            </div>
         </div>
     </div>
 </header>
