@@ -21,7 +21,7 @@ $sittersNear = $sittersNear ?? [];
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Pampeers - Guardian Dashboard</title>
-<link rel="icon" type="image/x-icon" href="../../app/uploads/pampeerlogo.png">
+<link rel="icon" type="image/x-icon" href="/Pampeers/app/uploads/pampeerlogo.png">
 
 
 <link href="https://fonts.googleapis.com/css2?family=Ribeye&display=swap" rel="stylesheet">
@@ -36,7 +36,7 @@ $sittersNear = $sittersNear ?? [];
     <div class="left-side nav-container d-flex align-items-center justify-content-between px-3">
         <!-- Brand -->
         <div class="d-flex justify-content-center align-items-center gap-2">
-            <img src="../../app/uploads/pampeerlogo.png" alt="logo" class="logo-img">
+            <img src="/Pampeers/app/uploads/pampeerlogo.png" alt="logo" class="logo-img">
             <p class="brand m-0">Pampeers</p>
         </div>
 
@@ -50,7 +50,7 @@ $sittersNear = $sittersNear ?? [];
                 <div class="divider"></div>
                 <span>Who</span>
             </div>
-            <button class="search-btn"><img src="../../app/uploads/search.png" alt=""></button>
+            <button class="search-btn"><img src="/Pampeers/app/uploads/search.png" alt=""></button>
         </div>
 
         <!-- Right Side -->
@@ -63,7 +63,7 @@ $sittersNear = $sittersNear ?? [];
             <?php $userPic = !empty($user['profilePic']) ? $user['profilePic'] : 'default.jpg'; ?>
 
             <div class="profile-wrapper">
-                <img src="../../app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" class="profile-img">
+                <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" class="profile-img">
             </div>
         </div>
     </div>

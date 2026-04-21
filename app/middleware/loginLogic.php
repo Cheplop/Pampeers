@@ -2,6 +2,11 @@
 session_start();
 require_once __DIR__ . '/../config/db_connect.php';
 
+if (!$conn) {
+    header("Location: /Pampeers/public/guestDashboard.php?error=db");
+    exit();
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Clear any existing session when attempting to login with new credentials
     session_unset();
@@ -13,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $password = $_POST['password'];
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            header("Location: /pampeers/login?error=invalid");
+            header("Location: /Pampeers/public/guestDashboard.php?error=invalid");
             exit();
         }
 
@@ -35,30 +40,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->close();
     }
 
-    header("Location: /pampeers/login?error=invalid");
+    header("Location: /Pampeers/public/guestDashboard.php?error=invalid");
     exit();
 }
 
 // Only check for existing session if NOT submitting login form
 if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
     redirectBasedOnRole($_SESSION['role']);
+} else {
+    header("Location: /Pampeers/public/guestDashboard.php");
+    exit();
 }
 
 function redirectBasedOnRole($role) {
     switch ($role) {
         case 'admin':
-            header("Location: /pampeers/public/admin/adminDashboard.php");
+            header("Location: /Pampeers/public/admin/adminDashboard.php");
             break;
         case 'guardian':
-            header("Location: /pampeers/public/guardian/guardianDashboard.php");
+            header("Location: /Pampeers/public/guardian/guardianDashboard.php");
             break;
         case 'sitter':
-            header("Location: /pampeers/public/sitter/sitterDashboard.php");
+            header("Location: /Pampeers/public/sitter/sitterDashboard.php");
             break;
         default:
             session_unset();
             session_destroy();
-            header("Location: /pampeers/login?error=role_not_found");
+            header("Location: /Pampeers/public/guestDashboard.php?error=role_not_found");
             break;
     }
     exit();

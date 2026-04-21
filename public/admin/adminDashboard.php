@@ -38,7 +38,7 @@ $recentUsersResult = $conn->query($recentUsersQuery);
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard - Pampeers</title>
-<link rel="icon" type="image/x-icon" href="../../app/uploads/pampeerlogo.png">
+<link rel="icon" type="image/x-icon" href="/Pampeers/app/uploads/pampeerlogo.png">
 
 <link rel="stylesheet" href="../css/adminDashboard.css">
 <link href="https://fonts.googleapis.com/css2?family=Ribeye&display=swap" rel="stylesheet">
@@ -52,7 +52,7 @@ $recentUsersResult = $conn->query($recentUsersQuery);
         
         <!-- Brand -->
         <div class="d-flex justify-content-center align-items-center gap-2">
-            <img src="../../app/uploads/pampeerlogo.png" alt="logo" class="logo-img">
+            <img src="/Pampeers/app/uploads/pampeerlogo.png" alt="logo" class="logo-img">
             <p class="brand m-0">Pampeers</p>
         </div>
 
@@ -64,7 +64,7 @@ $recentUsersResult = $conn->query($recentUsersQuery);
 
             <?php $userPic = !empty($admin['profilePic']) ? $admin['profilePic'] : 'default.jpg'; ?>
 
-            <img src="../../app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" 
+            <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" 
                  class="profile-img-p" 
                  alt="Profile Picture">
         </div>

@@ -11,7 +11,7 @@ require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchData.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sitter Dashboard - Pampeers</title>
-    <link rel="icon" type="image/x-icon" href="../../app/uploads/pampeerlogo.png">
+    <link rel="icon" type="image/x-icon" href="/Pampeers/app/uploads/pampeerlogo.png">
     
     <link rel="stylesheet" href="../css/sitterDashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Ribeye&display=swap" rel="stylesheet">
@@ -25,7 +25,7 @@ require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchData.php';
 
         <!-- Brand -->
         <div class="d-flex justify-content-center align-items-center gap-2">
-            <img src="../../app/uploads/pampeerlogo.png" alt="logo" class="logo-img">
+            <img src="/Pampeers/app/uploads/pampeerlogo.png" alt="logo" class="logo-img">
             <p class ="brand m-0">Pampeers</p>
         </div>
 
@@ -37,7 +37,7 @@ require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchData.php';
 
             <?php $userPic = !empty($user['profilePic']) ? $user['profilePic'] : 'default.jpg'; ?>
 
-            <img src="../../app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" 
+            <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" 
                  class="profile-img-p" 
                  alt="Profile Picture">
         </div>
@@ -48,7 +48,7 @@ require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchData.php';
         <div class="col-lg-7">
             <div class="card-profile p-4 d-flex align-items-center h-100">
                 <?php if (!empty($user['profilePic'])): ?>
-                <img src="../../app/uploads/profiles/<?= htmlspecialchars($user['profilePic']) ?>" alt="Profile" class="profile-img mb-3">
+                <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($user['profilePic']) ?>" alt="Profile" class="profile-img mb-3">
                     <?php else: ?>
                         <div class="mb-3">
                             <div class="profile-img mx-auto d-flex align-items-center justify-content-center bg-light">
@@ -67,13 +67,13 @@ require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchData.php';
         <div class="col-lg-5">
             <div class="card-profile d-flex flex-column justify-content-center p-4 h-100">
                 <div class="info-item divider m-3">
-                    <i class="bi bi-person-fill"></i><img src="../../app/uploads/age.png" alt="Age">Age: <?= $age ?>
+                    <i class="bi bi-person-fill"></i><img src="/Pampeers/app/uploads/age.png" alt="Age">Age: <?= $age ?>
                 </div>
                 <div class="info-item divider m-3">
-                    <i class="bi bi-pin-angle-fill"></i> <img src="../../app/uploads/location.png" alt="Location"> Location: <?= htmlspecialchars($location) ?>
+                    <i class="bi bi-pin-angle-fill"></i> <img src="/Pampeers/app/uploads/location.png" alt="Location"> Location: <?= htmlspecialchars($location) ?>
                 </div>
                 <div class="info-item divider m-3">
-                    <i class="bi bi-briefcase-fill"></i> <img src="../../app/uploads/exp.png" alt="Experience"> Experience: <?= htmlspecialchars($user['experience'] ?? '0') ?>
+                    <i class="bi bi-briefcase-fill"></i> <img src="/Pampeers/app/uploads/exp.png" alt="Experience"> Experience: <?= htmlspecialchars($user['experience'] ?? '0') ?>
                 </div>
             </div>
         </div>
@@ -92,8 +92,8 @@ require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchData.php';
                     Note: Hey, Charles. I just want to give you heads up that my kid has an allergy to peanuts, shrimps, almonds or any kind of nuts. Please take care of him and we will be back as soon as possible as we are finished with our errands.
                 </p>
                 <div class="job-details">
-                    <div class="mb-1"><i class="bi bi-pin-map-fill"></i><img src="../../app/uploads/locationgrey.png" alt="Location"> Xavier Estates, Cagayan De Oro City, Misamis Oriental</div>
-                    <div><i class="bi bi-calendar3"></i> <img src="../../app/uploads/date.png" alt="Date"> April 6, 2026   | <i class="bi bi-clock"></i>  <img src="../../app/uploads/time.png" alt="time">  13:00 - 17:00 | 5 Hours</div>
+                    <div class="mb-1"><i class="bi bi-pin-map-fill"></i><img src="/Pampeers/app/uploads/locationgrey.png" alt="Location"> Xavier Estates, Cagayan De Oro City, Misamis Oriental</div>
+                    <div><i class="bi bi-calendar3"></i> <img src="/Pampeers/app/uploads/date.png" alt="Date"> April 6, 2026   | <i class="bi bi-clock"></i>  <img src="/Pampeers/app/uploads/time.png" alt="time">  13:00 - 17:00 | 5 Hours</div>
                 </div>
             </div>
             <div class="col-md-3 text-md-end mt-3 mt-md-0 d-flex flex-column justify-content-between">

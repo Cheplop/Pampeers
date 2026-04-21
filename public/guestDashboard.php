@@ -20,7 +20,7 @@ $sittersNear = $sittersNear ?? [];
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Pampeers - Guardian Dashboard</title>
-<link rel="icon" type="image/x-icon" href="../app/uploads/pampeerlogo.png">
+<link rel="icon" type="image/x-icon" href="/Pampeers/app/uploads/pampeerlogo.png">
 
 
 <link href="https://fonts.googleapis.com/css2?family=Ribeye&display=swap" rel="stylesheet">
@@ -36,7 +36,7 @@ $sittersNear = $sittersNear ?? [];
 
         <!-- Brand -->
         <div class="d-flex justify-content-center align-items-center gap-2">
-            <img src="../app/uploads/pampeerlogo.png" alt="logo" class="logo-img">
+            <img src="/Pampeers/app/uploads/pampeerlogo.png" alt="logo" class="logo-img">
             <p class="brand m-0">Pampeers</p>
         </div>
 
@@ -50,13 +50,13 @@ $sittersNear = $sittersNear ?? [];
                 <div class="divider"></div>
                 <span>Who</span>
             </div>
-            <button class="search-btn"><img src="../app/uploads/search.png" alt=""></button>
+            <button class="search-btn"><img src="/Pampeers/app/uploads/search.png" alt=""></button>
         </div>
 
         <!-- Right Side -->
         <div class="right-side-p d-flex align-items-center gap-3 mt-2 mt-md-0">
 
-            <a href="../public/register.php" class="signup-btn">
+            <a href="/Pampeers/public/register.php" class="signup-btn">
                 Sign up
             </a>
 
@@ -106,7 +106,7 @@ $sittersNear = $sittersNear ?? [];
                     </div>
                 <?php endif; ?>
 
-                <form action="/pampeers/app/middleware/loginLogic.php" method="POST">
+                <form action="/Pampeers/app/middleware/loginLogic.php" method="POST">
                     <div class="input-group mb-3">
                         <span class="input-group-text">@</span>
                         <div class="form-floating">
@@ -128,7 +128,7 @@ $sittersNear = $sittersNear ?? [];
                 </form>
 
                 <p class="signup mb-0">
-                    New User? <a href="../public/register.php">Sign up now</a>
+                    New User? <a href="/Pampeers/public/register.php">Sign up now</a>
                 </p>
             </div>
         </div>
@@ -147,7 +147,7 @@ $sittersNear = $sittersNear ?? [];
         <div class="carousel-card">
             <div class="small-card">
 
-                <img src="/Pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" 
+                <img src="/Pampee/Pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" 
                      alt="Sitter Profile Picture">
 
                 <h6><?= htmlspecialchars($peer['name'] ?? '') ?></h6>
@@ -178,7 +178,7 @@ $sittersNear = $sittersNear ?? [];
         <div class="carousel-card">
             <div class="small-card">
 
-                <img src="/Pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" 
+                <img src="/Pampee/Pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" 
                      alt="Sitter Profile Picture">
 
                 <h6><?= htmlspecialchars($peer['name'] ?? '') ?></h6>

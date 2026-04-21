@@ -1,0 +1,10 @@
+Options -Indexes
+RewriteEngine On
+RewriteBase /Pampeers/
+
+RewriteRule ^login$ login.php [L]
+RewriteRule ^register$ register.php [L]
+RewriteRule ^$ index.php [L]
+RedirectMatch 404 /\.git
+RewriteEngine On
+RewriteRule (^|/)\.git - [F]
