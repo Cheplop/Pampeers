@@ -147,7 +147,7 @@ $sittersNear = $sittersNear ?? [];
         <div class="carousel-card">
             <div class="small-card">
 
-                <img src="/Pampee/Pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" 
+                <img src="../app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" 
                      alt="Sitter Profile Picture">
 
                 <h6><?= htmlspecialchars($peer['name'] ?? '') ?></h6>
@@ -178,7 +178,7 @@ $sittersNear = $sittersNear ?? [];
         <div class="carousel-card">
             <div class="small-card">
 
-                <img src="/Pampee/Pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" 
+                <img src="../app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" 
                      alt="Sitter Profile Picture">
 
                 <h6><?= htmlspecialchars($peer['name'] ?? '') ?></h6>

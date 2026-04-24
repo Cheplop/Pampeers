@@ -63,17 +63,72 @@ body {
 
 /* CARD */
 .small-card {
+    position: relative; /* CRITICAL */
     background: #FFF8DE;
     border-radius: 15px;
     padding: 12px;
     box-shadow: 0 2px 3px rgba(0,0,0,0.2);
-
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
-
     transition: 0.2s ease;
+}
+ /* 1. Fix the Image container size */
+.image-container {
+    position: relative; /* This lets the button float inside */
+    width: 100%;
+    height: 200px;      /* Force a standard height */
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+/* 2. Fix the Image itself */
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* Keeps the face from stretching/distorting */
+    display: block;
+}
+
+/* 3. The Like Button */
+.like-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+    
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease;
+}
+
+.like-btn:hover {
+    transform: scale(1.1);
+    background: #fff;
+}
+
+.like-btn i {
+    color: #ff4d4d; /* Red heart */
+    font-size: 16px;
+}
+
+/* 4. Carousel fix to prevent vertical stretching */
+.carousel-wrapper {
+    display: flex;
+    align-items: flex-start; /* Prevents cards from stretching vertically */
+    gap: 20px;
+    overflow-x: auto;
+    padding: 10px;
 }
 
 .small-card:hover {
@@ -322,7 +377,6 @@ body {
 }
 
 .profile-wrapper {
-    border: 3px solid red;
     width: 45px;
     height: 45px;
     border-radius: 50%;
@@ -366,13 +420,13 @@ body {
         font-size: 16px;
     }
 
-    /* .profile-img {
+    .profile-img {
         width: 40px;
         height: 40px;
         border-radius: 50%;
         object-fit: cover;
         border: 2px solid #fff;
-    } */
+    }
 
     /* carousel scroll fix */
     .carousel-wrapper {
