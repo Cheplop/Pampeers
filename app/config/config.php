@@ -8,7 +8,7 @@ session_start();
 $servername = "localhost"; // The server where the database is running
 $username = "root"; // Username to connect to the database
 $password = ""; // Password for the database user
-$database = "pampeers"; // Name of the database
+$database = "pampeers2"; // Name of the database
 
 // Create a connection to the MySQL database
 $conn = new mysqli($servername, $username, $password, $database);
