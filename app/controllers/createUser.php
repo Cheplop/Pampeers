@@ -185,7 +185,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         $conn->commit();
-        header("Location: /pampeers/login?registration=success");
+        header("Location: /pampeers/public/guestDashboard.php?success=registered");
         exit();
 
     } catch (Exception $e) {
