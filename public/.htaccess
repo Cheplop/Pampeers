@@ -1,12 +1,7 @@
 Options -Indexes
-
 RewriteEngine On
+RewriteBase /Pampeers/
 
-# If file exists, load it directly
-RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.*)$ $1.php [L]
-
-# If file doesn't exist, route to index.php
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+RewriteRule ^login$ guestDashboard.php [L]
+RewriteRule ^register$ register.php [L]
+RewriteRule ^$ index.php [L]

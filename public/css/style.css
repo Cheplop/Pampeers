@@ -1,0 +1,135 @@
+/* ===== Base ===== */
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.main-container .row {
+    min-height: 100vh; /* full viewport height */
+}
+
+/* ===== LEFT SIDE HERO ===== */
+.left-side {
+    position: relative;             /* allows background overlay */
+    color: white;
+    display: flex;
+    flex-direction: column;         /* stack logo + h1 + p vertically */
+    justify-content: start;        /* vertical centering */
+    align-items: flex-start;        /* push content to left side */
+    padding: 1.5rem;
+    min-height: 100vh;
+    text-align: left;
+    overflow: visible;
+    z-index: 1;                     /* ensures content is above background */
+}
+
+.my-background { 
+    position: absolute;             /* covers entire column */
+    top: 0px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("../../app/uploads/babysit.jpg");
+    background-size: cover;
+    background-position: center;
+    filter: brightness(50%);        /* dark overlay */
+    z-index: 0;                     /* behind content */
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;                     /* content sits above background */
+}
+
+.left-side ul {
+    z-index: 1;
+    font-weight: 100;
+    color: white;
+    padding: 0.5rem;
+}
+
+.logo {
+    width: 80px;                     /* responsive size */
+}
+
+.left-side h1 {
+    font-family: 'Ribeye';
+    font-size: 2.5rem;
+    margin-bottom: 0;
+}
+
+.left-side p {
+    font-size: 14px;
+    max-width: 400px;
+    margin-top: 0rem;
+
+}
+
+/* ===== LOGIN PANEL ===== */
+
+#staticBackdrop .modal-body {
+    padding: 1rem;
+    background-color: #FFFDF7;
+    min-height: 100vh;
+    /* box-shadow: inset 10px 0 10px -5px rgba(0,0,0,0.5); */ 
+    overflow: hidden;
+    z-index: 0;
+}
+
+.login-panel {
+    width: 100%;
+    max-width: 350px;
+    padding: 2rem;
+    border-radius: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background-color: #FFFDF7;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-panel input,
+.lospan{
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+}
+
+.login-panel button {
+    font-size: 1rem;
+    border-radius: 10px;
+    color: black;
+    font-weight: bold;
+    background-color: #AAC4F5;
+    border: none;
+    padding: 0.5rem;
+    margin-top: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.login-panel button:hover {
+    background-color: #8CA9FF;
+    transform: translateY(1px);
+    box-shadow: 0 2px 0 #92addb;
+}
+
+.login-panel h4 {
+    text-align: start;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.forgot {
+    text-align: left;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: #0d6efd;
+    cursor: pointer;
+}
+
+.signup {
+    font-size: 0.75rem;
+    text-align: center;
+    margin-top: 1rem;
+}

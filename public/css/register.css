@@ -1,0 +1,80 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #FFFDF7;
+  margin: 0;
+}
+
+.signup-panel {
+  background-color: #FFFDF7;
+  padding: 2.5rem;
+  border-radius: 40px;
+  border: 0.75rem solid #FFF8DE;
+  box-shadow: 10px 0px 10px rgba(0,0,0,0.2);
+  max-width: 750px;
+  width: 95%;
+  margin: 7rem auto;
+}
+
+.logo-img {
+  width: 60px;
+  height: auto;
+  margin-bottom: 5px;
+}
+
+.brand-name {
+  font-family: 'Ribeye', cursive;
+  font-size: 2.5rem;
+  color: #000;
+  margin-top: -5px;
+}
+
+.form-label {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #444;
+  margin-bottom: 4px;
+}
+
+.form-control, .form-select {
+  border-radius: 12px;
+  border: 1.5px solid #bababa;
+  padding: 0.6rem;
+  background-color: transparent;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #AAC4F5;
+  box-shadow: none;
+}
+
+.btn-primary {
+  width: 100%;
+  font-weight: bold;
+  background-color: #AAC4F5;
+  border: 1px solid #92addb;
+  color: #333;
+  border-radius: 12px;
+  padding: 0.8rem;
+  box-shadow: 0 4px 0 #92addb;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #8CA9FF;
+  color: #000;
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 #92addb;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.login-link a {
+  color: #AAC4F5;
+  text-decoration: none;
+  font-weight: 600;
+}
