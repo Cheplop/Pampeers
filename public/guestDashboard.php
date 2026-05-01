@@ -99,73 +99,100 @@ $sittersNear = $sittersNear ?? [];
     </div>
 </div>
 
-<main class="container-fluid mt-4 px-4">
+<main class="container-fluid mt-2 px-4">
     
+<div class="d-flex justify-content-between align-items-center mb-2">
     <div class="section-title">Available Sitters</div>
-    <?php if (!empty($sitters)): ?>
-    <div class="carousel-wrapper">
-        <?php foreach ($sitters as $peer): ?>
-        <div class="carousel-card">
-            <div class="small-card">
-                <div class="card-img-container">
-                    <button class="like-btn" aria-label="Like">
-                        <i class="fa-regular fa-heart"></i>
-                    </button>
-                    <img src="../app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter">
-                </div>
-                <h6><?= htmlspecialchars($peer['name'] ?? 'Sitter') ?></h6>
-                <p class="city"><?= htmlspecialchars($peer['city'] ?? '') ?></p>
-                <p>₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
-            </div>
-        </div>
-        <?php endforeach; ?>
+    <div class="arrow-controls">
+        <button class="arrow-btn" onclick="scrollCarousel('avail-carousel', -1)"> < </button>
+        <button class="arrow-btn" onclick="scrollCarousel('avail-carousel', 1)"> > </button>
     </div>
+</div>
+
+    <?php if (!empty($sitters)): ?>
+        <div class="carousel-wrapper" id="avail-carousel">
+            <?php foreach ($sitters as $peer): ?>
+            <div class="carousel-card">
+                <div class="small-card">
+                    <div class="card-img-container">
+                        <button class="like-btn" aria-label="Like">
+                            <i class="fa-regular fa-heart"></i>
+                        </button>
+                        <img src="../app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter">
+                    </div>
+                    <h6><?= htmlspecialchars($peer['name'] ?? 'Sitter') ?></h6>
+                    <p class="city"><?= htmlspecialchars($peer['city'] ?? '') ?></p>
+                    <p>₱<?= htmlspecialchars($peer['rate'] ?? '0') ?></p>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
     <?php else: ?>
         <p class="text-center text-muted">No available sitters found.</p>
     <?php endif; ?>
 
-    <div class="section-title mt-5">Peers in <?= htmlspecialchars($userCity) ?></div>
-    <?php if (!empty($sittersNear)): ?>
-    <div class="carousel-wrapper">
-        <?php foreach ($sittersNear as $peer): ?>
-        <div class="carousel-card">
-            <div class="small-card">
-                <div class="card-img-container">
-                    <button class="like-btn" aria-label="Like">
-                        <i class="fa-regular fa-heart"></i>
-                    </button>
-                    <img src="../app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter">
-                </div>
-                <h6><?= htmlspecialchars($peer['name'] ?? 'Sitter') ?></h6>
-                <p class="city"><?= htmlspecialchars($peer['city'] ?? '') ?></p>
-                <p>₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
-            </div>
-        </div>
-        <?php endforeach; ?>
+<div class="d-flex justify-content-between align-items-center mt-2 mb-2">
+    <div class="section-title">Peers in <?= htmlspecialchars($userCity) ?></div>
+    <div class="arrow-controls">
+        <button class="arrow-btn" onclick="scrollCarousel('near-carousel', -1)"> < </button>
+        <button class="arrow-btn" onclick="scrollCarousel('near-carousel', 1)"> > </button>
     </div>
-    <?php endif; ?>
+</div>
 
+    <?php if (!empty($sittersNear)): ?>
+        <div class="carousel-wrapper" id="near-carousel">
+            <?php foreach ($sittersNear as $peer): ?>
+            <div class="carousel-card">
+                <div class="small-card">
+                    <div class="card-img-container">
+                        <button class="like-btn" aria-label="Like">
+                            <i class="fa-regular fa-heart"></i>
+                        </button>
+                        <img src="../app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter">
+                    </div>
+                    <h6><?= htmlspecialchars($peer['name'] ?? 'Sitter') ?></h6>
+                    <p class="city"><?= htmlspecialchars($peer['city'] ?? '') ?></p>
+                    <p>₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+// Scroll Function for Arrows
+function scrollCarousel(carouselId, direction) {
+    const container = document.getElementById(carouselId);
+    const card = container.querySelector('.carousel-card');
+    if (card) {
+        // Scroll by 1 card width + 20px gap
+        const scrollAmount = card.offsetWidth + 20;
+        container.scrollBy({
+            left: direction * scrollAmount,
+            behavior: 'smooth'
+        });
+    }
+}
+
+// Existing Like Button Logic
 document.querySelectorAll('.like-btn').forEach(button => {
     button.addEventListener('click', function(e) {
         e.preventDefault();
         const icon = this.querySelector('i');
         
-        // Toggle Heart state
         icon.classList.toggle('fa-regular');
         icon.classList.toggle('fa-solid');
         
-        // Trigger Pop Animation
         this.classList.add('heart-pop');
         setTimeout(() => {
             this.classList.remove('heart-pop');
         }, 300);
     });
 });
+</script>
 </script>
 
 </body>

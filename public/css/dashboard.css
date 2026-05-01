@@ -78,6 +78,36 @@ body {
 }
 
 /* --- 4. BUTTONS & PROFILE --- */
+.dropdown{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    text-decoration: none;
+    color: #666;
+    background-color: #F0F8FF;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropdown a{
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+}
+
+
+.dropdown:active,
+.dropdown:focus,
+.dropdown:hover {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.dropdown .btn:focus {
+    outline: none;
+    border: none;
+}
 
 .signup-btn{
     font-size: 15px;
@@ -96,7 +126,7 @@ body {
 
 }
 
-.logout-btn, .login-btn {
+.login-btn{
     font-size: 15px;
     font-weight: bold;
     color: black;
@@ -108,7 +138,7 @@ body {
     transition: 0.2s ease;
 }
 
-.logout-btn:hover, .login-btn:hover, .search-btn:hover {
+.login-btn:hover, .search-btn:hover {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
@@ -136,14 +166,14 @@ body {
     margin: 20px 0 10px 50px;
 }
 
+/* Change this */
 .carousel-wrapper {
     display: flex;
     gap: 20px;
     overflow-x: auto;
-    padding: 10px 20px;
+    padding: 5px 0; /* Remove the 50px horizontal padding */
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
-    align-items: flex-start;
 }
 
 .carousel-wrapper::-webkit-scrollbar {
@@ -152,7 +182,7 @@ body {
 
 .carousel-card {
     flex: 0 0 auto;
-    width: 250px;
+    width: 228px;
     scroll-snap-align: start;
 }
 
@@ -382,4 +412,38 @@ body {
     .card-img-container {
         height: 140px;
     }
+}
+
+/* --- NEW CAROUSEL CONTROLS --- */
+.carousel-wrapper {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE/Edge */
+}
+.carousel-wrapper::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.arrow-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.arrow-btn {
+    background: #F0F8FF;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.arrow-btn:hover {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transform: scale(1.1);
 }

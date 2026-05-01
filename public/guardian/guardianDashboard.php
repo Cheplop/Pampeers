@@ -62,17 +62,25 @@ $sittersNear = $sittersNear ?? [];
     </div>
 </header>
 
-<main class="container-fluid mt-4">
-    <div class="section-title">Available Babysitters</div>
+<main class="container-fluid mt-2 px-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="section-title">Available Babysitters</div>
+        <div class="arrow-controls">
+            <button class="arrow-btn" onclick="scrollCarousel('avail-carousel', -2)"> < </button>
+            <button class="arrow-btn" onclick="scrollCarousel('avail-carousel', 2)"> > </button>
+        </div>
+    </div>
 
     <?php if (!empty($sitters)): ?>
-    <div class="carousel-wrapper">
+    <div class="carousel-wrapper" id="avail-carousel">
         <?php foreach ($sitters as $peer): ?>
         <div class="carousel-card">
             <div class="small-card">
                 <div class="card-img-container">
                     <button class="like-btn" aria-label="Like">
-                        <i class="fa-regular fa-heart"></i> </button>
+                        <i class="fa-regular fa-heart"></i> 
+                    </button>
                     <img src="../../app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter">
                 </div>
                 <h6><?= htmlspecialchars($peer['name'] ?? 'Unknown') ?></h6>
@@ -86,10 +94,16 @@ $sittersNear = $sittersNear ?? [];
         <p class="text-center text-muted mt-4">No available sitters found.</p>
     <?php endif; ?>
 
-    <div class="section-title mt-5">Near You</div>
+    <div class="d-flex justify-content-between align-items-center mt-2 mb-2">
+        <div class="section-title">Near You</div>
+        <div class="arrow-controls">
+            <button class="arrow-btn" onclick="scrollCarousel('near-carousel', -1)"> < </button>
+            <button class="arrow-btn" onclick="scrollCarousel('near-carousel', 1)"> > </button>
+        </div>
+    </div>
 
     <?php if (!empty($sittersNear)): ?>
-    <div class="carousel-wrapper">
+    <div class="carousel-wrapper" id="near-carousel">
         <?php foreach ($sittersNear as $peer): ?>
         <div class="carousel-card">
             <div class="small-card">
@@ -107,25 +121,37 @@ $sittersNear = $sittersNear ?? [];
         <?php endforeach; ?>
     </div>
     <?php else: ?>
-        <p class="text-center text-muted mt-4">No sitters found in your city.</p>
+        <p class="text-center text-muted mt-2">No sitters found in your city.</p>
     <?php endif; ?>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+// Scroll Function for Arrows
+function scrollCarousel(carouselId, direction) {
+    const container = document.getElementById(carouselId);
+    const card = container.querySelector('.carousel-card');
+    if (card) {
+        // Scroll by 1 card width + 20px gap
+        const scrollAmount = card.offsetWidth + 20;
+        container.scrollBy({
+            left: direction * scrollAmount,
+            behavior: 'smooth'
+        });
+    }
+}
+
+// Existing Like Button Logic
 document.querySelectorAll('.like-btn').forEach(button => {
-    button.addEventListener('click', function() {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
         const icon = this.querySelector('i');
         
-        // Toggle between regular (outline) and solid (filled)
         icon.classList.toggle('fa-regular');
         icon.classList.toggle('fa-solid');
         
-        // Add the animation class
         this.classList.add('heart-pop');
-        
-        // Remove animation class after it finishes so it can be re-triggered
         setTimeout(() => {
             this.classList.remove('heart-pop');
         }, 300);
