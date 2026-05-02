@@ -1,5 +1,11 @@
 <?php
-session_start();
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// DB connection (IMPORTANT — keep this)
+require_once __DIR__ . '/../app/config/config.php';
 
 // Fetch available sitters
 require_once __DIR__ . '/../app/controllers/sitter/sitterFetchAvail.php';
@@ -111,11 +117,11 @@ $sittersNear = $sittersNear ?? [];
                     <button class="like-btn" aria-label="Like">
                         <i class="fa-regular fa-heart"></i>
                     </button>
-                    <img src="../app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter">
+                    <img src="../app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img'] ?? '') : 'default.jpg'; ?>" alt="Sitter">
                 </div>
-                <h6><?= htmlspecialchars($peer['name'] ?? 'Sitter') ?></h6>
+                <h6><?= htmlspecialchars($peer['name'] ?? '') ?></h6>
                 <p class="city"><?= htmlspecialchars($peer['city'] ?? '') ?></p>
-                <p>₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
+                <p>₱<?= htmlspecialchars($peer['rate'] ?? '') ?>/hr</p>
             </div>
         </div>
         <?php endforeach; ?>
@@ -124,7 +130,7 @@ $sittersNear = $sittersNear ?? [];
         <p class="text-center text-muted">No available sitters found.</p>
     <?php endif; ?>
 
-    <div class="section-title mt-5">Peers in <?= htmlspecialchars($userCity) ?></div>
+    <div class="section-title mt-5">Peers in <?= htmlspecialchars($userCity ?? '') ?></div>
     <?php if (!empty($sittersNear)): ?>
     <div class="carousel-wrapper">
         <?php foreach ($sittersNear as $peer): ?>
@@ -134,11 +140,11 @@ $sittersNear = $sittersNear ?? [];
                     <button class="like-btn" aria-label="Like">
                         <i class="fa-regular fa-heart"></i>
                     </button>
-                    <img src="../app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter">
+                    <img src="../app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img'] ?? '') : 'default.jpg'; ?>" alt="Sitter">
                 </div>
-                <h6><?= htmlspecialchars($peer['name'] ?? 'Sitter') ?></h6>
+                <h6><?= htmlspecialchars($peer['name'] ?? '') ?></h6>
                 <p class="city"><?= htmlspecialchars($peer['city'] ?? '') ?></p>
-                <p>₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
+                <p>₱<?= htmlspecialchars($peer['rate'] ?? '') ?>/hr</p>
             </div>
         </div>
         <?php endforeach; ?>

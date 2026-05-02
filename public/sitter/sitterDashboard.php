@@ -1,7 +1,30 @@
 <?php
 
-require_once __DIR__ . '/../../app/middleware/authCheck.php';
-require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchData.php';
+
+require_once __DIR__ . '/../../app/middleware/auth.php';
+requireRole('sitter');
+
+require_once __DIR__ . '/../../app/controllers/sitter/fetchDashboard.php';
+
+// Safe fallbacks for undefined variables
+$user = $user ?? [];
+$fullName = $fullName ?? (
+    trim(
+        ($user['firstName'] ?? '') .
+        (!empty($user['middleName']) ? ' ' . $user['middleName'] : '') .
+        ' ' . ($user['lastName'] ?? '') .
+        (!empty($user['suffix']) ? ' ' . $user['suffix'] : '')
+    )
+);
+$location = $location ?? (
+    implode(', ', array_filter([
+        $user['barangay'] ?? '',
+        $user['cityMunicipality'] ?? '',
+        $user['province'] ?? '',
+        $user['country'] ?? ''
+    ])) ?: 'N/A'
+);
+$availability = $availability ?? (((int)($user['isAvailable'] ?? 0) === 1) ? 'Available' : 'Unavailable');
 
 ?>
 
@@ -35,11 +58,11 @@ require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchData.php';
                 Logout
             </a>
 
-            <?php $userPic = !empty($user['profilePic']) ? $user['profilePic'] : 'default.jpg'; ?>
+              <?php $userPic = !empty($user['profilePic']) ? $user['profilePic'] : 'default.jpg'; ?>
 
-            <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" 
-                 class="profile-img-p" 
-                 alt="Profile Picture">
+              <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic ?? ''); ?>" 
+                  class="profile-img-p" 
+                  alt="Profile Picture">
         </div>
     </div>
 </header>
@@ -48,7 +71,7 @@ require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchData.php';
         <div class="col-lg-7">
             <div class="card-profile p-4 d-flex align-items-center h-100">
                 <?php if (!empty($user['profilePic'])): ?>
-                <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($user['profilePic']) ?>" alt="Profile" class="profile-img mb-3">
+                <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($user['profilePic'] ?? '') ?>" alt="Profile" class="profile-img mb-3">
                     <?php else: ?>
                         <div class="mb-3">
                             <div class="profile-img mx-auto d-flex align-items-center justify-content-center bg-light">
@@ -57,7 +80,7 @@ require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchData.php';
                         </div>
                     <?php endif; ?>                
                     <div class="m-5">
-                    <p class="mb-0"> <?= htmlspecialchars($user['bio']) ?> </p>
+                    <p class="mb-0"> <?= htmlspecialchars($user['bio'] ?? '') ?> </p>
                     <h2 class="fw-bold mb-0"><?= htmlspecialchars($fullName) ?></h2>
                     <p class="text-muted small"><?= htmlspecialchars($user['email']) ?></p>
                     </div>

@@ -1,4 +1,4 @@
 <?php
-require_once 'app/config/db_connect.php';
+require_once 'app/config/config.php';
 echo "DB connected";
 ?>

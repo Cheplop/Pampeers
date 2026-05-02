@@ -1,12 +1,14 @@
 <?php
 require_once __DIR__ . '/../../app/middleware/authCheck.php';
-require_once __DIR__ . '/../../app/config/db_connect.php';
+require_once __DIR__ . '/../../app/config/config.php';
 
-checkAuth('admin');
+require_once __DIR__ . '/../../app/middleware/auth.php';
+require_once __DIR__ . '/../../app/config/config.php';
+requireRole('admin');
 
 $adminId = $_SESSION['user_id'];
 
-$adminStmt = $conn->prepare("SELECT firstName, lastName, profilePic FROM users WHERE uID = ? LIMIT 1");
+$adminStmt = $conn->prepare("SELECT firstName, lastName, profilePic FROM users WHERE id = ? LIMIT 1");
 $adminStmt->bind_param("i", $adminId);
 $adminStmt->execute();
 $adminResult = $adminStmt->get_result();
@@ -62,11 +64,11 @@ $recentUsersResult = $conn->query($recentUsersQuery);
                 Logout
             </a>
 
-            <?php $userPic = !empty($admin['profilePic']) ? $admin['profilePic'] : 'default.jpg'; ?>
+              <?php $userPic = !empty($admin['profilePic']) ? $admin['profilePic'] : 'default.jpg'; ?>
 
-            <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" 
-                 class="profile-img-p" 
-                 alt="Profile Picture">
+              <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic ?? ''); ?>" 
+                  class="profile-img-p" 
+                  alt="Profile Picture">
         </div>
     </div>
 </header>
@@ -77,7 +79,7 @@ $recentUsersResult = $conn->query($recentUsersQuery);
         <div class="col-md-12 p-3 p-md-4">
 
             <p class="mb-4">
-                Welcome Back, <b><?= htmlspecialchars($admin['firstName'] . ' ' . $admin['lastName']) ?>!</b>
+                Welcome Back, <b><?= htmlspecialchars(($admin['firstName'] ?? '') . ' ' . ($admin['lastName'] ?? '')) ?>!</b>
             </p>
 
             <!-- Statistics Cards -->
@@ -124,11 +126,11 @@ $recentUsersResult = $conn->query($recentUsersQuery);
                         <tbody>
                             <?php while ($user = $recentUsersResult->fetch_assoc()): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($user['firstName'] . ' ' . $user['lastName']) ?></td>
-                                    <td><?= htmlspecialchars($user['email']) ?></td>
+                                    <td><?= htmlspecialchars(($user['firstName'] ?? '') . ' ' . ($user['lastName'] ?? '')) ?></td>
+                                    <td><?= htmlspecialchars($user['email'] ?? '') ?></td>
                                     <td>
                                         <span class="badge custom-badge">
-                                            <?= htmlspecialchars($user['role']) ?>
+                                            <?= htmlspecialchars($user['role'] ?? '') ?>
                                         </span>
                                     </td>
                                     <td><?= htmlspecialchars($user['dateCreated'] ?? 'N/A') ?></td>

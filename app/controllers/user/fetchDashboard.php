@@ -10,11 +10,11 @@ requireAuth();
 // Get the user ID from session
 $userId = $_SESSION['user_id'];
 
+
 // Prepare statement to get user details
 $userStmt = $conn->prepare("
     SELECT
         id,
-        uuid,
         firstName,
         middleName,
         lastName,
@@ -32,13 +32,11 @@ $userStmt = $conn->prepare("
         country,
         zipCode,
         profilePic,
-        dateCreated,
         isActive
     FROM users
     WHERE id = ?
     LIMIT 1
 ");
-// Bind user ID
 $userStmt->bind_param("i", $userId);
 $userStmt->execute();
 $userResult = $userStmt->get_result();
@@ -48,7 +46,12 @@ if ($userResult->num_rows === 0) {
     $userStmt->close();
     session_unset();
     session_destroy();
-    header('Location: /pampeers/public/login.php?error=user_not_found');
+    // Show message and redirect to guestDashboard after 3 seconds
+    echo '<!DOCTYPE html><html><head>';
+    echo '<meta http-equiv="refresh" content="3;url=/pampeers/public/guestDashboard.php">';
+    echo '<title>User Not Found</title></head><body>';
+    echo '<h2>User not found. Redirecting to guest dashboard...</h2>';
+    echo '</body></html>';
     exit();
 }
 
@@ -94,18 +97,14 @@ $sittersStmt = $conn->prepare("
 ");
 $sittersStmt->execute();
 $sittersResult = $sittersStmt->get_result();
-
-// Loop through results and build sitter array
+$sitters = [];
 while ($row = $sittersResult->fetch_assoc()) {
-    // Build full name from parts
     $fullName = trim(
         $row['firstName'] . ' ' .
         (!empty($row['middleName']) ? $row['middleName'] . ' ' : '') .
         $row['lastName'] .
         (!empty($row['suffix']) ? ' ' . $row['suffix'] : '')
     );
-
-    // Add sitter to array
     $sitters[] = [
         'sitterID'   => $row['sitterID'],
         'uuid'       => $row['sitterUUID'],
@@ -128,17 +127,20 @@ $sittersStmt->close();
 $sittersNear = [];
 
 // Prepare statement to get sitters in same city, excluding current user
-$nearStmt = $conn->prepare("
+// ======================
+// ALL AVAILABLE SITTERS
+// ======================
+$sitters = [];
+
+
+$sittersStmt = $conn->prepare("
     SELECT
         s.sitterID,
-        s.uuid AS sitterUUID,
         s.bio,
         s.hourlyRate,
         s.experience,
         s.isAvailable,
-        s.ratingAverage,
-        s.verificationStatus,
-        u.id AS userID,
+        u.id,
         u.firstName,
         u.middleName,
         u.lastName,
@@ -149,19 +151,13 @@ $nearStmt = $conn->prepare("
     FROM sitters s
     INNER JOIN users u ON s.userID = u.id
     WHERE s.isAvailable = 1
-      AND u.isActive = 1
-      AND u.cityMunicipality = ?
-      AND u.id != ?
-    ORDER BY s.createdAt DESC
+    ORDER BY s.sitterID DESC
 ");
-// Bind city and exclude current user ID
-$nearStmt->bind_param("si", $user['cityMunicipality'], $userId);
-$nearStmt->execute();
-$nearResult = $nearStmt->get_result();
 
-// Loop through results and build near sitters array
-while ($row = $nearResult->fetch_assoc()) {
-    // Build full name from parts
+$sittersStmt->execute();
+$sittersResult = $sittersStmt->get_result();
+
+while ($row = $sittersResult->fetch_assoc()) {
     $fullName = trim(
         $row['firstName'] . ' ' .
         (!empty($row['middleName']) ? $row['middleName'] . ' ' : '') .
@@ -169,22 +165,59 @@ while ($row = $nearResult->fetch_assoc()) {
         (!empty($row['suffix']) ? ' ' . $row['suffix'] : '')
     );
 
-    // Add sitter to near array
+    $sitters[] = [
+        'id'   => $row['id'],
+        'name' => $fullName,
+        'img'  => $row['profilePic'] ?: 'default.jpg',
+        'city' => $row['cityMunicipality'] ?? '',
+        'rate' => $row['hourlyRate'],
+        'bio'  => $row['bio']
+    ];
+}
+$sittersStmt->close();
+
+
+// ======================
+// SITTERS NEAR USER
+// ======================
+$sittersNear = [];
+
+$nearStmt = $conn->prepare("
+    SELECT
+        s.sitterID,
+        s.bio,
+        s.hourlyRate,
+        u.id,
+        u.firstName,
+        u.middleName,
+        u.lastName,
+        u.suffix,
+        u.cityMunicipality,
+        u.profilePic
+    FROM sitters s
+    INNER JOIN users u ON s.userID = u.id
+    WHERE s.isAvailable = 1
+      AND u.cityMunicipality = ?
+");
+
+$nearStmt->bind_param("s", $user['cityMunicipality']);
+$nearStmt->execute();
+$nearResult = $nearStmt->get_result();
+
+while ($row = $nearResult->fetch_assoc()) {
+    $fullName = trim(
+        $row['firstName'] . ' ' .
+        (!empty($row['middleName']) ? $row['middleName'] . ' ' : '') .
+        $row['lastName']
+    );
+
     $sittersNear[] = [
-        'sitterID'   => $row['sitterID'],
-        'uuid'       => $row['sitterUUID'],
-        'userID'     => $row['userID'],
-        'name'       => $fullName,
-        'bio'        => $row['bio'],
-        'rate'       => $row['hourlyRate'],
-        'experience' => $row['experience'],
-        'available'  => $row['isAvailable'],
-        'rating'     => $row['ratingAverage'],
-        'verified'   => $row['verificationStatus'],
-        'city'       => $row['cityMunicipality'],
-        'province'   => $row['province'],
-        'img'        => $row['profilePic'] ?: 'default.jpg'
+        'id'   => $row['id'],
+        'name' => $fullName,
+        'img'  => $row['profilePic'] ?: 'default.jpg',
+        'city' => $row['cityMunicipality'] ?? '',
+        'rate' => $row['hourlyRate'],
+        'bio'  => $row['bio']
     ];
 }
 $nearStmt->close();
-?>

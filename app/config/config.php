@@ -1,20 +1,35 @@
 <?php
-// Set the timezone to Asia/Manila for the application
+// ==============================
+// BASIC APP CONFIG
+// ==============================
+
+// Set timezone
 date_default_timezone_set('Asia/Manila');
-// Start a session to handle user login data
-session_start();
 
-// Database connection details
-$servername = "localhost"; // The server where the database is running
-$username = "root"; // Username to connect to the database
-$password = ""; // Password for the database user
-$database = "pampeers2"; // Name of the database
+// Start session safely
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Create a connection to the MySQL database
+// ==============================
+// DEV MODE (TURN OFF BEFORE PROD)
+// ==============================
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// ==============================
+// DATABASE CONNECTION
+// ==============================
+$servername = "localhost";
+$username   = "root";
+$password   = "";
+$database   = "pampeers2";
+
+// Create connection
 $conn = new mysqli($servername, $username, $password, $database);
 
-// Check if the connection failed, and stop the script if it did
+// Check connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("Database connection failed: " . $conn->connect_error);
 }
 ?>
