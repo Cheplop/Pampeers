@@ -33,31 +33,108 @@ $sittersNear = $sittersNear ?? [];
 
 <header class="sticky-top custom-header">
     <div class="nav-container d-flex align-items-center justify-content-between px-3">
+
+        <!-- Brand Logo -->
         <div class="d-flex align-items-center gap-2">
             <img src="/Pampeers/app/uploads/pampeerlogo.png" alt="logo" class="logo-img">
             <p class="brand m-0">Pampeers</p>
         </div>
 
+                <!-- Search Bar -->
+        <!-- YOUR ORIGINAL .search-bar div — class names preserved -->
         <div class="search-bar d-flex align-items-center justify-content-between">
+        
+            <!-- YOUR ORIGINAL .search-labels div — class names preserved -->
             <div class="search-labels d-flex align-items-center gap-3 flex-grow-1">
-                <span>Where</span>
-                <div class="divider"></div>
-                <span>When</span>
-                <div class="divider"></div>
-                <span>Who</span>
+        
+            <!-- FIELD 1: Where (was a plain <span>) -->
+            <div class="field-group">
+                <label for="input-where">Where</label>
+                <!-- type="text" lets the user type any city name -->
+                <input
+                type="text"
+                id="input-where"
+                placeholder="City or area"
+                autocomplete="off"
+                />
             </div>
-            <button class="search-btn">
-                <img src="/Pampeers/app/uploads/search.png" alt="search" width="16">
+        
+            <!-- YOUR ORIGINAL divider -->
+            <div class="divider"></div>
+        
+            <!-- FIELD 2: When (was a plain <span>) -->
+            <div class="field-group">
+                <label for="input-when">When</label>
+                <!-- type="date" gives a built-in calendar picker -->
+                <input
+                type="date"
+                id="input-when"
+                />
+            </div>
+        
+            <!-- YOUR ORIGINAL divider -->
+            <div class="divider"></div>
+        
+            <!-- FIELD 3: Who / Service type (was a plain <span>) -->
+            <div class="field-group">
+                <label for="input-who">Who</label>
+                <input
+                type="text"
+                id="input-who"
+                placeholder="e.g. newborn, toddler"
+                autocomplete="off"
+                />
+            </div>
+        
+            </div><!-- end .search-labels -->
+        
+            <!-- YOUR ORIGINAL search button -->
+            <button class="search-btn" id="search-button" aria-label="Search">
+            <!-- Using a simple SVG so no broken image if path is wrong -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                viewBox="0 0 24 24" fill="none" stroke="black"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
             </button>
-        </div>
+        
+        </div><!-- end .search-bar -->
 
-        <div class="right-side-p d-flex align-items-center gap-3">
-             <a href="../../app/controllers/logout.php" class="logout-btn">Logout</a>
+        <!-- Right Side: Profile + Menu -->
+        <div class="right-side-p d-flex align-items-center gap-1">
 
-            <?php $userPic = !empty($user['profilePic']) ? $user['profilePic'] : 'default.jpg'; ?>
-            <div class="profile-wrapper">
-                <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" class="profile-img" alt="Profile">
+            <!-- Profile Picture Link -->
+            <button type="button" class="btn btn-link">
+                <a href="../profile.php">
+                    <?php $userPic = !empty($user['profilePic']) ? $user['profilePic'] : 'default.jpg'; ?>
+                    <div class="profile-wrapper">
+                        <img
+                            src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>"
+                            class="profile-img"
+                            alt="Profile"
+                        >
+                    </div>
+                </a>
+            </button>
+
+            <!-- Hamburger Dropdown Menu -->
+            <div class="dropdown">
+                <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><button class="dropdown-item" type="button">Favourites</button></li>
+                    <li><button class="dropdown-item" type="button">Messages</button></li>
+                    <li><button class="dropdown-item" type="button">Settings</button></li>
+                    <li>
+                    <a class="dropdown-item" href="../../app/controllers/logout.php">
+                        Logout
+                    </a>
+                    </li>
+                </ul>
             </div>
+
         </div>
     </div>
 </header>
