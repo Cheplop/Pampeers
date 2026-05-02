@@ -27,7 +27,7 @@ $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
     session_destroy();
-    header('Location: /pampeers/public/login.php');
+    header('Location: /Pampeers/public/login.php');
     exit();
 }
 

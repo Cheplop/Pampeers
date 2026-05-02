@@ -9,7 +9,7 @@ requireAuth();
 
 // Check if the request is a POST request, if not, redirect to dashboard
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /pampeers/public/user/dashboard.php');
+    header('Location: /Pampeers/public/user/dashboard.php');
     exit();
 }
 
@@ -34,7 +34,7 @@ $notes       = trim($_POST['notes'] ?? '');
 
 // Check if required fields are filled
 if ($sitterId <= 0 || $bookingDate === '' || $startTime === '' || $endTime === '') {
-    header('Location: /pampeers/public/user/dashboard.php?error=missing_booking_fields');
+    header('Location: /Pampeers/public/user/dashboard.php?error=missing_booking_fields');
     exit();
 }
 
@@ -44,7 +44,7 @@ $endTimestamp   = strtotime($bookingDate . ' ' . $endTime);
 
 // Check if times are valid and end is after start
 if ($startTimestamp === false || $endTimestamp === false || $endTimestamp <= $startTimestamp) {
-    header('Location: /pampeers/public/user/dashboard.php?error=invalid_booking_time');
+    header('Location: /Pampeers/public/user/dashboard.php?error=invalid_booking_time');
     exit();
 }
 
@@ -67,7 +67,7 @@ $sitterResult = $sitterStmt->get_result();
 // If sitter not found, redirect with error
 if ($sitterResult->num_rows === 0) {
     $sitterStmt->close();
-    header('Location: /pampeers/public/user/dashboard.php?error=sitter_not_found');
+    header('Location: /Pampeers/public/user/dashboard.php?error=sitter_not_found');
     exit();
 }
 
@@ -77,7 +77,7 @@ $sitterStmt->close();
 
 // Check if sitter is available
 if ((int)$sitter['isAvailable'] !== 1) {
-    header('Location: /pampeers/public/user/dashboard.php?error=sitter_unavailable');
+    header('Location: /Pampeers/public/user/dashboard.php?error=sitter_unavailable');
     exit();
 }
 
@@ -132,12 +132,12 @@ $insertStmt->bind_param(
 // If insert succeeds, redirect with success
 if ($insertStmt->execute()) {
     $insertStmt->close();
-    header('Location: /pampeers/public/user/dashboard.php?booking=success');
+    header('Location: /Pampeers/public/user/dashboard.php?booking=success');
     exit();
 }
 
 // If failed, redirect with error
 $insertStmt->close();
-header('Location: /pampeers/public/user/dashboard.php?error=booking_failed');
+header('Location: /Pampeers/public/user/dashboard.php?error=booking_failed');
 exit();
 ?>

@@ -12,7 +12,7 @@ The core of the application containing all server-side logic.
 - `config.php` - Central configuration file that:
   - Sets timezone to Asia/Manila
   - Initializes PHP sessions
-  - Contains database connection credentials (MySQLi connection to 'pampeers' database)
+  - Contains database connection credentials (MySQLi connection to 'Pampeers' database)
   - Defines constants and establishes the primary database connection `$conn`
 
 ### `middleware/`
@@ -83,7 +83,7 @@ Contains presentation layer and user-facing pages.
   - Payment history
 
 ## `sql/` - Database
-- `pampeers.sql` - Complete database schema (SQL dump)
+- `Pampeers.sql` - Complete database schema (SQL dump)
   - Defines all tables for users, bookings, payments, messages, etc.
   - Used for initial database setup and restoration
 

@@ -9,7 +9,7 @@ requireAuth();
 
 // Check if the request is a POST request, if not, redirect to edit profile
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /pampeers/public/user/editProfile.php');
+    header('Location: /Pampeers/public/user/editProfile.php');
     exit();
 }
 
@@ -68,33 +68,33 @@ $requiredFields = [
 // Loop through required fields and check if empty
 foreach ($requiredFields as $field => $value) {
     if ($value === '') {
-        header('Location: /pampeers/public/user/editProfile.php?error=missing_' . urlencode($field));
+        header('Location: /Pampeers/public/user/editProfile.php?error=missing_' . urlencode($field));
         exit();
     }
 }
 
 // Validate email format
 if (!filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
-    header('Location: /pampeers/public/user/editProfile.php?error=invalid_email');
+    header('Location: /Pampeers/public/user/editProfile.php?error=invalid_email');
     exit();
 }
 
 // Validate sex
 $allowedSex = ['male', 'female', 'other'];
 if (!in_array(strtolower($sex), $allowedSex, true)) {
-    header('Location: /pampeers/public/user/editProfile.php?error=invalid_sex');
+    header('Location: /Pampeers/public/user/editProfile.php?error=invalid_sex');
     exit();
 }
 
 // Validate hourly rate
 if (!is_numeric($hourlyRate) || (float)$hourlyRate < 0) {
-    header('Location: /pampeers/public/user/editProfile.php?error=invalid_rate');
+    header('Location: /Pampeers/public/user/editProfile.php?error=invalid_rate');
     exit();
 }
 
 // Validate experience
 if (!ctype_digit((string)$experience) || (int)$experience < 0) {
-    header('Location: /pampeers/public/user/editProfile.php?error=invalid_experience');
+    header('Location: /Pampeers/public/user/editProfile.php?error=invalid_experience');
     exit();
 }
 
@@ -118,7 +118,7 @@ $currentResult = $currentStmt->get_result();
 // If not a sitter, redirect
 if ($currentResult->num_rows === 0) {
     $currentStmt->close();
-    header('Location: /pampeers/public/user/dashboard.php?error=not_a_sitter');
+    header('Location: /Pampeers/public/user/dashboard.php?error=not_a_sitter');
     exit();
 }
 
@@ -149,7 +149,7 @@ $duplicateResult = $duplicateStmt->get_result();
 // If duplicate found, redirect
 if ($duplicateResult->num_rows > 0) {
     $duplicateStmt->close();
-    header('Location: /pampeers/public/user/editProfile.php?error=account_exists');
+    header('Location: /Pampeers/public/user/editProfile.php?error=account_exists');
     exit();
 }
 $duplicateStmt->close();
@@ -175,13 +175,13 @@ if (isset($_FILES['profilePic']) && $_FILES['profilePic']['error'] === UPLOAD_ER
 
     // Check file type
     if (!in_array($fileExtension, $allowedTypes, true)) {
-        header('Location: /pampeers/public/user/editProfile.php?error=invalid_image_type');
+        header('Location: /Pampeers/public/user/editProfile.php?error=invalid_image_type');
         exit();
     }
 
     // Check file size (5MB max)
     if ($fileSize > 5 * 1024 * 1024) {
-        header('Location: /pampeers/public/user/editProfile.php?error=image_too_large');
+        header('Location: /Pampeers/public/user/editProfile.php?error=image_too_large');
         exit();
     }
 
@@ -191,7 +191,7 @@ if (isset($_FILES['profilePic']) && $_FILES['profilePic']['error'] === UPLOAD_ER
 
     // Move uploaded file
     if (!move_uploaded_file($tmpName, $targetPath)) {
-        header('Location: /pampeers/public/user/editProfile.php?error=upload_failed');
+        header('Location: /Pampeers/public/user/editProfile.php?error=upload_failed');
         exit();
     }
 
@@ -294,11 +294,11 @@ try {
     $_SESSION['first_name'] = $firstName;
     $_SESSION['last_name']  = $lastName;
 
-    header('Location: /pampeers/public/user/sitterDashboard.php?update=success');
+    header('Location: /Pampeers/public/user/sitterDashboard.php?update=success');
     exit();
 } catch (Exception $e) {
     $conn->rollback(); // Rollback on error
-    header('Location: /pampeers/public/user/editProfile.php?error=update_failed');
+    header('Location: /Pampeers/public/user/editProfile.php?error=update_failed');
     exit();
 }
 ?>

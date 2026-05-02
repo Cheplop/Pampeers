@@ -9,7 +9,7 @@ requireAuth();
 
 // Check if the request is a POST request, if not, redirect to sitter dashboard
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /pampeers/public/user/sitterDashboard.php');
+    header('Location: /Pampeers/public/user/sitterDashboard.php');
     exit();
 }
 
@@ -35,7 +35,7 @@ $checkResult = $checkStmt->get_result();
 // If no sitter record, redirect with error
 if ($checkResult->num_rows === 0) {
     $checkStmt->close();
-    header('Location: /pampeers/public/user/dashboard.php?error=not_a_sitter');
+    header('Location: /Pampeers/public/user/dashboard.php?error=not_a_sitter');
     exit();
 }
 
@@ -67,12 +67,12 @@ $updateStmt->bind_param("ii", $newAvailability, $sitter['sitterID']);
 // If update succeeds, redirect with success
 if ($updateStmt->execute()) {
     $updateStmt->close();
-    header('Location: /pampeers/public/user/sitterDashboard.php?update=availability_success');
+    header('Location: /Pampeers/public/user/sitterDashboard.php?update=availability_success');
     exit();
 }
 
 // If failed, redirect with error
 $updateStmt->close();
-header('Location: /pampeers/public/user/sitterDashboard.php?error=availability_failed');
+header('Location: /Pampeers/public/user/sitterDashboard.php?error=availability_failed');
 exit();
 ?>

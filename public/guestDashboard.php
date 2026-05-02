@@ -65,42 +65,64 @@ $sittersNear = $sittersNear ?? [];
     </div>
 </header>
 
+<!-- LOGIN MODAL -->
 <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content custom-login-modal">            
+        <div class="modal-content custom-login-modal">
+
             <div class="modal-body p-5">
                 <div class="login-panel">
+
                     <h2 class="login-title">LOGIN</h2>
-                    <form action="../app/middleware/loginLogic.php" method="POST">
-                        
+
+                    <form action="../app/controllers/auth/login.php" method="POST">
+
                         <div class="mb-2">
-                            <label class="form-label">Username</label>
-                            <div class="input-container ">
-                                <span class="input-icon"><i class="fa-regular fa-user"></i></span>
-                                <input type="text" placeholder="juandelacruz@gmail.com" name="email" class="custom-input" required>
+                            <label class="form-label">Email or Username</label>
+
+                            <div class="input-container">
+                                <span class="input-icon">
+                                    <i class="fa-regular fa-user"></i>
+                                </span>
+
+                                <input type="text"
+                                       name="login"
+                                       class="custom-input"
+                                       placeholder="Enter email or username"
+                                       required>
                             </div>
                         </div>
 
                         <div class="mb-2">
                             <label class="form-label">Password</label>
+
                             <div class="input-container">
-                                <span class="input-icon"><i class="fa-solid fa-key"></i></span>
-                                <input type="password" placeholder="Enter your password" name="password" class="custom-input" required>
+                                <span class="input-icon">
+                                    <i class="fa-solid fa-key"></i>
+                                </span>
+
+                                <input type="password"
+                                       name="password"
+                                       class="custom-input"
+                                       placeholder="Enter your password"
+                                       required>
                             </div>
                         </div>
 
-                        <div class="form-label mb-2">
-                            <a href="#" class="sub-link">Forgot Password?</a>
+                        <button type="submit" class="btn-login">Log In</button>
+
+                        <div class="text-center mt-3">
+                            <span class="footer-text">
+                                New User?
+                                <a href="/Pampeers/public/register.php" class="signup-link">Sign up now</a>
+                            </span>
                         </div>
 
-                        <button type="submit" class="btn-login">Log In</button>
-                        
-                        <div class="text-center mt-3 mb-2">
-                            <span class="footer-text">New User? <a href="/Pampeers/public/register.php" class="signup-link">Sign up now</a></span>
-                        </div>
                     </form>
+
                 </div>
             </div>
+
         </div>
     </div>
 </div>

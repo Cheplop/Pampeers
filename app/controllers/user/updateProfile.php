@@ -1,233 +1,149 @@
 <?php
-// Include the config file to connect to the database
 require_once __DIR__ . '/../../config/config.php';
-// Include the auth middleware to check if user is logged in
 require_once __DIR__ . '/../../middleware/auth.php';
 
-// Make sure user is logged in
 requireAuth();
 
-// Check if the request is a POST request, if not, redirect to edit profile
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /pampeers/public/user/editProfile.php');
+    header('Location: /Pampeers/public/editProfile.php');
     exit();
 }
 
-// Get the user ID from session
 $userId = $_SESSION['user_id'];
 
 /*
-|--------------------------------------------------------------------------
-// Collect and sanitize input from form
-|--------------------------------------------------------------------------
+|---------------------------------------
+| INPUTS
+|---------------------------------------
 */
-$firstName        = trim($_POST['firstName'] ?? ''); // User's first name
-$middleName       = trim($_POST['middleName'] ?? ''); // Middle name (optional)
-$lastName         = trim($_POST['lastName'] ?? ''); // Last name
-$suffix           = trim($_POST['suffix'] ?? ''); // Name suffix (optional)
-$birthDate        = trim($_POST['birthDate'] ?? ''); // Birth date
-$sex              = trim($_POST['sex'] ?? ''); // Gender
+$firstName        = trim($_POST['firstName'] ?? '');
+$middleName       = trim($_POST['middleName'] ?? '');
+$lastName         = trim($_POST['lastName'] ?? '');
+$suffix           = trim($_POST['suffix'] ?? '');
+$birthDate        = trim($_POST['birthDate'] ?? '');
+$sex              = trim($_POST['sex'] ?? '');
 
-$contactNumber    = trim($_POST['contactNumber'] ?? ''); // Phone number
-$emailAddress     = trim($_POST['emailAddress'] ?? ''); // Email address
-$usernameInput    = trim($_POST['username'] ?? ''); // Username
+$contactNumber    = trim($_POST['contactNumber'] ?? '');
 
-$streetAddress    = trim($_POST['streetAddress'] ?? ''); // Street address
-$barangay         = trim($_POST['barangay'] ?? ''); // Barangay
-$cityMunicipality = trim($_POST['cityMunicipality'] ?? ''); // City/Municipality
-$province         = trim($_POST['province'] ?? ''); // Province
-$country          = trim($_POST['country'] ?? ''); // Country
-$zipCode          = trim($_POST['zipCode'] ?? ''); // Zip code
+/* EMAIL IS IGNORED FOR SECURITY */
+$emailAddress     = ''; // DO NOT UPDATE EMAIL
+
+$usernameInput    = trim($_POST['username'] ?? '');
+
+$streetAddress    = trim($_POST['streetAddress'] ?? '');
+$barangay         = trim($_POST['barangay'] ?? '');
+$cityMunicipality = trim($_POST['cityMunicipality'] ?? '');
+$province         = trim($_POST['province'] ?? '');
+$country          = trim($_POST['country'] ?? '');
+$zipCode          = trim($_POST['zipCode'] ?? '');
 
 /*
-|--------------------------------------------------------------------------
-// Validate required fields - check if any are empty
-|--------------------------------------------------------------------------
+|---------------------------------------
+| VALIDATION
+|---------------------------------------
 */
-$requiredFields = [
-    'firstName'        => $firstName,
-    'lastName'         => $lastName,
-    'birthDate'        => $birthDate,
-    'sex'              => $sex,
-    'contactNumber'    => $contactNumber,
-    'emailAddress'     => $emailAddress,
-    'username'         => $usernameInput,
-    'streetAddress'    => $streetAddress,
-    'barangay'         => $barangay,
-    'cityMunicipality' => $cityMunicipality,
-    'province'         => $province,
-    'country'          => $country,
-    'zipCode'          => $zipCode,
+$required = [
+    $firstName, $lastName, $birthDate, $sex,
+    $contactNumber, $usernameInput,
+    $streetAddress, $barangay, $cityMunicipality,
+    $province, $country, $zipCode
 ];
 
-// Loop through required fields and redirect if any are empty
-foreach ($requiredFields as $field => $value) {
+foreach ($required as $value) {
     if ($value === '') {
-        header('Location: /pampeers/public/user/editProfile.php?error=missing_' . urlencode($field));
+        header('Location: /Pampeers/public/editProfile.php?error=missing_fields');
         exit();
     }
 }
 
-/*
-|--------------------------------------------------------------------------
-// Additional validation rules
-|--------------------------------------------------------------------------
-*/
-// Check if email is valid format
-if (!filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
-    header('Location: /pampeers/public/user/editProfile.php?error=invalid_email');
-    exit();
-}
-
-// Check if sex is one of allowed values
-$allowedSex = ['male', 'female', 'other'];
-if (!in_array(strtolower($sex), $allowedSex, true)) {
-    header('Location: /pampeers/public/user/editProfile.php?error=invalid_sex');
+if (!in_array(strtolower($sex), ['male', 'female', 'other'])) {
+    header('Location: /Pampeers/public/editProfile.php?error=invalid_sex');
     exit();
 }
 
 /*
-|--------------------------------------------------------------------------
-// Fetch current user data to get existing profile pic
-|--------------------------------------------------------------------------
+|---------------------------------------
+| GET CURRENT IMAGE
+|---------------------------------------
 */
-$currentStmt = $conn->prepare("
-    SELECT profilePic
-    FROM users
-    WHERE id = ?
-    LIMIT 1
-");
-// Bind user ID
-$currentStmt->bind_param("i", $userId);
-$currentStmt->execute();
-$currentResult = $currentStmt->get_result();
+$stmt = $conn->prepare("SELECT profilePic FROM users WHERE id = ?");
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$res = $stmt->get_result()->fetch_assoc();
+$stmt->close();
 
-// If user not found, redirect
-if ($currentResult->num_rows === 0) {
-    $currentStmt->close();
-    header('Location: /pampeers/public/login.php?error=user_not_found');
-    exit();
-}
-
-// Get current user data
-$currentUser = $currentResult->fetch_assoc();
-$currentStmt->close();
-
-// Set profile pic to current or default
-$profilePic = $currentUser['profilePic'] ?: 'default.jpg';
+$currentPic = $res['profilePic'] ?? 'default.jpg';
 
 /*
-|--------------------------------------------------------------------------
-// Check for duplicate email or username (excluding current user)
-|--------------------------------------------------------------------------
+|---------------------------------------
+| UPLOAD IMAGE
+|---------------------------------------
 */
-$duplicateStmt = $conn->prepare("
-    SELECT id
-    FROM users
-    WHERE (emailAddress = ? OR username = ?)
-      AND id != ?
-    LIMIT 1
-");
-// Bind email, username, and exclude current user ID
-$duplicateStmt->bind_param("ssi", $emailAddress, $usernameInput, $userId);
-$duplicateStmt->execute();
-$duplicateResult = $duplicateStmt->get_result();
+if (!empty($_FILES['profilePic']['name'])) {
 
-// If duplicate found, redirect with error
-if ($duplicateResult->num_rows > 0) {
-    $duplicateStmt->close();
-    header('Location: /pampeers/public/user/editProfile.php?error=account_exists');
-    exit();
-}
-$duplicateStmt->close();
+    $uploadDir = __DIR__ . '/../../../app/uploads/profiles/';
 
-/*
-|--------------------------------------------------------------------------
-// Handle optional profile picture upload
-|--------------------------------------------------------------------------
-*/
-if (isset($_FILES['profilePic']) && $_FILES['profilePic']['error'] === UPLOAD_ERR_OK) {
-    // Set upload directory
-    $uploadDir = __DIR__ . '/../../uploads/profiles/';
-
-    // Create directory if it doesn't exist
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
 
-    // Get file details
-    $originalName  = $_FILES['profilePic']['name'];
-    $tmpName       = $_FILES['profilePic']['tmp_name'];
-    $fileSize      = $_FILES['profilePic']['size'];
-    $fileExtension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+    $fileName = $_FILES['profilePic']['name'];
+    $tmp      = $_FILES['profilePic']['tmp_name'];
+    $size     = $_FILES['profilePic']['size'];
+    $ext      = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-    // Check allowed file types
-    $allowedTypes = ['jpg', 'jpeg', 'png', 'webp'];
+    $allowed = ['jpg','jpeg','png','webp'];
 
-    if (!in_array($fileExtension, $allowedTypes, true)) {
-        header('Location: /pampeers/public/user/editProfile.php?error=invalid_image_type');
+    if (!in_array($ext, $allowed)) {
+        header('Location: /Pampeers/public/editProfile.php?error=invalid_image');
         exit();
     }
 
-    // Check file size (max 5MB)
-    if ($fileSize > 5 * 1024 * 1024) {
-        header('Location: /pampeers/public/user/editProfile.php?error=image_too_large');
+    if ($size > 5 * 1024 * 1024) {
+        header('Location: /Pampeers/public/editProfile.php?error=image_too_large');
         exit();
     }
 
-    // Generate unique filename
-    $newFileName = time() . '_' . bin2hex(random_bytes(8)) . '.' . $fileExtension;
-    $targetPath = $uploadDir . $newFileName;
+    $newName = time() . '_' . bin2hex(random_bytes(6)) . '.' . $ext;
+    $target  = $uploadDir . $newName;
 
-    // Move uploaded file
-    if (!move_uploaded_file($tmpName, $targetPath)) {
-        header('Location: /pampeers/public/user/editProfile.php?error=upload_failed');
-        exit();
+    if (move_uploaded_file($tmp, $target)) {
+
+        if ($currentPic !== 'default.jpg' && file_exists($uploadDir . $currentPic)) {
+            unlink($uploadDir . $currentPic);
+        }
+
+        $currentPic = $newName;
     }
-
-    // Delete old profile pic if it exists and isn't default
-    if (
-        !empty($profilePic) &&
-        $profilePic !== 'default.jpg' &&
-        file_exists($uploadDir . $profilePic)
-    ) {
-        unlink($uploadDir . $profilePic);
-    }
-
-    // Set new profile pic filename
-    $profilePic = $newFileName;
 }
 
 /*
-|--------------------------------------------------------------------------
-// Update user profile in database
-|--------------------------------------------------------------------------
+|---------------------------------------
+| UPDATE USER
+|---------------------------------------
 */
-$updateStmt = $conn->prepare("
-    UPDATE users
-    SET
-        firstName = ?,
-        middleName = ?,
-        lastName = ?,
-        suffix = ?,
-        birthDate = ?,
-        sex = ?,
-        contactNumber = ?,
-        emailAddress = ?,
-        username = ?,
-        streetAddress = ?,
-        barangay = ?,
-        cityMunicipality = ?,
-        province = ?,
-        country = ?,
-        zipCode = ?,
-        profilePic = ?
-    WHERE id = ?
+$update = $conn->prepare("
+UPDATE users SET
+    firstName=?,
+    middleName=?,
+    lastName=?,
+    suffix=?,
+    birthDate=?,
+    sex=?,
+    contactNumber=?,
+    username=?,
+    streetAddress=?,
+    barangay=?,
+    cityMunicipality=?,
+    province=?,
+    country=?,
+    zipCode=?,
+    profilePic=?
+WHERE id=?
 ");
 
-// Bind all the parameters
-$updateStmt->bind_param(
-    "ssssssssssssssssi",
+$update->bind_param(
+    "sssssssssssssssi",
     $firstName,
     $middleName,
     $lastName,
@@ -235,7 +151,6 @@ $updateStmt->bind_param(
     $birthDate,
     $sex,
     $contactNumber,
-    $emailAddress,
     $usernameInput,
     $streetAddress,
     $barangay,
@@ -243,24 +158,20 @@ $updateStmt->bind_param(
     $province,
     $country,
     $zipCode,
-    $profilePic,
+    $currentPic,
     $userId
 );
 
-// If update succeeds, update session and redirect
-if ($updateStmt->execute()) {
-    $updateStmt->close();
+if ($update->execute()) {
+    $update->close();
 
-    // Update session with new name
-    $_SESSION['first_name'] = $firstName;
-    $_SESSION['last_name']  = $lastName;
+    $_SESSION['username'] = $usernameInput;
 
-    header('Location: /pampeers/public/user/dashboard.php?update=success');
+    header('Location: /Pampeers/public/profile.php?update=success');
     exit();
 }
 
-// If failed, close statement and redirect with error
-$updateStmt->close();
-header('Location: /pampeers/public/user/editProfile.php?error=update_failed');
+$update->close();
+
+header('Location: /Pampeers/public/editProfile.php?error=update_failed');
 exit();
-?>

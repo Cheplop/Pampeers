@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../config/config.php';
 
 // Check if the request is a POST request, if not, redirect to register page
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /pampeers/public/register.php');
+    header('Location: /Pampeers/public/register.php');
     exit();
 }
 
@@ -73,7 +73,7 @@ $requiredFields = [
 foreach ($requiredFields as $field => $value) {
     if ($value === '') {
         // Redirect with error for the missing field
-        header('Location: /pampeers/public/register.php?error=missing_' . urlencode($field));
+        header('Location: /Pampeers/public/register.php?error=missing_' . urlencode($field));
         exit();
     }
 }
@@ -85,20 +85,20 @@ foreach ($requiredFields as $field => $value) {
 */
 // Check if email is valid format
 if (!filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
-    header('Location: /pampeers/public/register.php?error=invalid_email');
+    header('Location: /Pampeers/public/register.php?error=invalid_email');
     exit();
 }
 
 // Check if sex is one of the allowed values
 $allowedSex = ['male', 'female', 'other'];
 if (!in_array(strtolower($sex), $allowedSex, true)) {
-    header('Location: /pampeers/public/register.php?error=invalid_sex');
+    header('Location: /Pampeers/public/register.php?error=invalid_sex');
     exit();
 }
 
 // Check if password is at least 8 characters
 if (strlen($plainPassword) < 8) {
-    header('Location: /pampeers/public/register.php?error=weak_password');
+    header('Location: /Pampeers/public/register.php?error=weak_password');
     exit();
 }
 
@@ -116,7 +116,7 @@ $checkResult = $checkStmt->get_result();
 // If any result found, account already exists
 if ($checkResult->num_rows > 0) {
     $checkStmt->close();
-    header('Location: /pampeers/public/register.php?error=account_exists');
+    header('Location: /Pampeers/public/register.php?error=account_exists');
     exit();
 }
 $checkStmt->close();
@@ -186,12 +186,12 @@ $insertStmt->bind_param(
 // If insert succeeds, redirect to login with success message
 if ($insertStmt->execute()) {
     $insertStmt->close();
-    header('Location: /pampeers/public/login.php?registration=success');
+    header('Location: /Pampeers/public/login.php?registration=success');
     exit();
 }
 
 // If insert failed, redirect with error
 $insertStmt->close();
-header('Location: /pampeers/public/register.php?error=registration_failed');
+header('Location: /Pampeers/public/register.php?error=registration_failed');
 exit();
 ?>

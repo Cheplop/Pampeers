@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.2deb1+deb13u1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Apr 10, 2026 at 08:48 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Host: localhost:3306
+-- Generation Time: May 02, 2026 at 03:40 AM
+-- Server version: 11.8.6-MariaDB-0+deb13u1 from Debian
+-- PHP Version: 8.4.16
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -39,39 +39,6 @@ CREATE TABLE `bookings` (
   `totalAmount` decimal(10,2) DEFAULT NULL,
   `status` enum('pending','accepted','declined','completed','cancelled') NOT NULL DEFAULT 'pending',
   `notes` text DEFAULT NULL,
-  `createdAt` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `messages`
---
-
-CREATE TABLE `messages` (
-  `messageID` int(11) NOT NULL,
-  `uuid` char(36) NOT NULL,
-  `senderID` int(11) NOT NULL,
-  `receiverID` int(11) NOT NULL,
-  `bookingID` int(11) DEFAULT NULL,
-  `messageText` text NOT NULL,
-  `sentAt` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `payments`
---
-
-CREATE TABLE `payments` (
-  `paymentID` int(11) NOT NULL,
-  `uuid` char(36) NOT NULL,
-  `bookingID` int(11) NOT NULL,
-  `amount` decimal(10,2) NOT NULL,
-  `paymentMethod` enum('cash','gcash','paymaya','card','bank') NOT NULL,
-  `paymentStatus` enum('pending','paid','failed','refunded') NOT NULL DEFAULT 'pending',
-  `paymentDate` datetime DEFAULT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -126,7 +93,7 @@ CREATE TABLE `users` (
   `suffix` varchar(10) DEFAULT NULL,
   `birthDate` date NOT NULL,
   `sex` enum('male','female','other') NOT NULL,
-  `role` enum('user','admin') NOT NULL DEFAULT 'user',
+  `role` enum('guardian','sitter','admin') NOT NULL DEFAULT 'guardian',
   `contactNumber` varchar(20) NOT NULL,
   `emailAddress` varchar(150) NOT NULL,
   `username` varchar(100) NOT NULL,
@@ -138,8 +105,17 @@ CREATE TABLE `users` (
   `country` varchar(255) NOT NULL,
   `zipCode` char(10) NOT NULL,
   `dateCreated` timestamp NOT NULL DEFAULT current_timestamp(),
-  `profilePic` varchar(255) NOT NULL DEFAULT 'default.jpg'
+  `profilePic` varchar(255) NOT NULL DEFAULT 'default.jpg',
+  `isActive` tinyint(1) NOT NULL DEFAULT 1,
+  `deactivatedAt` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `uuid`, `firstName`, `middleName`, `lastName`, `suffix`, `birthDate`, `sex`, `role`, `contactNumber`, `emailAddress`, `username`, `password`, `streetAddress`, `barangay`, `cityMunicipality`, `province`, `country`, `zipCode`, `dateCreated`, `profilePic`, `isActive`, `deactivatedAt`) VALUES
+(1, '22951542-4596-11f1-8ef7-d822244c147e', 'Sean', NULL, 'Torres', NULL, '2005-12-29', 'male', 'guardian', '0912 345 67889', 'sean@gmail.com', 'seanex', '$2y$12$yv4Rg3TArLLCjSR6CCRw5OWEKHyFyANk13EuKZoBEG/vuijeJkJBu', 'Parola', 'Macabalan', 'Cagayan de Oro', 'Misamis Oriental', 'Philippines', '9000', '2026-05-02 03:09:32', 'default.jpg', 1, NULL);
 
 --
 -- Indexes for dumped tables
@@ -153,24 +129,6 @@ ALTER TABLE `bookings`
   ADD UNIQUE KEY `uuid` (`uuid`),
   ADD KEY `fk_bookings_user` (`userID`),
   ADD KEY `fk_bookings_sitter` (`sitterID`);
-
---
--- Indexes for table `messages`
---
-ALTER TABLE `messages`
-  ADD PRIMARY KEY (`messageID`),
-  ADD UNIQUE KEY `uuid` (`uuid`),
-  ADD KEY `fk_messages_sender` (`senderID`),
-  ADD KEY `fk_messages_receiver` (`receiverID`),
-  ADD KEY `fk_messages_booking` (`bookingID`);
-
---
--- Indexes for table `payments`
---
-ALTER TABLE `payments`
-  ADD PRIMARY KEY (`paymentID`),
-  ADD UNIQUE KEY `uuid` (`uuid`),
-  ADD KEY `fk_payments_booking` (`bookingID`);
 
 --
 -- Indexes for table `reviews`
@@ -210,18 +168,6 @@ ALTER TABLE `bookings`
   MODIFY `bookingID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `messages`
---
-ALTER TABLE `messages`
-  MODIFY `messageID` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `payments`
---
-ALTER TABLE `payments`
-  MODIFY `paymentID` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
@@ -237,7 +183,7 @@ ALTER TABLE `sitters`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
@@ -249,20 +195,6 @@ ALTER TABLE `users`
 ALTER TABLE `bookings`
   ADD CONSTRAINT `fk_bookings_sitter` FOREIGN KEY (`sitterID`) REFERENCES `sitters` (`sitterID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_bookings_user` FOREIGN KEY (`userID`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `messages`
---
-ALTER TABLE `messages`
-  ADD CONSTRAINT `fk_messages_booking` FOREIGN KEY (`bookingID`) REFERENCES `bookings` (`bookingID`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_messages_receiver` FOREIGN KEY (`receiverID`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_messages_sender` FOREIGN KEY (`senderID`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `payments`
---
-ALTER TABLE `payments`
-  ADD CONSTRAINT `fk_payments_booking` FOREIGN KEY (`bookingID`) REFERENCES `bookings` (`bookingID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `reviews`

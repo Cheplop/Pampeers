@@ -23,61 +23,149 @@ body {
     margin: 0;
 }
 
-/* --- 3. SEARCH BAR --- */
+/* --- 3. SEARCH BAR (UPGRADED - AIRBNB STYLE) --- */
+
 .search-bar {
+    background: #ffffff;
+    border-radius: 50px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    padding: 8px 8px 8px 24px;
+    max-width: 780px;
     width: 100%;
-    max-width: 450px;
-    height: 55px;
-    background: #fff;
-    border: 1px solid black;
-    border-radius: 40px;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: 0.2s ease;
+    border: 1.5px solid #f0ece8;
+    transition: box-shadow 0.25s;
 }
 
 .search-bar:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    box-shadow: 0 6px 32px rgba(0,0,0,0.14);
 }
 
+/* layout */
 .search-labels {
+    flex: 1;
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex-grow: 1;
-    justify-content: center;
+    gap: 12px;
+    overflow: hidden;
 }
 
-.search-bar span {
-    font-size: 18px;
-    font-weight: 550;
+/* each input group */
+.field-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    padding: 4px 12px 4px 0;
+}
+
+/* labels */
+.field-group label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #aaa;
+    margin-bottom: 2px;
+}
+
+/* inputs */
+.field-group input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #2d2d2d;
+    width: 100%;
+}
+
+.field-group input::placeholder {
+    color: #bbb;
+    font-weight: 400;
+}
+
+.field-group input:focus {
     color: black;
-    cursor: pointer;
 }
 
-.divider {
+/* divider (ONLY inside search bar) */
+.search-bar .divider {
     width: 1px;
-    height: 18px;
-    background: black;
+    height: 36px;
+    background: #e8e2dc;
+    flex-shrink: 0;
 }
 
-.search-btn {
-    width: 45px;
-    height: 35px;
+/* search button (isolated) */
+.search-bar .search-btn {
     background: #F0F8FF;
-    border: 1px solid black;
-    border-radius: 18px;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: 0.2s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255,107,107,0.4);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.search-bar .search-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 18px rgba(255,107,107,0.5);
+}
+
+.search-bar .search-btn:active {
+    transform: scale(0.96);
+}
+
+.search-bar .search-btn img {
+    filter: brightness(0) invert(1);
+    width: 18px;
+}
+
+/* error message */
+.error-msg {
+    color: #e05252;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-top: 10px;
+    text-align: center;
+    display: none;
 }
 
 /* --- 4. BUTTONS & PROFILE --- */
+.dropdown{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    text-decoration: none;
+    color: #666;
+    background-color: #F0F8FF;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropdown a{
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+}
+
+.dropdown:active,
+.dropdown:focus,
+.dropdown:hover {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.dropdown .btn:focus {
+    outline: none;
+    border: none;
+}
 
 .signup-btn{
     font-size: 15px;
@@ -93,10 +181,9 @@ body {
 
 .signup-btn:hover {
     background-color: #F0F8FF;
-
 }
 
-.logout-btn, .login-btn {
+.login-btn{
     font-size: 15px;
     font-weight: bold;
     color: black;
@@ -108,7 +195,11 @@ body {
     transition: 0.2s ease;
 }
 
-.logout-btn:hover, .login-btn:hover, .search-btn:hover {
+.login-btn:hover {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.search-btn:hover {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
@@ -140,19 +231,20 @@ body {
     display: flex;
     gap: 20px;
     overflow-x: auto;
-    padding: 10px 20px;
+    padding: 5px 0;
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
-    align-items: flex-start;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .carousel-wrapper::-webkit-scrollbar {
-    display: none; /* Hides scrollbar for Chrome/Safari */
+    display: none;
 }
 
 .carousel-card {
     flex: 0 0 auto;
-    width: 250px;
+    width: 228px;
     scroll-snap-align: start;
 }
 
@@ -171,7 +263,6 @@ body {
     transform: scale(1.03);
 }
 
-/* Card Image System */
 .card-img-container {
     position: relative;
     width: 100%;
@@ -191,19 +282,13 @@ body {
     top: 8px;
     right: 8px;
     z-index: 10;
-    
-    /* --- Glass Effect --- */
-    background: rgba(255, 255, 255, 0.3); /* Lower alpha for transparency */
-    backdrop-filter: blur(8px);           /* The frost effect */
-    -webkit-backdrop-filter: blur(8px);   /* Safari support */
-    border: 1px solid rgba(255, 255, 255, 0.4); /* Thin glass edge */
-    
-    /* --- Shape & Size --- */
-    border-radius: 12px; /* This makes it a "pill" or rounded square */
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
     width: 32px;
     height: 32px;
-    
-    /* --- Alignment & Feel --- */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -216,17 +301,16 @@ body {
     background: rgba(255, 255, 255, 0.5);
     transform: scale(1.1);
 }
+
 .like-btn i {
     color: #ffe6e6;
     font-size: 16px;
 }
 
-/* Ensure the solid heart is red */
 .like-btn i.fa-solid {
     color: #ff4d4d;
 }
 
-/* The Pop Animation */
 .heart-pop {
     animation: pulse 0.3s linear;
 }
@@ -237,12 +321,6 @@ body {
     100% { transform: scale(1); }
 }
 
-/* Optional: Make the button look better when active/clicked */
-.like-btn:active {
-    background-color: #ffe6e6;
-}
-
-/* Card Typography */
 .small-card h6 {
     margin: 12px 0 2px;
     font-size: 18px;
@@ -261,23 +339,20 @@ body {
     margin: 0;
 }
 
-/* --- 6. MODALS & LOGIN --- */
-
-/* Modal Container */
+/* --- 6. MODALS --- */
 .custom-login-modal {
     background-color: #FFFDF7; 
     border-radius: 60px;
-    width: 500px; /* Adjusted width to look more like the screenshot */
-    height: auto; /* Changed from 500px to auto */
+    width: 500px;
+    height: auto;
     border: none;
     box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2);
     position: relative;
-    overflow: hidden; /* Ensures the corners stay smooth */
+    overflow: hidden;
 }
 
-/* Modal Body */
 .custom-login-modal .modal-body {
-    padding: 60px 50px 40px 50px !important; 
+    padding: 60px 50px 40px 50px !important;
 }
 
 /* Title Style */
@@ -365,21 +440,38 @@ body {
     font-weight: 500;
 }
 
-/* --- 7. MOBILE RESPONSIVENESS --- */
+/* --- CAROUSEL ARROWS (RESTORED) --- */
+
+.arrow-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.arrow-btn {
+    background: #F0F8FF;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.arrow-btn:hover {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transform: scale(1.1);
+}
+
+/* --- 7. MOBILE --- */
 @media (max-width: 768px) {
     .section-title { margin-left: 20px; }
-    
     .brand { font-size: 18px; }
-    
     .search-bar { width: 100%; height: 50px; }
-    
-    .search-bar span { font-size: 14px; min-width: auto; }
-
-    .carousel-card {
-        width: 180px;
-    }
-    
-    .card-img-container {
-        height: 140px;
-    }
+    .carousel-card { width: 180px; }
+    .card-img-container { height: 140px; }
 }

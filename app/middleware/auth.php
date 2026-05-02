@@ -8,7 +8,7 @@ function requireAuth(): void
     // If user_id is not set in session, they are not logged in
     if (!isset($_SESSION['user_id'])) {
         // Redirect to login page with error message
-        header('Location: /pampeers/public/login.php?error=login_required');
+        header('Location: /Pampeers/public/login.php?error=login_required');
         exit();
     }
 }
@@ -22,7 +22,7 @@ function requireRole(string $role): void
     // Check if the user's role matches the required role
     if (!isset($_SESSION['role']) || $_SESSION['role'] !== $role) {
         // If not, redirect to login with unauthorized error
-        header('Location: /pampeers/public/login.php?error=unauthorized');
+        header('Location: /Pampeers/public/login.php?error=unauthorized');
         exit();
     }
 }

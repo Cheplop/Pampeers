@@ -1,25 +1,25 @@
 <?php
-// Include the config file for database connection
-require_once __DIR__ . '/../../config/config.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-/*
-|--------------------------------------------------------------------------
-// Clear and destroy the user's session
-|--------------------------------------------------------------------------
-*/
-// Empty the session array
+// Clear all session data
 $_SESSION = [];
 
-// Unset all session variables
-session_unset();
-// Destroy the session
+// Destroy session cookie (important)
+if (ini_get("session.use_cookies")) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"],
+        $params["domain"],
+        $params["secure"],
+        $params["httponly"]
+    );
+}
+
+// Destroy session
 session_destroy();
 
-/*
-|--------------------------------------------------------------------------
-// Redirect to login page with success message
-|--------------------------------------------------------------------------
-*/
-header('Location: /pampeers/public/login.php?logout=success');
+// ALWAYS redirect to guest dashboard
+header("Location: /Pampeers/public/guestDashboard.php");
 exit();
-?>

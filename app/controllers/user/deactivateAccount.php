@@ -9,7 +9,7 @@ requireAuth();
 
 // Check if the request is a POST request, if not, redirect to dashboard
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /pampeers/public/user/dashboard.php');
+    header('Location: /Pampeers/public/user/dashboard.php');
     exit();
 }
 
@@ -34,12 +34,12 @@ if ($stmt->execute()) {
     session_unset();
     session_destroy();
 
-    header('Location: /pampeers/public/login.php?account=deactivated');
+    header('Location: /Pampeers/public/login.php?account=deactivated');
     exit();
 }
 
 // If failed, close statement and redirect with error
 $stmt->close();
-header('Location: /pampeers/public/user/dashboard.php?error=deactivate_failed');
+header('Location: /Pampeers/public/user/dashboard.php?error=deactivate_failed');
 exit();
 ?>

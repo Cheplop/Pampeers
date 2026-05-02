@@ -9,7 +9,7 @@ requireRole('admin');
 
 // Check if the request is a POST request, if not, redirect to admin dashboard
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /pampeers/public/admin/dashboard.php');
+    header('Location: /Pampeers/public/admin/dashboard.php');
     exit();
 }
 
@@ -18,7 +18,7 @@ $targetUserId = (int)($_POST['userID'] ?? 0);
 
 // If the user ID is not valid (less than or equal to 0), redirect with error
 if ($targetUserId <= 0) {
-    header('Location: /pampeers/public/admin/dashboard.php?error=invalid_user');
+    header('Location: /Pampeers/public/admin/dashboard.php?error=invalid_user');
     exit();
 }
 
@@ -34,12 +34,12 @@ $stmt->bind_param("i", $targetUserId);
 // If the update succeeds, close the statement and redirect with success message
 if ($stmt->execute()) {
     $stmt->close();
-    header('Location: /pampeers/public/admin/dashboard.php?success=user_reactivated');
+    header('Location: /Pampeers/public/admin/dashboard.php?success=user_reactivated');
     exit();
 }
 
 // If update failed, close statement and redirect with error
 $stmt->close();
-header('Location: /pampeers/public/admin/dashboard.php?error=reactivate_failed');
+header('Location: /Pampeers/public/admin/dashboard.php?error=reactivate_failed');
 exit();
 ?>

@@ -48,7 +48,7 @@ if ($userResult->num_rows === 0) {
     session_destroy();
     // Show message and redirect to guestDashboard after 3 seconds
     echo '<!DOCTYPE html><html><head>';
-    echo '<meta http-equiv="refresh" content="3;url=/pampeers/public/guestDashboard.php">';
+    echo '<meta http-equiv="refresh" content="3;url=/Pampeers/public/guestDashboard.php">';
     echo '<title>User Not Found</title></head><body>';
     echo '<h2>User not found. Redirecting to guest dashboard...</h2>';
     echo '</body></html>';
@@ -63,7 +63,7 @@ $userStmt->close();
 if ((int)$user['isActive'] !== 1) {
     session_unset();
     session_destroy();
-    header('Location: /pampeers/public/login.php?error=account_deactivated');
+    header('Location: /Pampeers/public/login.php?error=account_deactivated');
     exit();
 }
 
