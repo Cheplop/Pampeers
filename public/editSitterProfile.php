@@ -61,7 +61,7 @@ $sitter = getSitter($conn, $userId);
         </div>
 
         <button class="btn btn-primary">Save</button>
-        <a href="/Pampeers/public/profile.php" class="btn btn-secondary">Back</a>
+        <a href="../sitterProfile.php" class="btn btn-secondary">Back</a>
 
     </form>
 

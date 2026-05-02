@@ -2,28 +2,36 @@
 
 /*
 |--------------------------------------------------------------------------
+| GET SITTER DATA
+|--------------------------------------------------------------------------
+*/
+function getSitter(mysqli $conn, int $userId)
+{
+    $stmt = $conn->prepare("
+        SELECT s.*, u.*
+        FROM sitters s
+        JOIN users u ON s.userID = u.id
+        WHERE u.id = ?
+        LIMIT 1
+    ");
+
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_assoc();
+}
+
+/*
+|--------------------------------------------------------------------------
 | CHECK IF USER IS A SITTER
 |--------------------------------------------------------------------------
 */
 function isSitter(mysqli $conn, int $userId): bool
 {
-    // check role first
-    $stmt = $conn->prepare("SELECT role FROM users WHERE id = ? LIMIT 1");
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-    $user = $stmt->get_result()->fetch_assoc();
-
-    if (($user['role'] ?? '') === 'admin') {
-        return false; // admin is NEVER sitter
-    }
-
-    // then check sitters table
     $stmt = $conn->prepare("
-        SELECT sitterID 
-        FROM sitters 
-        WHERE userID = ? 
-        LIMIT 1
+        SELECT 1 FROM sitters WHERE userID = ? LIMIT 1
     ");
+
     $stmt->bind_param("i", $userId);
     $stmt->execute();
 
@@ -32,27 +40,7 @@ function isSitter(mysqli $conn, int $userId): bool
 
 /*
 |--------------------------------------------------------------------------
-| GET SITTER DATA
-|--------------------------------------------------------------------------
-*/
-function getSitter(mysqli $conn, int $userId): ?array
-{
-    $stmt = $conn->prepare("
-        SELECT *
-        FROM sitters
-        WHERE userID = ?
-        LIMIT 1
-    ");
-
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-
-    return $stmt->get_result()->fetch_assoc() ?: null;
-}
-
-/*
-|--------------------------------------------------------------------------
-| CHECK IF VERIFIED SITTER
+| CHECK IF VERIFIED
 |--------------------------------------------------------------------------
 */
 function isVerifiedSitter(mysqli $conn, int $userId): bool
@@ -74,7 +62,7 @@ function isVerifiedSitter(mysqli $conn, int $userId): bool
 
 /*
 |--------------------------------------------------------------------------
-| CHECK IF PENDING SITTER
+| CHECK IF PENDING
 |--------------------------------------------------------------------------
 */
 function isPendingSitter(mysqli $conn, int $userId): bool
@@ -92,45 +80,4 @@ function isPendingSitter(mysqli $conn, int $userId): bool
     $row = $stmt->get_result()->fetch_assoc();
 
     return ($row['verificationStatus'] ?? '') === 'pending';
-}
-
-/*
-|--------------------------------------------------------------------------
-| CAN ACCESS SITTER FEATURES
-| RULE: ONLY VERIFIED CAN ACCESS SITTER DASHBOARD FEATURES
-|--------------------------------------------------------------------------
-*/
-function canAccessSitterFeatures(mysqli $conn, int $userId): bool
-{
-    $stmt = $conn->prepare("
-        SELECT verificationStatus
-        FROM sitters
-        WHERE userID = ?
-        LIMIT 1
-    ");
-
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-
-    $row = $stmt->get_result()->fetch_assoc();
-
-    return ($row['verificationStatus'] ?? '') === 'verified';
-}
-
-/*
-|--------------------------------------------------------------------------
-| GET DASHBOARD ROUTE (FIXED LOGIC)
-|--------------------------------------------------------------------------
-*/
-function getDashboardRoute(mysqli $conn, int $userId, string $role): string
-{
-    if ($role === 'admin') {
-        return '/Pampeers/public/admin/adminDashboard.php';
-    }
-
-    if ($role === 'sitter') {
-        return '/Pampeers/public/sitter/sitterDashboard.php';
-    }
-
-    return '/Pampeers/public/guardian/guardianDashboard.php';
 }
