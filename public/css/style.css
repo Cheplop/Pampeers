@@ -1,135 +1,496 @@
-/* ===== Base ===== */
-html, body {
-    height: 100%;
+/* =============================================================
+   dashboard.css — Pampeers Guardian Dashboard
+   Linked from: dashboard.php via <link rel="stylesheet" href="../css/dashboard.css">
+
+   Structure of this file:
+   1.  CSS Variables (colour palette & shared values)
+   2.  Global / Reset
+   3.  Header & Nav
+   4.  Brand Logo
+   5.  Search Bar
+   6.  Profile & Right-side Controls
+   7.  Dropdown Menu
+   8.  Main Content Area
+   9.  Section Titles & Arrow Controls
+   10. Carousel Wrapper
+   11. Sitter Cards
+   12. Like Button & Heart Animation
+   13. Responsive (mobile tweaks)
+============================================================= */
+
+
+/* -------------------------------------------------------------
+   1. CSS VARIABLES
+   Define all colours and reused values in one place.
+   To change the accent colour across the whole app,
+   just edit --color-accent here — nowhere else.
+------------------------------------------------------------- */
+:root {
+    --color-bg:         #fdf6f0;   /* warm off-white page background */
+    --color-white:      #ffffff;
+    --color-accent:     #ff6b6b;   /* coral/pink — buttons, highlights */
+    --color-accent-2:   #ff8e53;   /* orange — used in gradients */
+    --color-text:       #2d2d2d;   /* main body text */
+    --color-muted:      #888888;   /* secondary / placeholder text */
+    --color-border:     #f0ece8;   /* subtle borders */
+    --color-divider:    #e8e2dc;   /* divider lines inside search bar */
+
+    --radius-pill:      50px;      /* pill / rounded-bar shape */
+    --radius-card:      16px;      /* babysitter cards */
+    --radius-circle:    50%;       /* avatar circles */
+
+    --shadow-soft:      0 4px 24px rgba(0, 0, 0, 0.09);
+    --shadow-card:      0 2px 12px rgba(0, 0, 0, 0.07);
+    --shadow-btn:       0 4px 12px rgba(255, 107, 107, 0.40);
+
+    --header-height:    64px;
+    --font-brand:       'Ribeye', cursive;
+    --font-body:        'Poppins', sans-serif;
+}
+
+
+/* -------------------------------------------------------------
+   2. GLOBAL / RESET
+------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--color-bg);
+    color: var(--color-text);
     margin: 0;
-    font-family: 'Poppins', sans-serif;
+    padding: 0;
 }
 
-.main-container .row {
-    min-height: 100vh; /* full viewport height */
+
+/* -------------------------------------------------------------
+   3. HEADER & NAV CONTAINER
+   sticky-top (Bootstrap) keeps it visible while scrolling.
+------------------------------------------------------------- */
+.custom-header {
+    background: var(--color-white);
+    border-bottom: 1px solid var(--color-border);
+    height: var(--header-height);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    z-index: 1000;
 }
 
-/* ===== LEFT SIDE HERO ===== */
-.left-side {
-    position: relative;             /* allows background overlay */
-    color: white;
+.nav-container {
+    height: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 16px;
+    gap: 16px;
+}
+
+
+/* -------------------------------------------------------------
+   4. BRAND LOGO
+------------------------------------------------------------- */
+.logo-img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.brand {
+    font-family: var(--font-brand);
+    font-size: 1.3rem;
+    color: var(--color-accent);
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+
+/* -------------------------------------------------------------
+   5. SEARCH BAR
+   Keeps your exact class names (.search-bar, .search-labels,
+   .divider, .search-btn) and just applies styling.
+------------------------------------------------------------- */
+.search-bar {
+    background: var(--color-white);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-soft);
+    padding: 6px 6px 6px 20px;
+    max-width: 480px;
+    width: 100%;
+    flex: 1;                    /* grow to fill available header space */
+    transition: box-shadow 0.25s;
+}
+
+.search-bar:hover {
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.13);
+}
+
+/* The row that holds the three labels/inputs */
+.search-labels {
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Each label text ("Where", "When", "Who") */
+.search-labels span {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.search-labels span:hover {
+    color: var(--color-accent);
+}
+
+/* Thin vertical line between the three labels */
+.divider {
+    width: 1px;
+    height: 20px;
+    background: var(--color-divider);
+    flex-shrink: 0;
+}
+
+/* The coral search button on the right */
+.search-btn {
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+    border: none;
+    border-radius: var(--radius-circle);
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
     display: flex;
-    flex-direction: column;         /* stack logo + h1 + p vertically */
-    justify-content: start;        /* vertical centering */
-    align-items: flex-start;        /* push content to left side */
-    padding: 1.5rem;
-    min-height: 100vh;
-    text-align: left;
-    overflow: visible;
-    z-index: 1;                     /* ensures content is above background */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-btn);
+    transition: transform 0.15s, box-shadow 0.15s;
 }
 
-.my-background { 
-    position: absolute;             /* covers entire column */
-    top: 0px;
-    left: 0;
+.search-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 18px rgba(255, 107, 107, 0.50);
+}
+
+.search-btn:active {
+    transform: scale(0.95);
+}
+
+/* Make the search icon white */
+.search-btn img {
+    filter: brightness(0) invert(1);
+}
+
+
+/* -------------------------------------------------------------
+   6. PROFILE & RIGHT-SIDE CONTROLS
+------------------------------------------------------------- */
+.right-side-p {
+    flex-shrink: 0;  /* don't compress on smaller screens */
+}
+
+/* Remove default button link underline/padding */
+.right-side-p .btn-link {
+    padding: 0;
+    text-decoration: none;
+    border: none;
+    background: none;
+}
+
+.profile-wrapper {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-circle);
+    overflow: hidden;
+    border: 2px solid var(--color-border);
+    transition: border-color 0.2s;
+}
+
+.profile-wrapper:hover {
+    border-color: var(--color-accent);
+}
+
+.profile-img {
     width: 100%;
     height: 100%;
-    background-image: url("../../app/uploads/babysit.jpg");
-    background-size: cover;
-    background-position: center;
-    filter: brightness(50%);        /* dark overlay */
-    z-index: 0;                     /* behind content */
+    object-fit: cover;
 }
 
-.hero-content {
-    position: relative;
-    z-index: 1;                     /* content sits above background */
-}
 
-.left-side ul {
-    z-index: 1;
-    font-weight: 100;
-    color: white;
-    padding: 0.5rem;
-}
-
-.logo {
-    width: 80px;                     /* responsive size */
-}
-
-.left-side h1 {
-    font-family: 'Ribeye';
-    font-size: 2.5rem;
-    margin-bottom: 0;
-}
-
-.left-side p {
-    font-size: 14px;
-    max-width: 400px;
-    margin-top: 0rem;
-
-}
-
-/* ===== LOGIN PANEL ===== */
-
-#staticBackdrop .modal-body {
-    padding: 1rem;
-    background-color: #FFFDF7;
-    min-height: 100vh;
-    /* box-shadow: inset 10px 0 10px -5px rgba(0,0,0,0.5); */ 
-    overflow: hidden;
-    z-index: 0;
-}
-
-.login-panel {
-    width: 100%;
-    max-width: 350px;
-    padding: 2rem;
-    border-radius: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    background-color: #FFFDF7;
-    display: flex;
-    flex-direction: column;
-}
-
-.login-panel input,
-.lospan{
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-
-}
-
-.login-panel button {
+/* -------------------------------------------------------------
+   7. DROPDOWN MENU
+------------------------------------------------------------- */
+.dropdown .btn {
+    color: var(--color-text);
     font-size: 1rem;
-    border-radius: 10px;
-    color: black;
-    font-weight: bold;
-    background-color: #AAC4F5;
-    border: none;
-    padding: 0.5rem;
-    margin-top: 1rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 6px 10px;
 }
 
-.login-panel button:hover {
-    background-color: #8CA9FF;
-    transform: translateY(1px);
-    box-shadow: 0 2px 0 #92addb;
+.dropdown-menu {
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    box-shadow: var(--shadow-soft);
+    padding: 6px;
+    min-width: 160px;
 }
 
-.login-panel h4 {
-    text-align: start;
-    font-weight: bold;
-    margin-bottom: 1rem;
+.dropdown-item {
+    border-radius: 8px;
+    font-size: 0.88rem;
+    padding: 8px 12px;
+    color: var(--color-text);
+    transition: background 0.15s;
 }
 
-.forgot {
-    text-align: left;
-    margin-top: 0.5rem;
-    margin-bottom: 1rem;
+.dropdown-item:hover {
+    background: #fff4f0;
+    color: var(--color-accent);
+}
+
+/* Remove underline from the logout anchor inside the button */
+.dropdown-item a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+
+/* -------------------------------------------------------------
+   8. MAIN CONTENT AREA
+------------------------------------------------------------- */
+main.container-fluid {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+
+/* -------------------------------------------------------------
+   9. SECTION TITLES & ARROW CONTROLS
+------------------------------------------------------------- */
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: 0.01em;
+}
+
+.arrow-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.arrow-btn {
+    background: var(--color-white);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-circle);
+    width: 34px;
+    height: 34px;
     font-size: 0.85rem;
-    color: #0d6efd;
+    font-weight: 700;
+    color: var(--color-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.arrow-btn:hover {
+    background: var(--color-accent);
+    color: var(--color-white);
+    border-color: var(--color-accent);
+}
+
+
+/* -------------------------------------------------------------
+   10. CAROUSEL WRAPPER
+   Horizontally scrollable row of cards.
+   overflow-x: auto  → enables sideways scrolling
+   scrollbar-width: none → hides the scrollbar (still scrollable)
+------------------------------------------------------------- */
+.carousel-wrapper {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    scroll-snap-type: x mandatory;  /* cards snap into place */
+    -webkit-overflow-scrolling: touch; /* smooth on iOS */
+}
+
+/* Hide scrollbar in all browsers */
+.carousel-wrapper::-webkit-scrollbar { display: none; }
+.carousel-wrapper { scrollbar-width: none; }
+
+/* Each slide slot */
+.carousel-card {
+    flex: 0 0 auto;              /* don't shrink or grow */
+    scroll-snap-align: start;   /* snap to left edge */
+    width: 180px;
+}
+
+
+/* -------------------------------------------------------------
+   11. SITTER CARDS
+------------------------------------------------------------- */
+.small-card {
+    background: var(--color-white);
+    border-radius: var(--radius-card);
+    border: 1.5px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+    padding: 12px;
+    transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
 }
 
-.signup {
-    font-size: 0.75rem;
-    text-align: center;
-    margin-top: 1rem;
+.small-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.11);
+}
+
+/* The image container (position:relative allows the heart button
+   to be placed on top of the image with position:absolute) */
+.card-img-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;        /* always a perfect square */
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    background: var(--color-border);
+}
+
+.card-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;           /* fill without distorting */
+    display: block;
+    transition: transform 0.3s;
+}
+
+.small-card:hover .card-img-container img {
+    transform: scale(1.05);      /* subtle zoom on hover */
+}
+
+/* Sitter name */
+.small-card h6 {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;     /* "Long Name..." if too wide */
+}
+
+/* City and rate text */
+.small-card p {
+    font-size: 0.78rem;
+    color: var(--color-muted);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.small-card p.city {
+    font-size: 0.76rem;
+}
+
+
+/* -------------------------------------------------------------
+   12. LIKE BUTTON & HEART ANIMATION
+------------------------------------------------------------- */
+.like-btn {
+    position: absolute;    /* sits on top of the card image */
+    top: 8px;
+    right: 8px;
+    background: rgba(255, 255, 255, 0.85);
+    border: none;
+    border-radius: var(--radius-circle);
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(4px);  /* frosted-glass effect */
+    transition: background 0.15s, transform 0.15s;
+    z-index: 2;
+}
+
+.like-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+}
+
+/* Outlined heart (default) */
+.like-btn .fa-regular.fa-heart {
+    color: var(--color-text);
+    font-size: 0.85rem;
+}
+
+/* Filled heart (after click) */
+.like-btn .fa-solid.fa-heart {
+    color: var(--color-accent);
+    font-size: 0.85rem;
+}
+
+/* Quick pop/scale animation when liked */
+@keyframes heartPop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+
+.like-btn.heart-pop {
+    animation: heartPop 0.3s ease;
+}
+
+
+/* -------------------------------------------------------------
+   13. RESPONSIVE — MOBILE TWEAKS
+   At 768px and below (tablets/phones), simplify the layout.
+------------------------------------------------------------- */
+@media (max-width: 768px) {
+
+    /* Shrink the search bar on small screens */
+    .search-bar {
+        max-width: 100%;
+        padding: 5px 5px 5px 14px;
+        border-radius: 20px;
+    }
+
+    /* Hide middle labels to save space */
+    .search-labels span {
+        font-size: 0.75rem;
+    }
+
+    /* Smaller brand text */
+    .brand {
+        font-size: 1.1rem;
+    }
+
+    /* Sitter cards a bit narrower */
+    .carousel-card {
+        width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Stack header items vertically on very small phones */
+    .nav-container {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 8px 12px;
+        gap: 8px;
+    }
+
+    .search-bar {
+        order: 3;       /* push search to bottom row */
+        max-width: 100%;
+        flex: 1 1 100%;
+    }
 }
