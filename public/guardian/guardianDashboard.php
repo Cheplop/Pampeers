@@ -126,9 +126,12 @@ $sittersNear = $sittersNear ?? [];
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><button class="dropdown-item" type="button">Favourites</button></li>
                     <li><button class="dropdown-item" type="button">Messages</button></li>
-                    <li><button class="dropdown-item" type="button">Settings</button></li>
+                    <a class="dropdown-item" href="../guardianProfile.php">
+                        Profile
+                    </a>
+                    </li>
                     <li>
-                    <a class="dropdown-item" href="../../app/controllers/logout.php">
+                    <a class="login" href="../../app/controllers/logout.php">
                         Logout
                     </a>
                     </li>

@@ -112,7 +112,7 @@ $sittersNear = $sittersNear ?? [];
 
             <!-- Profile Picture Link -->
             <button type="button" class="btn btn-link">
-                <a href="../profile.php">
+                <a href="../SitterProfile.php">
                     <?php $userPic = !empty($user['profilePic']) ? $user['profilePic'] : 'default.jpg'; ?>
                     <div class="profile-wrapper">
                         <img
@@ -132,11 +132,13 @@ $sittersNear = $sittersNear ?? [];
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><button class="dropdown-item" type="button">Favourites</button></li>
                     <li><button class="dropdown-item" type="button">Messages</button></li>
-                    <li><button class="dropdown-item" type="button">Settings</button></li>
+                    <a class="dropdown-item" href="../sitterProfile.php">
+                        Profile
+                    </a>
                     <li>
-                        <button class="dropdown-item" type="button">
-                            <a href="../../app/controllers/logout.php">Logout</a>
-                        </button>
+                    <a class="dropdown-item" href="../../app/controllers/logout.php">
+                        Logout
+                    </a>
                     </li>
                 </ul>
             </div>

@@ -1,8 +1,14 @@
 <?php
-
 require_once __DIR__ . '/../app/middleware/authCheck.php';
-require_once __DIR__ . '/../app/controllers/sitter/sitterFetchData.php';
-require_once __DIR__ . '/../app/controllers/guardian/guardianFetchData.php';
+
+
+checkAuth(['sitter', 'guardian']);
+
+if ($_SESSION['role'] === 'sitter') {
+    require_once __DIR__ . '/../app/controllers/sitter/sitterFetchData.php';
+} elseif ($_SESSION['role'] === 'guardian') {
+    require_once __DIR__ . '/../app/controllers/guardian/guardianFetchData.php';
+}
 
 ?>
 
@@ -14,33 +20,60 @@ require_once __DIR__ . '/../app/controllers/guardian/guardianFetchData.php';
     <title>Sitter Dashboard - Pampeers</title>
     <link rel="icon" type="image/x-icon" href="/Pampeers/app/uploads/pampeerlogo.png">
     
-    <link rel="stylesheet" href="../css/sitterDashboard.css">
+    <link rel="stylesheet" href="css/sitterProfile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Ribeye&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 <body>
 
+<!-- ========== HEADER / NAVBAR ========== -->
 <header class="sticky-top custom-header">
-    <div class="nav-container d-flex align-items-center justify-content-between px-4">
+    <div class="nav-container d-flex align-items-center justify-content-between px-3">
 
-        <!-- Brand -->
-        <div class="d-flex justify-content-center align-items-center gap-2">
+        <!-- Brand Logo -->
+        <div class="d-flex align-items-center gap-2">
             <img src="/Pampeers/app/uploads/pampeerlogo.png" alt="logo" class="logo-img">
-            <p class ="brand m-0">Pampeers</p>
+            <p class="brand m-0">Pampeers</p>
         </div>
 
-        <!-- Right Side -->
-        <div class="d-flex align-items-center gap-3">
-            <a href="../../app/controllers/logout.php" class="logout-btn">
-                Logout
-            </a>
+        <!-- Right Side: Profile + Menu -->
+        <div class="right-side-p d-flex align-items-center gap-1">
 
-            <?php $userPic = !empty($user['profilePic']) ? $user['profilePic'] : 'default.jpg'; ?>
+            <!-- Profile Picture Link -->
+            <button type="button" class="btn btn-link">
+                <a href="../SitterProfile.php">
+                    <?php $userPic = !empty($user['profilePic']) ? $user['profilePic'] : 'default.jpg'; ?>
+                    <div class="profile-wrapper">
+                        <img
+                            src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>"
+                            class="profile-img-small"
+                            alt="Profile"
+                        >
+                    </div>
+                </a>
+            </button>
 
-            <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" 
-                 class="profile-img-p" 
-                 alt="Profile Picture">
+            <!-- Hamburger Dropdown Menu -->
+            <div class="dropdown">
+                <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><button class="dropdown-item" type="button">Favourites</button></li>
+                    <li><button class="dropdown-item" type="button">Messages</button></li>
+                    <a class="dropdown-item" href="../sitterProfile.php">
+                        Profile
+                    </a>
+                    <li>
+                    <a class="dropdown-item" href="../../app/controllers/logout.php">
+                        Logout
+                    </a>
+                    </li>
+                </ul>
+            </div>
+
         </div>
     </div>
 </header>
@@ -115,87 +148,6 @@ require_once __DIR__ . '/../app/controllers/guardian/guardianFetchData.php';
         </div>
     </div>
 </div>
-
-    <div class="container mt-5">
-        <div class="profile-section col-8 border-4">
-            <div class="row">
-                <div class="col-md-3 text-center">
-                    <?php if (!empty($user['profilePic'])): ?>
-                        <img src="/pampeers/uploads/profiles/<?= htmlspecialchars($user['profilePic']) ?>" alt="Profile" class="profile-img mb-3">
-                    <?php else: ?>
-                        <div class="mb-3">
-                            <div class="profile-img mx-auto d-flex align-items-center justify-content-center bg-light">
-                                <span class="text-muted">No Photo</span>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-
-                    <h2><?= htmlspecialchars($fullName) ?></h2>
-
-                    <div class="info-item">
-                        <span class="info-label">Email:</span> <?= htmlspecialchars($user['email']) ?>
-                    </div>
-                </div>
-                <div class="col-md-9">
-                    <h2><?= htmlspecialchars($fullName) ?></h2>
-
-                    <div class="info-item">
-                        <span class="info-label">Email:</span> <?= htmlspecialchars($user['email']) ?>
-                    </div>
-
-                    <div class="info-item">
-                        <span class="info-label">Age:</span> <?= $age ?> years
-                    </div>
-
-                    <div class="info-item">
-                        <span class="info-label">Location:</span> <?= htmlspecialchars($location) ?>
-                    </div>
-
-                    <div class="info-item">
-                        <span class="info-label">Contact:</span> <?= htmlspecialchars($user['contactNumber'] ?? 'N/A') ?>
-                    </div>
-
-                    <div class="info-item">
-                        <span class="info-label">Availability:</span> 
-                        <span class="badge bg-<?= $availability === 'Available' ? 'success' : 'warning' ?>">
-                            <?= $availability ?>
-                        </span>
-                    </div>
-
-                    <div class="action-buttons">
-                        <a href="../../app/controllers/sitter/updateProfile.php" class="btn btn-primary">Edit Profile</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sitter Stats -->
-        <div class="row">
-            <div class="col-md-6">
-                <div class="stats-card">
-                    <div class="stat-value"><?= htmlspecialchars($user['hourlyRate'] ?? '0.00') ?></div>
-                    <div>Hourly Rate (₱)</div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="stats-card">
-                    <div class="stat-value"><?= htmlspecialchars($user['experience'] ?? '0') ?></div>
-                    <div>Years Experience</div>
-                </div>
-            </div>
-        </div>
-
-        <?php if (!empty($user['bio'])): ?>
-            <div class="profile-section">
-                <h5>About Me</h5>
-                <p><?= htmlspecialchars($user['bio']) ?></p>
-            </div>
-        <?php endif; ?>
-
-        <div class="alert alert-info">
-            <strong>Welcome to Pampeers Sitter Dashboard!</strong> Here you can view and manage your profile.
-        </div>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

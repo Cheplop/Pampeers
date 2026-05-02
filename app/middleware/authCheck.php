@@ -3,13 +3,17 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-function checkAuth($requiredRole) {
+function checkAuth($allowedRoles) {
     if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
         header("Location: /Pampeers/public/guestDashboard.php?error=unauthorized");
         exit();
     }
 
-    if ($_SESSION['role'] !== $requiredRole) {
+    if (!is_array($allowedRoles)) {
+        $allowedRoles = [$allowedRoles];
+    }
+
+    if (!in_array($_SESSION['role'], $allowedRoles)) {
         redirectToOwnDashboard($_SESSION['role']);
     }
 }

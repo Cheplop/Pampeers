@@ -1,0 +1,258 @@
+body { 
+    background-color: #FFFDF7; 
+    }
+    
+/* --- 1. HEADER & NAVIGATION --- */
+.custom-header {
+    background: #FFFDF7;
+    border-bottom: 1px solid #000;
+    padding: 10px;
+}
+
+.logo-img {
+    width: 50px;
+    height: 50px;
+}
+
+.brand {
+    font-size: 25px;
+    font-family: 'Ribeye', cursive;
+    margin: 0;
+}
+
+
+/* --- 4. BUTTONS & PROFILE --- */
+.dropdown{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    text-decoration: none;
+    color: #666;
+    background-color: #F0F8FF;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropdown a{
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+}
+
+.dropdown:active,
+.dropdown:focus,
+.dropdown:hover {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.dropdown .btn:focus {
+    outline: none;
+    border: none;
+}
+
+.signup-btn{
+    font-size: 15px;
+    font-weight: bold;
+    color: black;
+    background-color: transparent;
+    text-decoration: none;
+    padding: 6px 10px;
+    border: 0px;
+    border-radius: 20px;
+    transition: 0.2s ease;
+}
+
+.signup-btn:hover {
+    background-color: #F0F8FF;
+}
+
+.login-btn{
+    font-size: 15px;
+    font-weight: bold;
+    color: black;
+    background-color: #F0F8FF;
+    text-decoration: none;
+    padding: 6px 15px;
+    border: 1px solid black;
+    border-radius: 15px;
+    transition: 0.2s ease;
+}
+
+.login-btn:hover {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.search-btn:hover {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.profile-wrapper {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd;
+}
+
+.profile-img-small {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Reusable Card Styles */
+.card-profile {
+    margin-bottom: 10px;
+
+    background: #F0F8FF;
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.card-profile h2{
+    font-size: 50px;
+    font-weight: 700;
+}
+
+.card-profile p{
+    font-size: 15px;
+    color: #555;
+}
+
+.card-white {
+    margin-right: 40px;
+    margin-left: 40px;
+    background: #FFFDF7;
+    border-radius: 20px;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Components */
+.profile-img {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+    margin: 20px;
+}
+
+.info-item {
+    padding: 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+}
+
+.divider {
+    border-bottom: 1.5px solid rgba(0,0,0,0.1);
+}
+
+.job-note {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 15px 0;
+}
+
+.job-details {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.price-tag {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.currency {
+    font-size: 1.1rem;
+    margin-right: 2px;
+}
+
+.read-more, .view-all {
+    text-decoration: none;
+    font-size: 0.85rem;
+    color: #3C56A2;
+    font-weight: 500;
+}
+
+.read-more:hover, .view-all:hover {
+    text-decoration: underline;
+}
+
+.user-avatar-circle {
+    width: 40px;
+    height: 40px;
+    background: #e0e0e0;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* Responsive Tweaks */
+@media (max-width: 768px) {
+    .profile-img {
+        width: 80px;
+        height: 80px;
+    }
+    .price-tag {
+        text-align: left;
+        margin-bottom: 10px;
+    }
+}
+
+/* 📱 MOBILE FIXES ONLY */
+@media (max-width: 768px) {
+
+    .nav-container {
+        gap: 10px;
+    }
+
+    .search-bar {
+        width: 100%;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 5px;
+    }
+
+    .logo-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .brand {
+        font-size: 16px;
+    }
+
+    .profile-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* carousel scroll fix */
+    .carousel-wrapper {
+        display: flex;
+        overflow-x: auto;
+        gap: 10px;
+        padding-bottom: 10px;
+    }
+
+    .carousel-card {
+        min-width: 160px;
+        flex: 0 0 auto;
+    }
+
+    .small-card img {
+        width: 100%;
+        height: auto;
+    }
+}
