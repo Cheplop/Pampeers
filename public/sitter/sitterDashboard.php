@@ -143,7 +143,7 @@ $userPic = $user['profilePic'] ?? 'default.jpg';
 
             <!-- Profile Picture Link -->
             <button type="button" class="btn btn-link">
-                <a href="../SitterProfile.php">
+                <a href="../sitterProfile.php">
                     <?php $userPic = !empty($user['profilePic']) ? $user['profilePic'] : 'default.jpg'; ?>
                     <div class="profile-wrapper">
                         <img
@@ -162,12 +162,11 @@ $userPic = $user['profilePic'] ?? 'default.jpg';
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><button class="dropdown-item" type="button">Favourites</button></li>
-                    <li><button class="dropdown-item" type="button">Messages</button></li>
                     <a class="dropdown-item" href="../sitterProfile.php">
                         Profile
                     </a>
                     <li>
-                    <a class="dropdown-item" href="../../app/controllers/logout.php">
+                    <a class="dropdown-item" href="../../app/controllers/auth/logout.php">
                         Logout
                     </a>
                     </li>

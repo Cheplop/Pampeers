@@ -5,8 +5,7 @@
 | GET SITTER DATA
 |--------------------------------------------------------------------------
 */
-function getSitter(mysqli $conn, int $userId)
-{
+function getSitter(mysqli $conn, int $userId) {
     $stmt = $conn->prepare("
         SELECT s.*, u.*
         FROM sitters s
@@ -26,15 +25,12 @@ function getSitter(mysqli $conn, int $userId)
 | CHECK IF USER IS A SITTER
 |--------------------------------------------------------------------------
 */
-function isSitter(mysqli $conn, int $userId): bool
-{
+function isSitter($conn, $userId) {
     $stmt = $conn->prepare("
         SELECT 1 FROM sitters WHERE userID = ? LIMIT 1
     ");
-
     $stmt->bind_param("i", $userId);
     $stmt->execute();
-
     return $stmt->get_result()->num_rows > 0;
 }
 
@@ -80,4 +76,26 @@ function isPendingSitter(mysqli $conn, int $userId): bool
     $row = $stmt->get_result()->fetch_assoc();
 
     return ($row['verificationStatus'] ?? '') === 'pending';
+}
+
+function getUserRoles(mysqli $conn, int $userId): string
+{
+    // get base role
+    $stmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $user = $stmt->get_result()->fetch_assoc();
+
+    $role = ucfirst($user['role'] ?? 'guardian');
+
+    // check if also sitter
+    $stmt = $conn->prepare("SELECT 1 FROM sitters WHERE userID = ? LIMIT 1");
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+
+    if ($stmt->get_result()->num_rows > 0) {
+        $role .= ', Sitter';
+    }
+
+    return $role;
 }

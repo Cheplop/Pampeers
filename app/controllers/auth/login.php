@@ -39,7 +39,7 @@ if ($result->num_rows === 0) {
 $user = $result->fetch_assoc();
 $stmt->close();
 
-/* ================= CHECK ACCOUNT STATUS ================= */
+/* ================= CHECK ACCOUNT ================= */
 if ((int)$user['isActive'] === 0) {
     header('Location: /Pampeers/public/guestDashboard.php?error=deactivated');
     exit();
@@ -50,38 +50,28 @@ if (!password_verify($password, $user['password'])) {
     exit();
 }
 
-/* ================= SESSION SETUP ================= */
+/* ================= SESSION ================= */
 session_regenerate_id(true);
 
 $_SESSION['user_id'] = $user['id'];
 $_SESSION['role']    = $user['role'];
 $_SESSION['name']    = $user['firstName'];
 
-/* ================= OPTIONAL SITTER DATA (NO REDIRECT) ================= */
-$sitter = $conn->prepare("SELECT sitterID FROM sitters WHERE userID = ?");
-$sitter->bind_param("i", $user['id']);
-$sitter->execute();
-$res = $sitter->get_result();
+/* ================= SITTER CHECK ================= */
+$stmt = $conn->prepare("SELECT sitterID FROM sitters WHERE userID = ?");
+$stmt->bind_param("i", $user['id']);
+$stmt->execute();
+$res = $stmt->get_result();
 
 if ($res->num_rows > 0) {
     $_SESSION['sitter_id'] = $res->fetch_assoc()['sitterID'];
 }
 
-/* ================= ROLE ROUTING (FINAL RULE) ================= */
-switch ($user['role']) {
-
-    case 'admin':
-        header("Location: /Pampeers/public/admin/adminDashboard.php");
-        break;
-
-    case 'sitter':
-        header("Location: /Pampeers/public/sitter/sitterDashboard.php");
-        break;
-
-    default:
-        header("Location: /Pampeers/public/guardian/guardianDashboard.php");
-        break;
+/* ================= REDIRECT ================= */
+if ($user['role'] === 'admin') {
+    header("Location: /Pampeers/public/admin/adminDashboard.php");
+} else {
+    header("Location: /Pampeers/public/guardian/guardianDashboard.php");
 }
 
 exit();
-?>

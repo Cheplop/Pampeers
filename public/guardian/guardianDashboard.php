@@ -30,7 +30,7 @@ if (($user['role'] ?? '') === 'admin') {
 }
 
 /* ================= LOCATION ================= */
-$userCity = $user['city'] ?? '';
+$userCity = $user['cityMunicipality'] ?? '';
 
 /* ================= SITTERS ================= */
 require_once __DIR__ . '/../../app/controllers/sitter/sitterFetchAvail.php';
@@ -159,7 +159,7 @@ $sittersNear = $sittersNear ?? [];
                     </a>
                     </li>
                     <li>
-                    <a class="login" href="../../app/controllers/logout.php">
+                    <a class="login" href="../../app/controllers/auth/logout.php">
                         Logout
                     </a>
                     </li>

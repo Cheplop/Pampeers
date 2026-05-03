@@ -11,7 +11,7 @@ require_once __DIR__ . '/../app/config/config.php';
 require_once __DIR__ . '/../app/controllers/sitter/sitterFetchAvail.php';
 
 // Fetch sitters near the guardian
-$userCity = isset($user['city']) ? $user['city'] : 'Cagayan De Oro';
+$userCity = isset($user['cityMunicipality']) ? $user['cityMunicipality'] : 'Cagayan De Oro';
 require_once __DIR__ . '/../app/controllers/sitter/sitterFetchNear.php';
 
 // prevent undefined errors
@@ -119,13 +119,13 @@ $sittersNear = $sittersNear ?? [];
             <div class="modal-body p-5">
                 <div class="login-panel">
                     <h2 class="login-title">LOGIN</h2>
-                    <form action="../app/middleware/loginLogic.php" method="POST">
+                    <form action="../app/controllers/auth/login.php" method="POST">
                         
                         <div class="mb-2">
                             <label class="form-label">Username</label>
                             <div class="input-container ">
                                 <span class="input-icon"><i class="fa-regular fa-user"></i></span>
-                                <input type="text" placeholder="juandelacruz@gmail.com" name="email" class="custom-input" required>
+                                <input type="text" placeholder="juandelacruz@gmail.com" name="login" class="custom-input" required>
                             </div>
                         </div>
 

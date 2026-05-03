@@ -4,62 +4,52 @@ require_once __DIR__ . '/../app/config/config.php';
 
 requireAuth();
 
-/* ROLE CHECK (replacement for checkAuth) */
+/* ROLE CHECK */
 if (!in_array($_SESSION['role'], ['sitter', 'guardian'])) {
     header("Location: /Pampeers/public/guestDashboard.php");
     exit();
 }
 
-// If viewing another sitter (guardian view)
-if (isset($_GET['id'])) {
-    $uID = (int) $_GET['id'];
+$userId = $_SESSION['user_id'] ?? null;
 
-    $stmt = $conn->prepare("
-        SELECT 
-            u.*,
-            s.hourlyRate,
-            s.bio,
-            s.experience
-        FROM users u
-        LEFT JOIN sitters s ON u.id = s.id
-        WHERE u.id = ?
-    ");
-    $stmt->bind_param("i", $uID);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if (!$result || $result->num_rows === 0) {
-        die("User not found.");
-    }
-
-    $user = $result->fetch_assoc();
-    $stmt->close();
-
-} else {
-    // If sitter is viewing their own profile
-    $uID = $_SESSION['user_id'];
-
-    $stmt = $conn->prepare("
-        SELECT 
-            u.*,
-            s.hourlyRate,
-            s.bio,
-            s.experience
-        FROM users u
-        LEFT JOIN sitters s ON u.id = s.id
-        WHERE u.id = ?
-    ");
-    $stmt->bind_param("i", $uID);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
-    $stmt->close();
+if (!$userId) {
+    header("Location: /Pampeers/public/guestDashboard.php");
+    exit();
 }
 
-// Derived values (needed by HIS UI)
-$fullName = $user['firstName'] . ' ' . $user['lastName'];
+/* ================= GET USER + SITTER DATA (FIXED JOIN) ================= */
+if (isset($_GET['id'])) {
+    $uID = (int) $_GET['id'];
+} else {
+    $uID = $userId;
+}
 
-// Age calculation
+$stmt = $conn->prepare("
+    SELECT 
+        u.*,
+        s.hourlyRate,
+        s.bio AS sitterBio,
+        s.experience
+    FROM users u
+    LEFT JOIN sitters s ON u.id = s.userID
+    WHERE u.id = ?
+    LIMIT 1
+");
+
+$stmt->bind_param("i", $uID);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if (!$result || $result->num_rows === 0) {
+    die("User not found.");
+}
+
+$user = $result->fetch_assoc();
+$stmt->close();
+
+/* ================= DERIVED VALUES ================= */
+$fullName = trim(($user['firstName'] ?? '') . ' ' . ($user['lastName'] ?? ''));
+
 $age = 0;
 if (!empty($user['birthdate'])) {
     $birthDate = new DateTime($user['birthdate']);
@@ -67,10 +57,8 @@ if (!empty($user['birthdate'])) {
     $age = $today->diff($birthDate)->y;
 }
 
-// Location
-$location = $user['city'] . ', ' . $user['country'];
+$location = trim(($user['city'] ?? '') . ', ' . ($user['country'] ?? ''));
 
-// Profile pic fallback
 $user['profilePic'] = !empty($user['profilePic']) ? $user['profilePic'] : 'default.jpg';
 ?>
 
@@ -104,7 +92,7 @@ $user['profilePic'] = !empty($user['profilePic']) ? $user['profilePic'] : 'defau
         <div class="right-side-p d-flex align-items-center gap-1">
 
             <button type="button" class="btn btn-link">
-                <a href="../sitterProfile.php">
+                <a href="../public/sitterProfile.php">
                     <div class="profile-wrapper">
                         <img
                             src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($user['profilePic']); ?>"
@@ -120,8 +108,7 @@ $user['profilePic'] = !empty($user['profilePic']) ? $user['profilePic'] : 'defau
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><button class="dropdown-item">Favourites</button></li>
-                    <li><button class="dropdown-item">Messages</button></li>
-                    <a class="dropdown-item" href="../sitterProfile.php">Profile</a>
+                    <a class="dropdown-item" href="../public/sitterProfile.php">Profile</a>
                     <li>
                         <a class="dropdown-item" href="../../app/controllers/logout.php">Logout</a>
                     </li>
@@ -144,7 +131,7 @@ $user['profilePic'] = !empty($user['profilePic']) ? $user['profilePic'] : 'defau
             <div class="m-5">
                 <p class="mb-0"><?= htmlspecialchars($user['bio'] ?? '') ?></p>
                 <h2 class="fw-bold mb-0"><?= htmlspecialchars($fullName) ?></h2>
-                <p class="text-muted small"><?= htmlspecialchars($user['email']) ?></p>
+                <p class="text-muted small"><?= htmlspecialchars($user['emailAddress']) ?></p>
 
                 <!-- ADDED (your backend data) -->
                 <div class="price-tag mt-2">

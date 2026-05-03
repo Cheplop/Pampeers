@@ -221,13 +221,6 @@ $role = $user['role'] ?? 'guardian';
 
 <hr>
 
-<!-- BIO -->
-<div class="mb-3">
-    <label>Bio</label>
-    <textarea name="bio" class="form-control" rows="3"
-              placeholder="Tell something about yourself"><?= htmlspecialchars($user['bio'] ?? '') ?></textarea>
-</div>
-
 <hr>
 
 <!-- ROLE INFO -->

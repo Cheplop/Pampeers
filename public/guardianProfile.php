@@ -41,7 +41,7 @@ if ($fullName === '') {
 
 $email = $user['emailAddress'] ?? '';
 $location = $user['cityMunicipality'] ?? 'Cagayan de Oro';
-$bio = $user['bio'] ?? '';
+$bio = $sitterData['bio'] ?? '';
 $profilePic = $user['profilePic'] ?? 'default.jpg';
 
 $role = $user['role'] ?? 'guardian';

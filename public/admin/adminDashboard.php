@@ -46,9 +46,16 @@ $totalSitters = $conn->query("
 
 /* ================= RECENT USERS ================= */
 $recentUsersResult = $conn->query("
-    SELECT firstName, lastName, emailAddress, role, dateCreated
-    FROM users
-    ORDER BY dateCreated DESC
+    SELECT 
+        u.firstName,
+        u.lastName,
+        u.emailAddress,
+        u.role,
+        u.dateCreated,
+        s.sitterID
+    FROM users u
+    LEFT JOIN sitters s ON s.userID = u.id
+    ORDER BY u.dateCreated DESC
     LIMIT 10
 ");
 
