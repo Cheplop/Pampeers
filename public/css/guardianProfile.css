@@ -1,0 +1,195 @@
+/* --- 1. GLOBAL STYLES --- */
+body {
+    background: #FFFDF7;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+}
+
+/* --- 2. HEADER & NAVIGATION --- */
+.custom-header {
+    background: #FFFDF7;
+    border-bottom: 1px solid #000;
+    padding: 10px;
+}
+
+.logo-img {
+    width: 50px;
+    height: 50px;
+}
+
+.brand {
+    font-size: 25px;
+    font-family: 'Ribeye', cursive;
+    margin: 0;
+}
+
+
+/* --- 3. BUTTONS & PROFILE --- */
+.dropdown{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    text-decoration: none;
+    color: #666;
+    background-color: #F0F8FF;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropdown a{
+    text-decoration: none;
+    color: black;
+}
+
+.dropdown:active,
+.dropdown:focus,
+.dropdown:hover {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.dropdown .btn:focus {
+    outline: none;
+    border: none;
+}
+
+.signup-btn{
+    font-size: 15px;
+    font-weight: bold;
+    color: black;
+    background-color: transparent;
+    text-decoration: none;
+    padding: 6px 10px;
+    border: 0px;
+    border-radius: 20px;
+    transition: 0.2s ease;
+}
+
+.signup-btn:hover {
+    background-color: #F0F8FF;
+}
+
+.login-btn{
+    font-size: 15px;
+    font-weight: bold;
+    color: black;
+    background-color: #F0F8FF;
+    text-decoration: none;
+    padding: 6px 15px;
+    border: 1px solid black;
+    border-radius: 15px;
+    transition: 0.2s ease;
+}
+
+.login-btn:hover {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.search-btn:hover {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.btnedit {
+    font-size: 15px;
+    font-weight: bold;
+    color: black;
+    background-color: transparent;
+    text-decoration: none;
+    padding: 6px 10px;
+    border: 1px solid black;
+    border-radius: 20px;
+    transition: 0.2s ease;
+}
+
+.btnbecome{
+    font-size: 15px;
+    font-weight: bold;
+    color: black;
+    background-color: transparent;
+    text-decoration: none;
+    padding: 6px 10px;
+    border: 1px solid black;
+    border-radius: 20px;
+    transition: 0.2s ease;
+}
+
+/* --- 3. Profile --- */
+
+.profile-wrapper {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd;
+}
+
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+/* --- 4. Cards --- */
+
+.profile-card {
+    display: flex;
+    align-items: center;
+    
+    background: #FFFDF7;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 20px;
+    transition: box-shadow 0.2s ease;
+}
+
+.profile-card img{
+    min-width: 200px;
+    min-height: 200px;
+}
+
+.details-card {
+    display: flex;
+    align-items: center;
+
+
+    border: 1px solid black;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-radius: 10px;
+    padding: 20px;
+    transition: box-shadow 0.2s ease;
+}
+
+.profile-card h4{
+    font-size: 28px;
+    font-weight: bold;
+
+    margin-bottom: 5px;
+}
+
+.details-card p {
+    font-size: 20px;
+    justify-content: flex-start;
+}
+
+ .details-card i {
+    margin-left: 10px;
+    color: #666;    
+ }
+
+ .review-card {
+    max-height: 500px;
+
+    border: 2px solid black;
+    background: #FFFDF7;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 10px;
+    transition: box-shadow 0.2s ease;
+ }

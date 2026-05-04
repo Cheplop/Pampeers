@@ -151,7 +151,6 @@ body {
 }
 
 .dropdown a{
-    font-weight: bold;
     text-decoration: none;
     color: black;
 }
@@ -467,11 +466,101 @@ body {
     transform: scale(1.1);
 }
 
-/* --- 7. MOBILE --- */
+/* --- 7. MOBILE (IMPROVED) --- */
 @media (max-width: 768px) {
-    .section-title { margin-left: 20px; }
-    .brand { font-size: 18px; }
-    .search-bar { width: 100%; height: 50px; }
-    .carousel-card { width: 180px; }
-    .card-img-container { height: 140px; }
+
+    /* HEADER LAYOUT */
+    .nav-container {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 10px;
+    }
+
+    /* BRAND */
+    .brand {
+        font-size: 18px;
+    }
+
+    /* SEARCH BAR -> STACKED */
+    .search-bar {
+        flex-direction: column;
+        align-items: stretch;
+        border-radius: 20px;
+        padding: 12px;
+        height: auto;
+        gap: 10px;
+    }
+
+    .search-labels {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .field-group {
+        width: 100%;
+        padding: 6px 0;
+    }
+
+    /* REMOVE vertical dividers */
+    .search-bar .divider {
+        display: none;
+    }
+
+    /* SEARCH BUTTON FULL WIDTH */
+    .search-bar .search-btn {
+        width: 100%;
+        height: 45px;
+        border-radius: 12px;
+    }
+
+    .search-bar .search-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* RIGHT SIDE (PROFILE + MENU) */
+    .right-side-p {
+        justify-content: flex-end;
+        width: 100%;
+    }
+
+    /* SECTION TITLE */
+    .section-title {
+        margin-left: 10px;
+        font-size: 16px;
+    }
+
+    /* CAROUSEL */
+    .carousel-wrapper {
+        padding-left: 10px;
+    }
+
+    .carousel-card {
+        width: 75%;
+    }
+
+    /* CARD IMAGE */
+    .card-img-container {
+        height: 160px;
+    }
+
+    /* TEXT SCALING */
+    .small-card h6 {
+        font-size: 16px;
+    }
+
+    .small-card .city {
+        font-size: 13px;
+    }
+
+    .small-card p {
+        font-size: 11px;
+    }
+
+    /* ARROWS SMALLER */
+    .arrow-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
 }
