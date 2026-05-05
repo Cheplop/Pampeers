@@ -108,7 +108,7 @@ $role = $user['role'] ?? 'guardian';
                     </a>
                     </li>
                     <li>
-                    <a class="dropdown-item" href="../../app/controllers/auth/logout.php">
+                    <a class="dropdown-item" href="../app/controllers/auth/logout.php">
                         Logout
                     </a>
                     </li>

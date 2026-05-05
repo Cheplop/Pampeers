@@ -110,7 +110,7 @@ $user['profilePic'] = !empty($user['profilePic']) ? $user['profilePic'] : 'defau
                     <li><button class="dropdown-item">Favourites</button></li>
                     <a class="dropdown-item" href="../public/sitterProfile.php">Profile</a>
                     <li>
-                        <a class="dropdown-item" href="../../app/controllers/logout.php">Logout</a>
+                        <a class="dropdown-item" href="../app/controllers/auth/logout.php">Logout</a>
                     </li>
                 </ul>
             </div>
