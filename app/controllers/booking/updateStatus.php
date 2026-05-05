@@ -1,143 +1,72 @@
 <?php
-// Include the config file to connect to the database
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../../config/config.php';
-// Include the auth middleware to check if user is logged in
 require_once __DIR__ . '/../../middleware/auth.php';
 
-// Make sure user is logged in
+// Ensure the user is logged in
 requireAuth();
 
-// Check if the request is a POST request, if not, redirect to dashboard
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /Pampeers/public/user/dashboard.php');
+// Define the correct redirect path for sitters
+$sitterDash = '/Pampeers/public/sitter/sitterDashboard.php';
+
+// 1. Get the booking ID and the new status from the URL
+$bookingId = $_GET['id'] ?? null;
+$newStatus = $_GET['status'] ?? null;
+$userId    = $_SESSION['user_id'];
+
+// 2. Validate input and allowed status values
+$allowedStatuses = ['accepted', 'declined', 'completed', 'cancelled'];
+if (!$bookingId || !in_array($newStatus, $allowedStatuses)) {
+    header("Location: $sitterDash?error=invalid_request");
     exit();
 }
 
-// Function to create a unique ID for the booking
-function generateUUIDv4(): string
-{
-    $data = random_bytes(16);
-    $data[6] = chr((ord($data[6]) & 0x0f) | 0x40);
-    $data[8] = chr((ord($data[8]) & 0x3f) | 0x80);
+/**
+ * 3. SECURITY CHECK: 
+ * Ensure the logged-in user is actually the sitter assigned to this booking.
+ * We find the sitterID associated with the current user first.
+ */
+$sitterQuery = $conn->prepare("SELECT sitterID FROM sitters WHERE userID = ? LIMIT 1");
+$sitterQuery->bind_param("i", $userId);
+$sitterQuery->execute();
+$sitterResult = $sitterQuery->get_result()->fetch_assoc();
+$sitterQuery->close();
 
-    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
-}
-
-// Get user ID from session
-$userId      = $_SESSION['user_id'];
-// Get sitter ID, date, times, notes from form
-$sitterId    = (int) ($_POST['sitterID'] ?? 0);
-$bookingDate = trim($_POST['bookingDate'] ?? '');
-$startTime   = trim($_POST['startTime'] ?? '');
-$endTime     = trim($_POST['endTime'] ?? '');
-$notes       = trim($_POST['notes'] ?? '');
-
-// Check if required fields are filled
-if ($sitterId <= 0 || $bookingDate === '' || $startTime === '' || $endTime === '') {
-    header('Location: /Pampeers/public/user/dashboard.php?error=missing_booking_fields');
+if (!$sitterResult) {
+    header("Location: $sitterDash?error=not_a_sitter");
     exit();
 }
 
-// Convert date and time to timestamps for validation
-$startTimestamp = strtotime($bookingDate . ' ' . $startTime);
-$endTimestamp   = strtotime($bookingDate . ' ' . $endTime);
+$sitterId = $sitterResult['sitterID'];
 
-// Check if times are valid and end is after start
-if ($startTimestamp === false || $endTimestamp === false || $endTimestamp <= $startTimestamp) {
-    header('Location: /Pampeers/public/user/dashboard.php?error=invalid_booking_time');
-    exit();
-}
-
-/*
-|--------------------------------------------------------------------------
-// Check if sitter exists and is available
-|--------------------------------------------------------------------------
-*/
-$sitterStmt = $conn->prepare("
-    SELECT sitterID, hourlyRate, isAvailable
-    FROM sitters
-    WHERE sitterID = ?
-    LIMIT 1
+/**
+ * 4. PERFORM UPDATE
+ * We include sitterID in the WHERE clause so a sitter can't 
+ * update a booking belonging to someone else.
+ */
+$updateStmt = $conn->prepare("
+    UPDATE bookings 
+    SET status = ? 
+    WHERE bookingID = ? AND sitterID = ?
 ");
-// Bind sitter ID
-$sitterStmt->bind_param("i", $sitterId);
-$sitterStmt->execute();
-$sitterResult = $sitterStmt->get_result();
+$updateStmt->bind_param("sii", $newStatus, $bookingId, $sitterId);
 
-// If sitter not found, redirect with error
-if ($sitterResult->num_rows === 0) {
-    $sitterStmt->close();
-    header('Location: /Pampeers/public/user/dashboard.php?error=sitter_not_found');
-    exit();
+if ($updateStmt->execute()) {
+    if ($updateStmt->affected_rows > 0) {
+        $updateStmt->close();
+        header("Location: $sitterDash?status_updated=" . $newStatus);
+        exit();
+    } else {
+        // No rows updated (likely booking ID doesn't match this sitter)
+        $updateStmt->close();
+        header("Location: $sitterDash?error=unauthorized_action");
+        exit();
+    }
 }
 
-// Get sitter data
-$sitter = $sitterResult->fetch_assoc();
-$sitterStmt->close();
-
-// Check if sitter is available
-if ((int)$sitter['isAvailable'] !== 1) {
-    header('Location: /Pampeers/public/user/dashboard.php?error=sitter_unavailable');
-    exit();
-}
-
-/*
-|--------------------------------------------------------------------------
-// Calculate hours and total cost
-|--------------------------------------------------------------------------
-*/
-$seconds = $endTimestamp - $startTimestamp;
-$hoursRequested = $seconds / 3600;
-$totalAmount = $hoursRequested * (float)$sitter['hourlyRate'];
-
-// Create unique ID for booking
-$bookingUUID = generateUUIDv4();
-$status = 'pending'; // Default status
-
-/*
-|--------------------------------------------------------------------------
-// Insert the new booking into the database
-|--------------------------------------------------------------------------
-*/
-$insertStmt = $conn->prepare("
-    INSERT INTO bookings (
-        uuid,
-        userID,
-        sitterID,
-        bookingDate,
-        startTime,
-        endTime,
-        hoursRequested,
-        totalAmount,
-        status,
-        notes
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-");
-
-// Bind all values
-$insertStmt->bind_param(
-    "siisssddss",
-    $bookingUUID,
-    $userId,
-    $sitterId,
-    $bookingDate,
-    $startTime,
-    $endTime,
-    $hoursRequested,
-    $totalAmount,
-    $status,
-    $notes
-);
-
-// If insert succeeds, redirect with success
-if ($insertStmt->execute()) {
-    $insertStmt->close();
-    header('Location: /Pampeers/public/user/dashboard.php?booking=success');
-    exit();
-}
-
-// If failed, redirect with error
-$insertStmt->close();
-header('Location: /Pampeers/public/user/dashboard.php?error=booking_failed');
+$updateStmt->close();
+header("Location: $sitterDash?error=database_error");
 exit();
-?>

@@ -58,7 +58,7 @@ $sitter = $stmt->get_result()->fetch_assoc();
 
                         <div class="d-grid gap-2 mt-4">
                             <button type="submit" class="btn btn-primary rounded-pill py-2">Submit Booking Request</button>
-                            <a href="public/guardianDashboard.php" class="btn btn-link text-muted">Cancel</a>
+                            <a href="guardianDashboard.php" class="btn btn-link text-muted">Cancel</a>
                         </div>
                     </form>
                 </div>
