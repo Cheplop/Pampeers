@@ -11,7 +11,7 @@ $userId = $_SESSION['user_id'] ?? 0;
 
 $stmt = $conn->prepare("
     SELECT 
-        u.id,
+        s.sitterID, -- We need this specific ID for the bookings table
         u.firstName,
         u.lastName,
         u.profilePic,
@@ -36,12 +36,12 @@ $sitters = [];
 
 while ($row = $result->fetch_assoc()) {
     $sitters[] = [
-        'id'   => $row['id'],
-        'name' => trim($row['firstName'] . ' ' . $row['lastName']),
-        'img'  => $row['profilePic'] ?: 'default.jpg',
-        'city' => $row['cityMunicipality'],
-        'rate' => $row['hourlyRate'],
-        'bio'  => $row['bio']
+        'sitterID' => $row['sitterID'], // Changed key from 'id' to 'sitterID'
+        'name'     => trim($row['firstName'] . ' ' . $row['lastName']),
+        'img'      => $row['profilePic'] ?: 'default.jpg',
+        'city'     => $row['cityMunicipality'],
+        'rate'     => $row['hourlyRate'],
+        'bio'      => $row['bio']
     ];
 }
 

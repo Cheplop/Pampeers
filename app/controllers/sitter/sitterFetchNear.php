@@ -3,33 +3,37 @@ require_once __DIR__ . '/../../config/config.php';
 
 $stmt = $conn->prepare("
     SELECT 
-        u.id,
+        s.sitterID, -- We need this specific ID for the bookings table
         u.firstName,
         u.lastName,
         u.profilePic,
         u.cityMunicipality,
         s.hourlyRate,
-        s.bio
-    FROM sitters s
-    INNER JOIN users u ON s.userID = u.id
+        s.bio,
+        s.verificationStatus,
+        s.isAvailable
+    FROM users u
+    INNER JOIN sitters s ON u.id = s.userID
     WHERE s.isAvailable = 1
-      AND u.cityMunicipality = ?
+      AND s.verificationStatus = 'verified'
+      AND u.isActive = 1
+      AND s.userID != ?
 ");
 
-$stmt->bind_param('s', $userCity);
+$stmt->bind_param("i", $userId);
 $stmt->execute();
 $result = $stmt->get_result();
 
-$sittersNear = [];
+$sitters = [];
 
 while ($row = $result->fetch_assoc()) {
-    $sittersNear[] = [
-        'id'   => $row['id'],
-        'name' => trim($row['firstName'] . ' ' . $row['lastName']),
-        'img'  => $row['profilePic'] ?: 'default.jpg',
-        'city' => $row['cityMunicipality'],
-        'rate' => $row['hourlyRate'],
-        'bio'  => $row['bio']
+    $sitters[] = [
+        'sitterID' => $row['sitterID'], // Changed key from 'id' to 'sitterID'
+        'name'     => trim($row['firstName'] . ' ' . $row['lastName']),
+        'img'      => $row['profilePic'] ?: 'default.jpg',
+        'city'     => $row['cityMunicipality'],
+        'rate'     => $row['hourlyRate'],
+        'bio'      => $row['bio']
     ];
 }
 

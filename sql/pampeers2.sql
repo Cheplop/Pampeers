@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 02, 2026 at 03:40 AM
+-- Generation Time: May 05, 2026 at 07:13 AM
 -- Server version: 11.8.6-MariaDB-0+deb13u1 from Debian
 -- PHP Version: 8.4.16
 
@@ -45,6 +45,19 @@ CREATE TABLE `bookings` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `favourites`
+--
+
+CREATE TABLE `favourites` (
+  `id` int(11) NOT NULL,
+  `guardian_id` int(11) NOT NULL,
+  `sitter_id` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `reviews`
 --
 
@@ -77,6 +90,14 @@ CREATE TABLE `sitters` (
   `verificationStatus` enum('pending','verified','rejected') NOT NULL DEFAULT 'pending',
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sitters`
+--
+
+INSERT INTO `sitters` (`sitterID`, `uuid`, `userID`, `bio`, `hourlyRate`, `experience`, `isAvailable`, `ratingAverage`, `verificationStatus`, `createdAt`) VALUES
+(2, '460b5d85478ef4979c30cc96c1e63413', 2, '', 0.00, 0, 0, NULL, 'verified', '2026-05-02 06:18:52'),
+(3, '0fe63d8db80e820aa406e20b1b190b76', 3, '', 0.00, 0, 1, NULL, 'verified', '2026-05-02 13:00:27');
 
 -- --------------------------------------------------------
 
@@ -115,7 +136,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `uuid`, `firstName`, `middleName`, `lastName`, `suffix`, `birthDate`, `sex`, `role`, `contactNumber`, `emailAddress`, `username`, `password`, `streetAddress`, `barangay`, `cityMunicipality`, `province`, `country`, `zipCode`, `dateCreated`, `profilePic`, `isActive`, `deactivatedAt`) VALUES
-(1, '22951542-4596-11f1-8ef7-d822244c147e', 'Sean', NULL, 'Torres', NULL, '2005-12-29', 'male', 'guardian', '0912 345 67889', 'sean@gmail.com', 'seanex', '$2y$12$yv4Rg3TArLLCjSR6CCRw5OWEKHyFyANk13EuKZoBEG/vuijeJkJBu', 'Parola', 'Macabalan', 'Cagayan de Oro', 'Misamis Oriental', 'Philippines', '9000', '2026-05-02 03:09:32', 'default.jpg', 1, NULL);
+(1, '22951542-4596-11f1-8ef7-d822244c147e', 'Nea', '', 'Satunero', '', '2005-10-11', 'female', 'admin', '0912 345 6789', 'sean@gmail.com', 'aengela', '$2y$12$yv4Rg3TArLLCjSR6CCRw5OWEKHyFyANk13EuKZoBEG/vuijeJkJBu', 'Agora', 'Lapasan', 'Cagayan de Oro', 'Misamis Oriental', 'Philippines', '9000', '2026-05-02 03:09:32', '1777699320_572852305076.jpeg', 1, NULL),
+(2, '87cf60a9-45b0-11f1-8ef7-d822244c147e', 'Remiel', '', 'Fugnit', '', '2003-12-30', 'male', 'guardian', 'asdasdasd', 'rem@gmail.com', 'remyel', '$2y$12$SBRHnm.AG8arUdRMSxd35OcPi0Xa7pI7wNTQ83SlcNNdE8woIE0ly', 'asdad', 'asdasd', 'asdasd', 'dsadsad', 'asdasd', 'asdasd', '2026-05-02 06:18:29', 'default.jpg', 1, NULL),
+(3, 'c40cfb24-45fe-11f1-8c32-d0008dc532ac', 'Clark', NULL, 'Galleon', NULL, '2003-12-06', 'male', 'guardian', '092323453', 'clark@gmail.com', 'clarkbayot', '$2y$12$a5psCRFkmqApl45QE5plreX15kBMw3PKtw2LSDbc0mKTXV07e4Qb6', 'Burgos', 'Consolacion', 'Cagayan de Oro', 'Misamis Oriental', 'Philippines', '9000', '2026-05-02 12:51:59', 'default.jpg', 1, NULL),
+(4, 'c15e5eb1-46bf-11f1-9f98-08f3aa7c6ca8', 'Nea', NULL, 'Satunero', NULL, '2005-10-11', 'female', 'guardian', '0912 435 3456', 'nea@gmail.com', 'satunero', '$2y$12$8RVv0.8oHWy2DGzl4Zvw7u7nPQVconOPdqWGBNJNySxtkQoWahp0K', 'Agora', 'Lapasan', 'Cagayan de Oro', 'Misamis Oriental', 'Philippines', '9000', '2026-05-03 10:53:17', 'default.jpg', 1, NULL);
 
 --
 -- Indexes for dumped tables
@@ -129,6 +153,14 @@ ALTER TABLE `bookings`
   ADD UNIQUE KEY `uuid` (`uuid`),
   ADD KEY `fk_bookings_user` (`userID`),
   ADD KEY `fk_bookings_sitter` (`sitterID`);
+
+--
+-- Indexes for table `favourites`
+--
+ALTER TABLE `favourites`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_fav` (`guardian_id`,`sitter_id`),
+  ADD KEY `sitter_id` (`sitter_id`);
 
 --
 -- Indexes for table `reviews`
@@ -168,6 +200,12 @@ ALTER TABLE `bookings`
   MODIFY `bookingID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `favourites`
+--
+ALTER TABLE `favourites`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
@@ -177,13 +215,13 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `sitters`
 --
 ALTER TABLE `sitters`
-  MODIFY `sitterID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `sitterID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
@@ -195,6 +233,13 @@ ALTER TABLE `users`
 ALTER TABLE `bookings`
   ADD CONSTRAINT `fk_bookings_sitter` FOREIGN KEY (`sitterID`) REFERENCES `sitters` (`sitterID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_bookings_user` FOREIGN KEY (`userID`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `favourites`
+--
+ALTER TABLE `favourites`
+  ADD CONSTRAINT `favourites_ibfk_1` FOREIGN KEY (`guardian_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `favourites_ibfk_2` FOREIGN KEY (`sitter_id`) REFERENCES `sitters` (`sitterID`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `reviews`
