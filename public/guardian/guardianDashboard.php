@@ -87,11 +87,16 @@ $userCity = $user['cityMunicipality'] ?? 'Cagayan de Oro';
                     <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($user['profilePic'] ?? 'default.jpg'); ?>" class="profile-img" alt="Profile">
                 </div>
             </a>
+            <!-- Hamburger Dropdown Menu -->
             <div class="dropdown">
-                <button class="btn" type="button" data-bs-toggle="dropdown"><i class="fa-solid fa-bars"></i></button>
+                <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="#">Favourites</a></li>
                     <li><a class="dropdown-item" href="../guardianProfile.php">Profile</a></li>
+                    <!-- Added My Bookings Link -->
+                    <li><a class="dropdown-item" href="myBookings.php">My Bookings</a></li>
+                    <li><a class="dropdown-item" href="favourites.php">Favourites</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-danger" href="../../app/controllers/auth/logout.php">Logout</a></li>
                 </ul>
