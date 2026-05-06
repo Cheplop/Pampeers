@@ -1,6 +1,6 @@
 updates:
 
-- deleted editSitterProfile.php
+- deleted editprofile.php
 - added sitter features in editProfile.php
     - needs fixing
 - deleted updateSitter.php
@@ -13,3 +13,13 @@ updates:
 - updated files
 - added new file in app/controllers/user/ = toggleFavourite.php
 - added booking and favourite function
+- removed sitterProfile.php
+
+
+to do:
+
+- remove guardian dashboard and sitter dashboard header, move dashboard header to icon-title.
+- in profile, guardian and sitter is merged, and if sitter and = verified then work queue and sitter features show up.
+- in drop down menu, if sitter and = verified, work queue will appear.
+- add functions to favourites area.
+- 

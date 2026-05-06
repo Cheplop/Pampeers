@@ -18,13 +18,13 @@ if (!$userId) {
 
 /* ================= BLOCK NON-SITTERS ================= */
 if (!isSitter($conn, $userId)) {
-    header("Location: /Pampeers/public/guardianProfile.php?error=not_sitter");
+    header("Location: /Pampeers/public/profile.php?error=not_sitter");
     exit();
 }
 
 /* ================= BLOCK UNVERIFIED ================= */
 if (!isVerifiedSitter($conn, $userId)) {
-    header("Location: /Pampeers/public/sitterProfile.php?error=not_verified");
+    header("Location: /Pampeers/public/profile.php?error=not_verified");
     exit();
 }
 
@@ -92,7 +92,7 @@ if ($sitterId > 0) {
 
         <div class="right-side-p d-flex align-items-center gap-1">
             <button type="button" class="btn btn-link">
-                <a href="../sitterProfile.php">
+                <a href="../profile.php">
                     <div class="profile-wrapper">
                         <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" class="profile-img" alt="Profile">
                     </div>
@@ -103,7 +103,7 @@ if ($sitterId > 0) {
                     <i class="fa-solid fa-bars"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="../sitterProfile.php">Profile</a></li>
+                    <li><a class="dropdown-item" href="../profile.php">Profile</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-danger" href="../../app/controllers/auth/logout.php">Logout</a></li>
                 </ul>

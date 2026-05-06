@@ -1,34 +1,48 @@
 <?php
-session_start();
-require_once __DIR__ . '/../../config/config.php';
+// 1. We must start the session before accessing $_SESSION!
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-if (!isset($_SESSION['user_id']) || !isset($_POST['sitterID'])) {
-    echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../middleware/auth.php';
+
+requireAuth();
+
+header('Content-Type: application/json');
+
+// 2. Safely grab the user ID
+$userId = $_SESSION['user_id'] ?? null;
+
+// 3. Prevent fatal SQL errors by stopping if the user isn't found in the session
+if (!$userId) {
+    echo json_encode(['status' => 'error', 'message' => 'User not logged in or session expired.']);
     exit();
 }
 
-$uID = $_SESSION['user_id'];
-$sitterID = $_POST['sitterID'];
+$sitterId = $_POST['sitterId'] ?? $_POST['sitterID'] ?? null;
 
-// Check if already in favourites
-$check = $conn->prepare("SELECT favID FROM favourites WHERE uID = ? AND sitterID = ?");
-$check->bind_param("ii", $uID, $sitterID);
+if (!$sitterId) {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid Sitter ID']);
+    exit();
+}
+
+// Check if already favorited
+$check = $conn->prepare("SELECT favouriteID FROM favourites WHERE guardian_id = ? AND sitter_id = ?");
+$check->bind_param("ii", $userId, $sitterId);
 $check->execute();
 $result = $check->get_result();
 
 if ($result->num_rows > 0) {
     // Remove if exists
-    $stmt = $conn->prepare("DELETE FROM favourites WHERE uID = ? AND sitterID = ?");
-    $action = 'removed';
+    $delete = $conn->prepare("DELETE FROM favourites WHERE guardian_id = ? AND sitter_id = ?");
+    $delete->bind_param("ii", $userId, $sitterId);
+    $delete->execute();
+    echo json_encode(['status' => 'removed']);
 } else {
     // Add if not exists
-    $stmt = $conn->prepare("INSERT INTO favourites (uID, sitterID) VALUES (?, ?)");
-    $action = 'added';
-}
-
-$stmt->bind_param("ii", $uID, $sitterID);
-if ($stmt->execute()) {
-    echo json_encode(['status' => 'success', 'action' => $action]);
-} else {
-    echo json_encode(['status' => 'error']);
+    $insert = $conn->prepare("INSERT INTO favourites (guardian_id, sitter_id) VALUES (?, ?)");
+    $insert->bind_param("ii", $userId, $sitterId);
+    $insert->execute();
+    echo json_encode(['status' => 'added']);
 }

@@ -1,5 +1,12 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../../config/config.php';
+
+// 1. ADDED: Define $userId so the SQL bind_param doesn't crash!
+$userId = $_SESSION['user_id'] ?? 0;
 
 $stmt = $conn->prepare("
     SELECT 
@@ -9,7 +16,7 @@ $stmt = $conn->prepare("
         u.profilePic,
         u.cityMunicipality,
         s.hourlyRate,
-        s.bio,
+        u.bio, -- 2. CHANGED: from s.bio to u.bio because it's now in the users table
         s.verificationStatus,
         s.isAvailable
     FROM users u
@@ -24,11 +31,12 @@ $stmt->bind_param("i", $userId);
 $stmt->execute();
 $result = $stmt->get_result();
 
-$sitters = [];
+// 3. CHANGED: Renamed $sitters to $sittersNear so it doesn't overwrite your available sitters list in the dashboard!
+$sittersNear = [];
 
 while ($row = $result->fetch_assoc()) {
-    $sitters[] = [
-        'sitterID' => $row['sitterID'], // Changed key from 'id' to 'sitterID'
+    $sittersNear[] = [
+        'sitterID' => $row['sitterID'],
         'name'     => trim($row['firstName'] . ' ' . $row['lastName']),
         'img'      => $row['profilePic'] ?: 'default.jpg',
         'city'     => $row['cityMunicipality'],

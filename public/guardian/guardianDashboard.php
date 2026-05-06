@@ -82,19 +82,17 @@ $userCity = $user['cityMunicipality'] ?? 'Cagayan de Oro';
         </div>
 
         <div class="right-side-p d-flex align-items-center gap-1">
-            <a href="../guardianProfile.php">
+            <a href="../profile.php">
                 <div class="profile-wrapper">
                     <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($user['profilePic'] ?? 'default.jpg'); ?>" class="profile-img" alt="Profile">
                 </div>
             </a>
-            <!-- Hamburger Dropdown Menu -->
             <div class="dropdown">
                 <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-solid fa-bars"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="../guardianProfile.php">Profile</a></li>
-                    <!-- Added My Bookings Link -->
+                    <li><a class="dropdown-item" href="../profile.php">Profile</a></li>
                     <li><a class="dropdown-item" href="myBookings.php">My Bookings</a></li>
                     <li><a class="dropdown-item" href="favourites.php">Favourites</a></li>
                     <li><hr class="dropdown-divider"></li>
@@ -106,7 +104,6 @@ $userCity = $user['cityMunicipality'] ?? 'Cagayan de Oro';
 </header>
 
 <main class="container-fluid mt-4 px-4">
-    <!-- Success/Error Alerts -->
     <?php if (isset($_GET['booking']) && $_GET['booking'] === 'success'): ?>
         <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm mb-4" role="alert">
             <strong>Booking Sent!</strong> Your request is now pending sitter approval.
@@ -114,7 +111,6 @@ $userCity = $user['cityMunicipality'] ?? 'Cagayan de Oro';
         </div>
     <?php endif; ?>
 
-    <!-- Section: My Recent Bookings -->
     <div class="mb-5">
         <div class="section-title h5 fw-bold mb-3 text-dark">My Recent Bookings</div>
         <div class="card border-0 shadow-sm rounded-4 p-3">
@@ -154,7 +150,6 @@ $userCity = $user['cityMunicipality'] ?? 'Cagayan de Oro';
         </div>
     </div>
 
-    <!-- Section: Available Babysitters -->
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div class="section-title">Available Babysitters</div>
         <div class="arrow-controls">
@@ -175,7 +170,6 @@ $userCity = $user['cityMunicipality'] ?? 'Cagayan de Oro';
                 <p class="city"><?= htmlspecialchars($peer['city'] ?? 'Cagayan de Oro') ?></p>
                 <div class="d-flex justify-content-between align-items-center mt-2">
                     <p class="m-0">₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
-                    <!-- Make sure 'sitterID' matches the column name in your database result -->
                     <a href="bookSitter.php?sitterID=<?= htmlspecialchars($peer['sitterID'] ?? '') ?>" class="btn btn-sm btn-primary rounded-pill px-3">Book</a>   
                 </div>
             </div>
@@ -191,6 +185,7 @@ function scrollCarousel(carouselId, direction) {
     container.scrollBy({ left: direction * 220, behavior: 'smooth' });
 }
 
+// Updated JavaScript to handle the heart icon correctly
 document.querySelectorAll('.like-btn').forEach(button => {
     button.addEventListener('click', function(e) {
         e.preventDefault();
@@ -198,18 +193,26 @@ document.querySelectorAll('.like-btn').forEach(button => {
         const icon = this.querySelector('i');
         if(!sitterId) return;
 
-        fetch('../../app/controllers/user/toggleFavourite.php', {
+        // Absolute path guarantees it works no matter what page we are on
+        fetch('/Pampeers/app/controllers/user/toggleFavourite.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `sitterID=${sitterId}`
+            body: `sitterId=${sitterId}` // Match exactly to POST request in backend
         })
         .then(response => response.json())
         .then(data => {
-            if (data.status === 'success') {
-                icon.classList.toggle('fa-regular');
-                icon.classList.toggle('fa-solid');
+            // Updated to reflect the proper PHP responses ('added' or 'removed')
+            if (data.status === 'added') {
+                icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid', 'text-danger'); // Makes heart solid red
+            } else if (data.status === 'removed') {
+                icon.classList.remove('fa-solid', 'text-danger');
+                icon.classList.add('fa-regular'); // Reverts to hollow outline
+            } else {
+                console.error("Error toggling favourite:", data.message);
             }
-        });
+        })
+        .catch(err => console.error('Fetch error:', err));
     });
 });
 </script>
