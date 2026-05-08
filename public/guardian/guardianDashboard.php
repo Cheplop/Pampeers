@@ -65,7 +65,7 @@ $userCity = $user['cityMunicipality'] ?? 'Cagayan de Oro';
             <div class="search-labels d-flex align-items-center gap-3 flex-grow-1">
                 <div class="field-group">
                     <label for="input-where">Where</label>
-                    <input type="text" id="input-where" placeholder="City or area" />
+                    <input type="text" id="input-where" placeholder="City or area" autocomplete="off" />
                 </div>
                 <div class="divider"></div>
                 <div class="field-group">
@@ -84,7 +84,11 @@ $userCity = $user['cityMunicipality'] ?? 'Cagayan de Oro';
                     </select>
                 </div>
             </div>
-            <button class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button class="search-btn" id="search-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+            </button>
         </div>
 
         <div class="right-side-p d-flex align-items-center gap-1">
