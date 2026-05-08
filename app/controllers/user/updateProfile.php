@@ -33,6 +33,10 @@ $hourlyRate  = trim($_POST['hourlyRate'] ?? '0.00');
 $experience  = trim($_POST['experience'] ?? '0');
 $isAvailable = isset($_POST['isAvailable']) ? 1 : 0;
 
+/* ACCEPTED AGES (ARRAY TO COMMA-SEPARATED STRING) */
+$selectedAgesArray = $_POST['acceptedAges'] ?? [];
+$agesString        = implode(',', $selectedAgesArray);
+
 /* ================= VALIDATION ================= */
 $required = [$firstName, $lastName, $birthDate, $sex, $contactNumber, $usernameInput, $cityMunicipality];
 foreach ($required as $value) {
@@ -80,7 +84,7 @@ if (!empty($_FILES['profilePic']['name'])) {
 /* ================= TRANSACTION ================= */
 $conn->begin_transaction();
 try {
-    // FIX: Added 'bio' to the users update query!
+    // Update Users Table
     $updateUser = $conn->prepare("
         UPDATE users SET firstName=?, middleName=?, lastName=?, suffix=?, birthDate=?, sex=?, 
         contactNumber=?, username=?, streetAddress=?, barangay=?, cityMunicipality=?, 
@@ -91,19 +95,21 @@ try {
         $province, $country, $zipCode, $currentPic, $bio, $userId);
     $updateUser->execute();
 
-    // FIX: Removed 'bio' from the sitters update query!
+    // Update Sitters Table (Now includes acceptedAges!)
     if ($sitterId && $isVerifiedSitter) {
-        $updateSitter = $conn->prepare("UPDATE sitters SET hourlyRate=?, experience=?, isAvailable=? WHERE sitterID=?");
+        $updateSitter = $conn->prepare("UPDATE sitters SET hourlyRate=?, experience=?, isAvailable=?, acceptedAges=? WHERE sitterID=?");
         $rate = (float)$hourlyRate;
         $exp  = (int)$experience;
-        $updateSitter->bind_param("diii", $rate, $exp, $isAvailable, $sitterId);
+        
+        // diisi: double (rate), int (exp), int (isAvail), string (ages), int (sitterID)
+        $updateSitter->bind_param("diisi", $rate, $exp, $isAvailable, $agesString, $sitterId);
         $updateSitter->execute();
     }
 
     $conn->commit();
     $_SESSION['username'] = $usernameInput;
 
-    $redirectPage = ($userRole === 'sitter') ? 'profile.php' : 'profile.php';
+    $redirectPage = 'profile.php';
     header("Location: /Pampeers/public/$redirectPage?update=success");
     exit();
 

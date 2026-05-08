@@ -1,45 +1,24 @@
 <?php
-// Include the config file to connect to the database
 require_once __DIR__ . '/../../config/config.php';
-// Include the auth middleware to check permissions
 require_once __DIR__ . '/../../middleware/auth.php';
-
-// Check if the user is an admin, if not, redirect
 requireRole('admin');
 
-// Check if the request is a POST request, if not, redirect to admin dashboard
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /Pampeers/public/admin/dashboard.php');
+    header('Location: /Pampeers/public/admin/adminDashboard.php');
     exit();
 }
 
-// Get the user ID to reactivate from the form, convert to integer
 $targetUserId = (int)($_POST['userID'] ?? 0);
-
-// If the user ID is not valid (less than or equal to 0), redirect with error
 if ($targetUserId <= 0) {
-    header('Location: /Pampeers/public/admin/dashboard.php?error=invalid_user');
+    header('Location: /Pampeers/public/admin/adminDashboard.php?error=invalid_user');
     exit();
 }
 
-// Prepare a query to update the user: set isActive to 1 and clear deactivation time
-$stmt = $conn->prepare("
-    UPDATE users
-    SET isActive = 1, deactivatedAt = NULL
-    WHERE id = ?
-");
-// Bind the user ID to the query
+$stmt = $conn->prepare("UPDATE users SET isActive = 1, deactivatedAt = NULL WHERE id = ?");
 $stmt->bind_param("i", $targetUserId);
-
-// If the update succeeds, close the statement and redirect with success message
 if ($stmt->execute()) {
-    $stmt->close();
-    header('Location: /Pampeers/public/admin/dashboard.php?success=user_reactivated');
-    exit();
+    header('Location: /Pampeers/public/admin/adminDashboard.php?success=reactivated');
+} else {
+    header('Location: /Pampeers/public/admin/adminDashboard.php?error=update_failed');
 }
-
-// If update failed, close statement and redirect with error
 $stmt->close();
-header('Location: /Pampeers/public/admin/dashboard.php?error=reactivate_failed');
-exit();
-?>

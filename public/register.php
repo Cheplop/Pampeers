@@ -33,81 +33,74 @@ if (isset($_SESSION['user_id'])) {
         <h1 class="brand-name">Pampeers</h1>
     </div>
 
-    <form action="/Pampeers/app/controllers/auth/createUser.php"
+    <form action="/Pampeers/app/controllers/auth/register.php"
           method="POST"
           enctype="multipart/form-data"
           class="row g-3">
-
-        <!-- BASIC INFO -->
-        <div class="col-md-6">
+          
+        <div class="col-md-4">
             <input type="text" name="firstName" class="form-control" placeholder="First Name" required>
         </div>
-
-        <div class="col-md-6">
+        <div class="col-md-4">
+            <input type="text" name="middleName" class="form-control" placeholder="Middle Name">
+        </div>
+        <div class="col-md-4">
             <input type="text" name="lastName" class="form-control" placeholder="Last Name" required>
         </div>
 
-        <div class="col-12">
-            <input type="text" name="username" class="form-control" placeholder="Username" required>
+        <div class="col-md-4">
+            <input type="text" name="suffix" class="form-control" placeholder="Suffix (e.g. Jr.)">
         </div>
-
-        <div class="col-12">
-            <input type="email" name="email" class="form-control" placeholder="Email" required>
-        </div>
-
-        <div class="col-12">
-            <input type="password" name="password" class="form-control" placeholder="Password" required minlength="8">
-        </div>
-
-        <div class="col-md-6">
+        <div class="col-md-4">
             <input type="date" name="birthDate" class="form-control" required>
         </div>
-
-        <div class="col-md-6">
-            <select name="sex" class="form-select">
-                <option value="">Sex</option>
+        <div class="col-md-4">
+            <select name="sex" class="form-select" required>
+                <option value="" disabled selected>Sex</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="other">Other</option>
             </select>
         </div>
 
-        <!-- ADDRESS -->
+        <div class="col-md-12">
+            <input type="text" name="username" class="form-control" placeholder="Username" required>
+        </div>
         <div class="col-md-6">
-            <input type="text" name="streetAddress" class="form-control" placeholder="Street Address">
+            <input type="email" name="emailAddress" class="form-control" placeholder="Email Address" required>
+        </div>
+        <div class="col-md-6">
+            <input type="password" name="password" class="form-control" placeholder="Password" required>
         </div>
 
-        <div class="col-md-6">
-            <input type="text" name="barangay" class="form-control" placeholder="Barangay">
-        </div>
-
-        <div class="col-md-6">
-            <input type="text" name="cityMunicipality" class="form-control" placeholder="City/Municipality">
-        </div>
-
-        <div class="col-md-6">
-            <input type="text" name="province" class="form-control" placeholder="Province">
-        </div>
-
-        <div class="col-md-6">
-            <input type="text" name="country" class="form-control" placeholder="Country">
-        </div>
-
-        <div class="col-md-6">
-            <input type="text" name="zipCode" class="form-control" placeholder="ZIP Code">
-        </div>
-
-        <!-- CONTACT -->
         <div class="col-12">
-            <input type="text" name="contactNumber" class="form-control" placeholder="Contact Number">
+            <input type="text" name="streetAddress" class="form-control" placeholder="Street Address" required>
         </div>
 
-        <!-- PROFILE -->
+        <div class="col-md-6">
+            <input type="text" name="barangay" class="form-control" placeholder="Barangay" required>
+        </div>
+
+        <div class="col-md-6">
+            <input type="text" name="cityMunicipality" class="form-control" placeholder="City/Municipality" required>
+        </div>
+
+        <div class="col-md-6">
+            <input type="text" name="province" class="form-control" placeholder="Province" required>
+        </div>
+
+        <div class="col-md-6">
+            <input type="text" name="country" class="form-control" placeholder="Country" required>
+        </div>
+
+        <div class="col-md-6">
+            <input type="text" name="zipCode" class="form-control" placeholder="ZIP Code" required>
+        </div>
+
         <div class="col-12">
-            <input type="file" name="profilePic" class="form-control">
+            <input type="text" name="contactNumber" class="form-control" placeholder="Contact Number" required>
         </div>
 
-        <!-- SUBMIT -->
         <div class="col-12 mt-3">
             <button type="submit" class="btn btn-primary w-100">SIGN UP</button>
         </div>

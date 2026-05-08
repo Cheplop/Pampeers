@@ -5,15 +5,40 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once __DIR__ . '/../app/config/config.php';
 
-// Fetch available sitters
-require_once __DIR__ . '/../app/controllers/sitter/sitterFetchAvail.php';
+// FIXED: Database Logic for Guests
+$sitters = [];
+$sittersNear = [];
+$userCity = "Cagayan De Oro"; // Default for guest view
 
-// Fetch sitters near the guardian (Defaulting to Cagayan De Oro for guests)
-$userCity = isset($user['cityMunicipality']) ? $user['cityMunicipality'] : 'Cagayan De Oro';
-require_once __DIR__ . '/../app/controllers/sitter/sitterFetchNear.php';
+try {
+    // 1. Fetch Available Sitters
+    $query = "SELECT s.sitterID, s.hourlyRate as rate, u.firstName, u.lastName, u.profilePic as img, u.cityMunicipality as city 
+              FROM sitters s 
+              JOIN users u ON s.userID = u.id 
+              WHERE s.verificationStatus = 'verified' AND u.isActive = 1 AND s.isAvailable = 1
+              LIMIT 12";
+    $res = $conn->query($query);
+    while ($row = $res->fetch_assoc()) {
+        $row['name'] = trim($row['firstName'] . ' ' . $row['lastName']);
+        $sitters[] = $row;
+    }
 
-$sitters = $sitters ?? [];
-$sittersNear = $sittersNear ?? [];
+    // 2. Fetch Near Sitters
+    $nearStmt = $conn->prepare("SELECT s.sitterID, s.hourlyRate as rate, u.firstName, u.lastName, u.profilePic as img, u.cityMunicipality as city 
+                                FROM sitters s 
+                                JOIN users u ON s.userID = u.id 
+                                WHERE s.verificationStatus = 'verified' AND u.isActive = 1 AND u.cityMunicipality = ?
+                                LIMIT 8");
+    $nearStmt->bind_param("s", $userCity);
+    $nearStmt->execute();
+    $resNear = $nearStmt->get_result();
+    while ($row = $resNear->fetch_assoc()) {
+        $row['name'] = trim($row['firstName'] . ' ' . $row['lastName']);
+        $sittersNear[] = $row;
+    }
+} catch (Exception $e) {
+    // Silent fail to keep page loading
+}
 ?>
 
 <!DOCTYPE html>
@@ -109,7 +134,6 @@ $sittersNear = $sittersNear ?? [];
 </div>
 
 <main class="container-fluid mt-2 px-4">
-    
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div class="section-title">Available Sitters</div>
         <div class="arrow-controls">
@@ -118,8 +142,8 @@ $sittersNear = $sittersNear ?? [];
         </div>
     </div>
 
-    <?php if (!empty($sitters)): ?>
-        <div class="carousel-wrapper" id="avail-carousel">
+    <div class="carousel-wrapper" id="avail-carousel">
+        <?php if (!empty($sitters)): ?>
             <?php foreach ($sitters as $peer): ?>
             <div class="carousel-card">
                 <div class="small-card">
@@ -129,10 +153,10 @@ $sittersNear = $sittersNear ?? [];
                         </button>
                         <img src="../app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter">
                     </div>
-                    <h6><?= htmlspecialchars($peer['name'] ?? 'Sitter') ?></h6>
-                    <p class="city"><?= htmlspecialchars($peer['city'] ?? '') ?></p>
+                    <h6><?= htmlspecialchars($peer['name']) ?></h6>
+                    <p class="city"><?= htmlspecialchars($peer['city']) ?></p>
                     <div class="d-flex justify-content-between align-items-center mt-2">
-                        <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
+                        <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate']) ?>/hr</p>
                         <button class="btn btn-sm btn-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                             Book
                         </button>
@@ -140,10 +164,10 @@ $sittersNear = $sittersNear ?? [];
                 </div>
             </div>
             <?php endforeach; ?>
-        </div>
-    <?php else: ?>
-        <p class="text-center text-muted">No available sitters found.</p>
-    <?php endif; ?>
+        <?php else: ?>
+            <p class="text-center text-muted w-100">No available sitters found.</p>
+        <?php endif; ?>
+    </div>
 
     <div class="d-flex justify-content-between align-items-center mt-4 mb-2" id="nearby-header">
         <div class="section-title">Peers in <?= htmlspecialchars($userCity) ?></div>
@@ -153,8 +177,8 @@ $sittersNear = $sittersNear ?? [];
         </div>
     </div>
 
-    <?php if (!empty($sittersNear)): ?>
-        <div class="carousel-wrapper" id="near-carousel">
+    <div class="carousel-wrapper" id="near-carousel">
+        <?php if (!empty($sittersNear)): ?>
             <?php foreach ($sittersNear as $peer): ?>
                 <div class="carousel-card">
                     <div class="small-card">
@@ -164,12 +188,10 @@ $sittersNear = $sittersNear ?? [];
                             </button>
                             <img src="../app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter">
                         </div>
-                        
-                        <h6><?= htmlspecialchars($peer['name'] ?? 'Sitter') ?></h6>
-                        <p class="city"><?= htmlspecialchars($peer['city'] ?? '') ?></p>
-                        
+                        <h6><?= htmlspecialchars($peer['name']) ?></h6>
+                        <p class="city"><?= htmlspecialchars($peer['city']) ?></p>
                         <div class="d-flex justify-content-between align-items-center mt-2">
-                            <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
+                            <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate']) ?>/hr</p>
                             <button class="btn btn-sm btn-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                                 Book
                             </button>
@@ -177,10 +199,10 @@ $sittersNear = $sittersNear ?? [];
                     </div>
                 </div>
             <?php endforeach; ?>
-        </div>
-    <?php else: ?>
-        <p class="text-center text-muted" id="near-empty">No sitters found in your city.</p>
-    <?php endif; ?>
+        <?php else: ?>
+            <p class="text-center text-muted w-100" id="near-empty">No sitters found in this city.</p>
+        <?php endif; ?>
+    </div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -194,63 +216,46 @@ function scrollCarousel(carouselId, direction) {
     }
 }
 
-// 1. AJAX SEARCH LOGIC FOR GUESTS
 document.getElementById('search-button').addEventListener('click', function(e) {
     e.preventDefault();
-    
     const where = document.getElementById('input-where').value.trim();
     const when = document.getElementById('input-when').value; 
     const who = document.getElementById('input-who').value.trim();
-    
-    const params = new URLSearchParams({
-        location: where,
-        date: when,
-        keyword: who
-    });
+    const params = new URLSearchParams({ location: where, date: when, keyword: who });
 
     fetch(`/Pampeers/app/controllers/user/search.php?${params.toString()}`)
-        .then(response => response.json())
-        .then(res => {
+        .then(res => res.json())
+        .then(data => {
             const container = document.getElementById('avail-carousel');
             container.innerHTML = ''; 
             
-            // Hide the "Nearby" section when searching so users focus on results
-            if(document.getElementById('nearby-header')) document.getElementById('nearby-header').style.display = 'none';
-            if(document.getElementById('near-carousel')) document.getElementById('near-carousel').style.display = 'none';
-            if(document.getElementById('near-empty')) document.getElementById('near-empty').style.display = 'none';
+            // Toggle visibility of the "Nearby" section on search results
+            document.getElementById('nearby-header').style.display = 'none';
+            document.getElementById('near-carousel').style.display = 'none';
 
-            if (res.success && res.data.length > 0) {
-                res.data.forEach(sitter => {
-                    const profilePic = sitter.profilePic ? sitter.profilePic : 'default.jpg';
-                    
+            if (data.length > 0) {
+                data.forEach(sitter => {
                     container.innerHTML += `
                         <div class="carousel-card">
                             <div class="small-card">
                                 <div class="card-img-container">
-                                    <button class="like-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                        <i class="fa-regular fa-heart"></i>
-                                    </button>
-                                    <img src="../app/uploads/profiles/${profilePic}" alt="Sitter">
+                                    <button class="like-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fa-regular fa-heart"></i></button>
+                                    <img src="../app/uploads/profiles/${sitter.profilePic || 'default.jpg'}" alt="Sitter">
                                 </div>
                                 <h6>${sitter.firstName} ${sitter.lastName}</h6>
                                 <p class="city">${sitter.cityMunicipality}</p>
                                 <div class="d-flex justify-content-between align-items-center mt-2">
                                     <p class="m-0 fw-bold">₱${sitter.hourlyRate}/hr</p>
-                                    <button class="btn btn-sm btn-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                        Book
-                                    </button>
+                                    <button class="btn btn-sm btn-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Book</button>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 });
             } else {
-                container.innerHTML = `<div class="text-muted p-5 text-center w-100">No available sitters found matching your criteria.</div>`;
+                container.innerHTML = '<div class="text-muted p-5 text-center w-100">No results found.</div>';
             }
-        })
-        .catch(err => console.error('Search error:', err));
+        });
 });
 </script>
-
 </body>
 </html>

@@ -5,18 +5,27 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once __DIR__ . '/../../config/config.php';
 
-// 1. ADDED: Define $userId so the SQL bind_param doesn't crash!
 $userId = $_SESSION['user_id'] ?? 0;
 
+// 1. First, get the current user's city to find people "Nearby"
+$userCity = "";
+$cityStmt = $conn->prepare("SELECT cityMunicipality FROM users WHERE id = ?");
+$cityStmt->bind_param("i", $userId);
+$cityStmt->execute();
+$userRes = $cityStmt->get_result()->fetch_assoc();
+$userCity = $userRes['cityMunicipality'] ?? '';
+$cityStmt->close();
+
+// 2. Fetch sitters in the same city
 $stmt = $conn->prepare("
     SELECT 
-        s.sitterID, -- We need this specific ID for the bookings table
+        s.sitterID, 
         u.firstName,
         u.lastName,
         u.profilePic,
         u.cityMunicipality,
         s.hourlyRate,
-        u.bio, -- 2. CHANGED: from u.bio to u.bio because it's now in the users table
+        u.bio, 
         s.verificationStatus,
         s.isAvailable
     FROM users u
@@ -24,16 +33,15 @@ $stmt = $conn->prepare("
     WHERE s.isAvailable = 1
       AND s.verificationStatus = 'verified'
       AND u.isActive = 1
+      AND u.cityMunicipality = ? 
       AND s.userID != ?
 ");
 
-$stmt->bind_param("i", $userId);
+$stmt->bind_param("si", $userCity, $userId);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// 3. CHANGED: Renamed $sitters to $sittersNear so it doesn't overwrite your available sitters list in the dashboard!
 $sittersNear = [];
-
 while ($row = $result->fetch_assoc()) {
     $sittersNear[] = [
         'sitterID' => $row['sitterID'],
@@ -45,4 +53,5 @@ while ($row = $result->fetch_assoc()) {
     ];
 }
 
-$stmt->close();
+header('Content-Type: application/json');
+echo json_encode($sittersNear);

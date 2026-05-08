@@ -12,6 +12,7 @@ $stmt = $conn->prepare("SELECT s.*, u.firstName, u.lastName FROM sitters s JOIN 
 $stmt->bind_param("i", $sitterID);
 $stmt->execute();
 $sitter = $stmt->get_result()->fetch_assoc();
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -28,37 +29,41 @@ $sitter = $stmt->get_result()->fetch_assoc();
             <div class="col-md-6">
                 <div class="card shadow-sm border-0 rounded-4 p-4">
                     <h3 class="mb-1">Book <?= htmlspecialchars($sitter['firstName'] . ' ' . $sitter['lastName']) ?></h3>
-                    <p class="text-primary fw-bold">₱<?= htmlspecialchars($sitter['hourlyRate']) ?> / hour</p>
-                    <hr>
+                    <p class="text-muted mb-4">Rate: ₱<?= htmlspecialchars($sitter['hourlyRate']) ?>/hr</p>
 
-                    <!-- This points to your existing create.php controller -->
-                    <form action="../../app/controllers/booking/create.php" method="POST">
-                        <input type="hidden" name="sitterID" value="<?= $sitterID ?>">
-
-                        <div class="mb-3">
-                            <label class="form-label">Date</label>
-                            <input type="date" name="bookingDate" class="form-control" required min="<?= date('Y-m-d') ?>">
+                    <form action="/Pampeers/app/controllers/booking/create.php" method="POST">
+                        <input type="hidden" name="sitterID" value="<?= htmlspecialchars($sitter['sitterID']) ?>">
+                        
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label fw-semibold">Start Date</label>
+                                <input type="date" name="bookingDate" class="form-control" required min="<?= date('Y-m-d') ?>">
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-semibold">Start Time</label>
+                                <input type="time" name="startTime" class="form-control" required>
+                            </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col">
-                                <label class="form-label">Start Time</label>
-                                <input type="time" name="startTime" class="form-control" required>
+                                <label class="form-label fw-semibold">End Date</label>
+                                <input type="date" name="endDate" class="form-control" required min="<?= date('Y-m-d') ?>">
                             </div>
                             <div class="col">
-                                <label class="form-label">End Time</label>
+                                <label class="form-label fw-semibold">End Time</label>
                                 <input type="time" name="endTime" class="form-control" required>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Notes for the Sitter (Optional)</label>
-                            <textarea name="notes" class="form-control" rows="3" placeholder="e.g. Allergies, house rules..."></textarea>
+                            <label class="form-label fw-semibold">Notes for the Sitter (Optional)</label>
+                            <textarea name="notes" class="form-control" rows="3" placeholder="e.g. Allergies, house rules, emergency contact..."></textarea>
                         </div>
 
                         <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary rounded-pill py-2">Submit Booking Request</button>
-                            <a href="guardianDashboard.php" class="btn btn-link text-muted">Cancel</a>
+                            <button type="submit" class="btn btn-primary rounded-pill py-2 fw-bold">Submit Booking Request</button>
+                            <a href="guardianDashboard.php" class="btn btn-link text-muted text-decoration-none text-center">Cancel</a>
                         </div>
                     </form>
                 </div>

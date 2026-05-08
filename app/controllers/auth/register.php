@@ -27,171 +27,82 @@ function generateUUIDv4(): string
 // Get and clean the input data from the form
 |--------------------------------------------------------------------------
 */
-$firstName        = trim($_POST['firstName'] ?? ''); // User's first name
-$middleName       = trim($_POST['middleName'] ?? ''); // Middle name (optional)
-$lastName         = trim($_POST['lastName'] ?? ''); // Last name
-$suffix           = trim($_POST['suffix'] ?? ''); // Name suffix like Jr.
-$birthDate        = trim($_POST['birthDate'] ?? ''); // Date of birth
-$sex              = trim($_POST['sex'] ?? ''); // Gender
-$role             = 'user'; // Default role is user
+$firstName        = trim($_POST['firstName'] ?? ''); 
+$middleName       = trim($_POST['middleName'] ?? ''); 
+$lastName         = trim($_POST['lastName'] ?? ''); 
+$suffix           = trim($_POST['suffix'] ?? ''); 
+$birthDate        = trim($_POST['birthDate'] ?? '');
+$sex              = trim($_POST['sex'] ?? '');
+$contactNumber    = trim($_POST['contactNumber'] ?? '');
+$emailAddress     = trim($_POST['emailAddress'] ?? ''); 
+$usernameInput    = trim($_POST['username'] ?? '');
+$passwordRaw      = $_POST['password'] ?? '';
+$streetAddress    = trim($_POST['streetAddress'] ?? '');
+$barangay         = trim($_POST['barangay'] ?? '');
+$cityMunicipality = trim($_POST['cityMunicipality'] ?? '');
+$province         = trim($_POST['province'] ?? '');
+$country          = trim($_POST['country'] ?? '');
+$zipCode          = trim($_POST['zipCode'] ?? '');
 
-$contactNumber    = trim($_POST['contactNumber'] ?? ''); // Phone number
-$emailAddress     = trim($_POST['emailAddress'] ?? ''); // Email address
-$usernameInput    = trim($_POST['username'] ?? ''); // Username
-$plainPassword    = $_POST['password'] ?? ''; // Password as entered
-
-$streetAddress    = trim($_POST['streetAddress'] ?? ''); // Street address
-$barangay         = trim($_POST['barangay'] ?? ''); // Barangay (local area)
-$cityMunicipality = trim($_POST['cityMunicipality'] ?? ''); // City or municipality
-$province         = trim($_POST['province'] ?? ''); // Province
-$country          = trim($_POST['country'] ?? ''); // Country
-$zipCode          = trim($_POST['zipCode'] ?? ''); // Zip code
-
-/*
-|--------------------------------------------------------------------------
-// Check that all required fields are filled
+/* |--------------------------------------------------------------------------
+// Validation
 |--------------------------------------------------------------------------
 */
-$requiredFields = [
-    'firstName'        => $firstName,
-    'lastName'         => $lastName,
-    'birthDate'        => $birthDate,
-    'sex'              => $sex,
-    'contactNumber'    => $contactNumber,
-    'emailAddress'     => $emailAddress,
-    'username'         => $usernameInput,
-    'password'         => $plainPassword,
-    'streetAddress'    => $streetAddress,
-    'barangay'         => $barangay,
-    'cityMunicipality' => $cityMunicipality,
-    'province'         => $province,
-    'country'          => $country,
-    'zipCode'          => $zipCode,
-];
-
-// Loop through each required field and check if it's empty
-foreach ($requiredFields as $field => $value) {
-    if ($value === '') {
-        // Redirect with error for the missing field
-        header('Location: /Pampeers/public/register.php?error=missing_' . urlencode($field));
-        exit();
-    }
-}
-
-/*
-|--------------------------------------------------------------------------
-// Extra validation checks
-|--------------------------------------------------------------------------
-*/
-// Check if email is valid format
-if (!filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
-    header('Location: /Pampeers/public/register.php?error=invalid_email');
+if (empty($firstName) || empty($lastName) || empty($emailAddress) || empty($usernameInput) || empty($passwordRaw)) {
+    header('Location: /Pampeers/public/register.php?error=missing_fields');
     exit();
 }
 
-// Check if sex is one of the allowed values
-$allowedSex = ['male', 'female', 'other'];
-if (!in_array(strtolower($sex), $allowedSex, true)) {
-    header('Location: /Pampeers/public/register.php?error=invalid_sex');
-    exit();
-}
-
-// Check if password is at least 8 characters
-if (strlen($plainPassword) < 8) {
-    header('Location: /Pampeers/public/register.php?error=weak_password');
-    exit();
-}
-
-/*
-|--------------------------------------------------------------------------
-// Check if email or username already exists
-|--------------------------------------------------------------------------
-*/
-$checkStmt = $conn->prepare("SELECT id FROM users WHERE emailAddress = ? OR username = ?");
-// Bind the email and username to check
-$checkStmt->bind_param("ss", $emailAddress, $usernameInput);
+// Check if username or email already exists
+$checkStmt = $conn->prepare("SELECT id FROM users WHERE username = ? OR emailAddress = ? LIMIT 1");
+$checkStmt->bind_param("ss", $usernameInput, $emailAddress);
 $checkStmt->execute();
-$checkResult = $checkStmt->get_result();
-
-// If any result found, account already exists
-if ($checkResult->num_rows > 0) {
-    $checkStmt->close();
-    header('Location: /Pampeers/public/register.php?error=account_exists');
+if ($checkStmt->get_result()->num_rows > 0) {
+    header('Location: /Pampeers/public/register.php?error=already_exists');
     exit();
 }
 $checkStmt->close();
 
-/*
-|--------------------------------------------------------------------------
-// Prepare the values for inserting into database
+/* |--------------------------------------------------------------------------
+// Defaults (Bio and Profile Photo handled here)
 |--------------------------------------------------------------------------
 */
-$uuid = generateUUIDv4(); // Create unique ID
-$passwordHashed = password_hash($plainPassword, PASSWORD_DEFAULT); // Hash the password for security
-$profilePic = 'default.jpg'; // Default profile picture
+$uuid = generateUUIDv4();
+$passwordHashed = password_hash($passwordRaw, PASSWORD_DEFAULT);
+$role = "guardian"; 
+
+// Both Bio and Profile Pic are set to defaults to be updated later in the Profile Area
+$bio = ""; 
+$profilePic = "default.jpg"; 
 
 /*
 |--------------------------------------------------------------------------
-// Insert the new user into the database
+// Insert the new user
 |--------------------------------------------------------------------------
 */
 $insertStmt = $conn->prepare("
     INSERT INTO users (
-        uuid,
-        firstName,
-        middleName,
-        lastName,
-        suffix,
-        birthDate,
-        sex,
-        role,
-        contactNumber,
-        emailAddress,
-        username,
-        password,
-        streetAddress,
-        barangay,
-        cityMunicipality,
-        province,
-        country,
-        zipCode,
-        profilePic
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        uuid, firstName, middleName, lastName, suffix, 
+        birthDate, sex, role, contactNumber, emailAddress, 
+        username, password, streetAddress, barangay, 
+        cityMunicipality, province, country, zipCode, 
+        profilePic, bio
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ");
 
-// Bind all the values to the query
 $insertStmt->bind_param(
-    "sssssssssssssssssss",
-    $uuid,
-    $firstName,
-    $middleName,
-    $lastName,
-    $suffix,
-    $birthDate,
-    $sex,
-    $role,
-    $contactNumber,
-    $emailAddress,
-    $usernameInput,
-    $passwordHashed,
-    $streetAddress,
-    $barangay,
-    $cityMunicipality,
-    $province,
-    $country,
-    $zipCode,
-    $profilePic
+    "ssssssssssssssssssss",
+    $uuid, $firstName, $middleName, $lastName, $suffix,
+    $birthDate, $sex, $role, $contactNumber, $emailAddress,
+    $usernameInput, $passwordHashed, $streetAddress, $barangay,
+    $cityMunicipality, $province, $country, $zipCode,
+    $profilePic, $bio
 );
 
-// If insert succeeds, redirect to login with success message
 if ($insertStmt->execute()) {
     $insertStmt->close();
-    header('Location: /Pampeers/public/login.php?registration=success');
-    exit();
+    header('Location: /Pampeers/public/guestDashboard.php?success=registered');
+} else {
+    header('Location: /Pampeers/public/register.php?error=db_error&details=' . urlencode($conn->error));
 }
-
-// If insert failed, redirect with error
-$insertStmt->close();
-header('Location: /Pampeers/public/register.php?error=registration_failed');
 exit();
-?>

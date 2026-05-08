@@ -1,25 +1,16 @@
 <?php
-// Include the config file to connect to the database[cite: 2]
 require_once __DIR__ . '/../../config/config.php';
-// Include the auth middleware to check if user is logged in[cite: 2]
 require_once __DIR__ . '/../../middleware/auth.php';
 
-// Make sure user is logged in
 requireAuth();
 
-// Get the user ID and role from the session
 $userId = $_SESSION['user_id'];
-$role = $_SESSION['role'] ?? 'guardian'; // Default to guardian if not set
+$role = $_SESSION['role'] ?? 'guardian';
 
 $bookings = [];
 
-/**
- * We determine the "Target User" details to fetch:
- * - If I am a Sitter, I want to see the Guardian (User) who booked me.
- * - If I am a Guardian, I want to see the Sitter I booked.
- */
+// Both queries now select b.* (which includes endDate)
 if ($role === 'sitter') {
-    // Query for Sitter: Get bookings where someone booked THIS sitter
     $query = "
         SELECT 
             b.*, 
@@ -31,11 +22,10 @@ if ($role === 'sitter') {
         WHERE s.userID = ? AND u.isActive = 1
         ORDER BY b.createdAt DESC";
 } else {
-    // Query for Guardian: Get bookings where THIS user booked a sitter
     $query = "
         SELECT 
             b.*, 
-            s.sitterID AS targetID, u.firstName, u.middleName, u.lastName, u.suffix, 
+            u.id AS targetID, u.firstName, u.middleName, u.lastName, u.suffix, 
             u.profilePic, u.cityMunicipality, u.province
         FROM bookings b
         INNER JOIN sitters s ON b.sitterID = s.sitterID
@@ -50,7 +40,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 while ($row = $result->fetch_assoc()) {
-    // Unified Name Construction
     $fullName = trim(
         $row['firstName'] . 
         (!empty($row['middleName']) ? ' ' . $row['middleName'] : '') . 
@@ -61,23 +50,21 @@ while ($row = $result->fetch_assoc()) {
     $bookings[] = [
         'bookingID'      => $row['bookingID'],
         'uuid'           => $row['uuid'],
-        'targetID'       => $row['targetID'], // SitterID for Guardians, UserID for Sitters
+        'targetID'       => $row['targetID'],
         'displayName'    => $fullName,
         'profilePic'     => $row['profilePic'] ?: 'default.jpg',
         'city'           => $row['cityMunicipality'],
         'province'       => $row['province'],
-        'bookingDate'    => $row['bookingDate'],
+        'startDate'      => $row['bookingDate'], // bookingDate is used as Start Date
+        'endDate'        => $row['endDate'],     // Newly added field
         'startTime'      => $row['startTime'],
         'endTime'        => $row['endTime'],
-        'hoursRequested' => $row['hoursRequested'],
         'totalAmount'    => $row['totalAmount'],
         'status'         => $row['status'],
         'notes'          => $row['notes'],
-        'createdAt'      => $row['createdAt'],
+        'createdAt'      => $row['createdAt']
     ];
 }
 
-$stmt->close();
-
-// Now $bookings contains everything you need regardless of role.
-?>
+header('Content-Type: application/json');
+echo json_encode($bookings);

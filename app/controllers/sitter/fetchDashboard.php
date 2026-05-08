@@ -15,7 +15,9 @@ $stmt = $conn->prepare("
         suffix,
         cityMunicipality,
         province,
-        profilePic
+        profilePic,
+        role,
+        bio
     FROM users
     WHERE id = ?
     LIMIT 1
@@ -27,9 +29,12 @@ $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
     session_destroy();
-    header('Location: /Pampeers/public/login.php');
+    header('Location: /Pampeers/public/guestDashboard.php?error=session_expired');
     exit();
 }
 
 $user = $result->fetch_assoc();
 $stmt->close();
+
+header('Content-Type: application/json');
+echo json_encode($user);
