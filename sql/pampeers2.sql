@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 06, 2026 at 05:24 AM
+-- Generation Time: May 08, 2026 at 09:30 AM
 -- Server version: 11.8.6-MariaDB-0+deb13u1 from Debian
 -- PHP Version: 8.4.16
 
@@ -47,7 +47,7 @@ CREATE TABLE `bookings` (
 --
 
 INSERT INTO `bookings` (`bookingID`, `uuid`, `userID`, `sitterID`, `bookingDate`, `startTime`, `endTime`, `hoursRequested`, `totalAmount`, `status`, `notes`, `createdAt`) VALUES
-(1, '54c7deaf-29b1-49dd-a33f-886e3c246059', 4, 3, '2026-12-31', '00:31:00', '12:31:00', 12.00, 0.00, 'accepted', '', '2026-05-05 08:45:50');
+(1, '54c7deaf-29b1-49dd-a33f-886e3c246059', 4, 3, '2026-12-31', '00:31:00', '12:31:00', 12.00, 0.00, 'completed', '', '2026-05-05 08:45:50');
 
 -- --------------------------------------------------------
 
@@ -79,6 +79,13 @@ CREATE TABLE `reviews` (
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `reviews`
+--
+
+INSERT INTO `reviews` (`reviewID`, `uuid`, `bookingID`, `userID`, `sitterID`, `rating`, `comment`, `createdAt`) VALUES
+(1, '0904d429-2bd7-ef67-2926-30762695c9f4', 1, 4, 3, 5, '', '2026-05-08 05:06:57');
+
 -- --------------------------------------------------------
 
 --
@@ -94,16 +101,17 @@ CREATE TABLE `sitters` (
   `isAvailable` tinyint(1) NOT NULL DEFAULT 1,
   `ratingAverage` decimal(3,2) DEFAULT NULL,
   `verificationStatus` enum('pending','verified','rejected') NOT NULL DEFAULT 'pending',
-  `createdAt` timestamp NOT NULL DEFAULT current_timestamp()
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `allowedAges` varchar(255) DEFAULT 'Baby, Toddler, Child, Kid'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `sitters`
 --
 
-INSERT INTO `sitters` (`sitterID`, `uuid`, `userID`, `hourlyRate`, `experience`, `isAvailable`, `ratingAverage`, `verificationStatus`, `createdAt`) VALUES
-(2, '460b5d85478ef4979c30cc96c1e63413', 2, 0.00, 0, 0, NULL, 'verified', '2026-05-02 06:18:52'),
-(3, '0fe63d8db80e820aa406e20b1b190b76', 3, 20.00, 2, 1, NULL, 'verified', '2026-05-02 13:00:27');
+INSERT INTO `sitters` (`sitterID`, `uuid`, `userID`, `hourlyRate`, `experience`, `isAvailable`, `ratingAverage`, `verificationStatus`, `createdAt`, `allowedAges`) VALUES
+(2, '460b5d85478ef4979c30cc96c1e63413', 2, 0.00, 0, 0, NULL, 'verified', '2026-05-02 06:18:52', 'Baby, Toddler, Child, Kid'),
+(3, '0fe63d8db80e820aa406e20b1b190b76', 3, 20.00, 2, 1, 5.00, 'verified', '2026-05-02 13:00:27', 'Baby, Toddler, Child, Kid');
 
 -- --------------------------------------------------------
 
@@ -216,7 +224,7 @@ ALTER TABLE `favourites`
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `reviewID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `reviewID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `sitters`
