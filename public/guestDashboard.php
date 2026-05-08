@@ -53,7 +53,13 @@ $sittersNear = $sittersNear ?? [];
                 <div class="divider"></div>
                 <div class="field-group">
                     <label for="input-who">Who</label>
-                    <input type="text" id="input-who" placeholder="e.g. newborn" autocomplete="off" />
+                    <select id="input-who" class="form-control border-0 bg-transparent p-0 shadow-none text-muted">
+                        <option value="">Any Age</option>
+                        <option value="Baby">Baby (0-1 yrs)</option>
+                        <option value="Toddler">Toddler (1-3 yrs)</option>
+                        <option value="Child">Child (4-8 yrs)</option>
+                        <option value="Kid">Kid (9+ yrs)</option>
+                    </select>
                 </div>
             </div>
             <button class="search-btn" id="search-button">
@@ -70,7 +76,6 @@ $sittersNear = $sittersNear ?? [];
     </div>
 </header>
 
-<!-- Login Modal -->
 <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content custom-login-modal">            
@@ -105,7 +110,6 @@ $sittersNear = $sittersNear ?? [];
 
 <main class="container-fluid mt-2 px-4">
     
-    <!-- 1. Available Sitters Section -->
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div class="section-title">Available Sitters</div>
         <div class="arrow-controls">
@@ -128,7 +132,7 @@ $sittersNear = $sittersNear ?? [];
                     <h6><?= htmlspecialchars($peer['name'] ?? 'Sitter') ?></h6>
                     <p class="city"><?= htmlspecialchars($peer['city'] ?? '') ?></p>
                     <div class="d-flex justify-content-between align-items-center mt-2">
-                        <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate'] ?? '0') ?></p>
+                        <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
                         <button class="btn btn-sm btn-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                             Book
                         </button>
@@ -141,8 +145,7 @@ $sittersNear = $sittersNear ?? [];
         <p class="text-center text-muted">No available sitters found.</p>
     <?php endif; ?>
 
-    <!-- 2. Nearby Section (Restored Title and Fixed Guest Logic) -->
-    <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-2" id="nearby-header">
         <div class="section-title">Peers in <?= htmlspecialchars($userCity) ?></div>
         <div class="arrow-controls">
             <button class="arrow-btn" onclick="scrollCarousel('near-carousel', -1)"> < </button>
@@ -166,7 +169,7 @@ $sittersNear = $sittersNear ?? [];
                         <p class="city"><?= htmlspecialchars($peer['city'] ?? '') ?></p>
                         
                         <div class="d-flex justify-content-between align-items-center mt-2">
-                            <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate'] ?? '0') ?></p>
+                            <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
                             <button class="btn btn-sm btn-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                                 Book
                             </button>
@@ -176,7 +179,7 @@ $sittersNear = $sittersNear ?? [];
             <?php endforeach; ?>
         </div>
     <?php else: ?>
-        <p class="text-center text-muted">No sitters found in your city.</p>
+        <p class="text-center text-muted" id="near-empty">No sitters found in your city.</p>
     <?php endif; ?>
 </main>
 
@@ -190,6 +193,63 @@ function scrollCarousel(carouselId, direction) {
         container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
     }
 }
+
+// 1. AJAX SEARCH LOGIC FOR GUESTS
+document.getElementById('search-button').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    const where = document.getElementById('input-where').value.trim();
+    const when = document.getElementById('input-when').value; 
+    const who = document.getElementById('input-who').value.trim();
+    
+    const params = new URLSearchParams({
+        location: where,
+        date: when,
+        keyword: who
+    });
+
+    fetch(`/Pampeers/app/controllers/user/search.php?${params.toString()}`)
+        .then(response => response.json())
+        .then(res => {
+            const container = document.getElementById('avail-carousel');
+            container.innerHTML = ''; 
+            
+            // Hide the "Nearby" section when searching so users focus on results
+            if(document.getElementById('nearby-header')) document.getElementById('nearby-header').style.display = 'none';
+            if(document.getElementById('near-carousel')) document.getElementById('near-carousel').style.display = 'none';
+            if(document.getElementById('near-empty')) document.getElementById('near-empty').style.display = 'none';
+
+            if (res.success && res.data.length > 0) {
+                res.data.forEach(sitter => {
+                    const profilePic = sitter.profilePic ? sitter.profilePic : 'default.jpg';
+                    
+                    container.innerHTML += `
+                        <div class="carousel-card">
+                            <div class="small-card">
+                                <div class="card-img-container">
+                                    <button class="like-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                        <i class="fa-regular fa-heart"></i>
+                                    </button>
+                                    <img src="../app/uploads/profiles/${profilePic}" alt="Sitter">
+                                </div>
+                                <h6>${sitter.firstName} ${sitter.lastName}</h6>
+                                <p class="city">${sitter.cityMunicipality}</p>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <p class="m-0 fw-bold">₱${sitter.hourlyRate}/hr</p>
+                                    <button class="btn btn-sm btn-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                        Book
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                container.innerHTML = `<div class="text-muted p-5 text-center w-100">No available sitters found matching your criteria.</div>`;
+            }
+        })
+        .catch(err => console.error('Search error:', err));
+});
 </script>
 
 </body>
