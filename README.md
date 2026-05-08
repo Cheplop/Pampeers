@@ -1,43 +1,58 @@
-# Pampeers PHP Web Application - Architecture Overview
+# Pampeers Babysitting Booking Platform
 
-Based on the workspace structure, here's a comprehensive breakdown of the application:
+## System Overview
 
-## Root Directory Structure
-The application follows a standard backend-organized PHP architecture with four main directories:
+Pampeers is a web-based babysitting booking platform built with PHP and MySQL. The system is designed to connect guardians (parents) with qualified sitters, providing a secure and efficient way to manage bookings, profiles, and reviews. The platform supports three main user roles:
 
-## `app/` - Backend Application Logic
-The core of the application containing all server-side logic.
+### Guardian
+- Can search for sitters based on location, availability, and age group requirements.
+- Can book, review, and manage favourite sitters.
+- Has access to a personalized dashboard to manage bookings and profile information.
 
-### `config/`
-- `config.php` - Central configuration file that:
-  - Sets timezone to Asia/Manila
-  - Initializes PHP sessions
-  - Contains database connection credentials (MySQLi connection to 'pampeers' database)
-  - Defines constants and establishes the primary database connection `$conn`
+### Sitter
+- Can set availability, update professional information, and manage bookings.
+- Receives booking requests from guardians and can accept or decline them.
+- Has a dashboard to view upcoming jobs and manage their profile.
 
-### `middleware/`
-- `auth.php` - Authentication and authorization middleware providing:
-  - `requireAuth()` - Verifies user is logged in (checks `$_SESSION['user_id']`), redirects to login if not
-  - `requireRole($role)` - Enforces role-based access control (admin, user, sitter roles)
-  - Used to protect restricted endpoints throughout the application
+### Admin
+- Manages user accounts, including activating, deactivating, or deleting users and sitters.
+- Verifies sitter credentials and oversees platform activity.
+- Accesses an admin dashboard for system-wide management.
 
-### `controllers/` - Feature-Based Business Logic
-Organized into functional modules, each handling specific domain logic:
+## Database Logic
 
-#### Authentication Module (`auth/`)
-- `login.php` - Handles user login (validates credentials, sets sessions)
-- `logout.php` - Clears user sessions
-- `register.php` - New user registration
+- **Users Table:** Stores basic information for all users (guardians and sitters), such as name, email, password, and role.
+- **Sitters Table:** Stores professional information specific to sitters (e.g., bio, experience, certifications). Each sitter is linked to a user via a one-to-one relationship (one user can be one sitter, but not all users are sitters).
+- **Bookings Table:** Manages booking records, linking guardians and sitters. Each booking includes `startDateTime` and `endDateTime` fields to specify the booking period.
 
-#### Booking Module (`booking/`)
-- `create.php` - Creates new pet sitting bookings with UUID generation
-- `fetchUserBookings.php` - Retrieves bookings for a user
-- `fetchSitterBookings.php` - Retrieves bookings for a pet sitter
-- `updateStatus.php` - Updates booking status (e.g., pending → accepted/cancelled)
+## Search Mechanism
 
-#### Messaging Module (`message/`)
-- `fetchInbox.php` - Retrieves user conversations
-- `fetchConversation.php` - Loads message history between two users
+The search functionality allows guardians to find suitable sitters using three main filters:
+
+- **Location (WHERE):** Filters sitters based on the location field in the sitters or users table using SQL `WHERE` clauses.
+- **Date Availability (WHEN):** Checks sitter availability by ensuring there are no conflicting bookings in the specified date range (`startDateTime` and `endDateTime`).
+- **Age Groups (WHO):** Filters sitters based on the age groups they are willing to care for, typically stored as a field in the sitters table.
+
+## Setup Instructions
+
+1. **Clone the Repository:**
+  ```bash
+  git clone <repository-url>
+  ```
+2. **Database Setup:**
+  - Import the database schema and sample data from `sql/pampeers2.sql` into your MySQL server.
+  - Update `app/config/config.php` with your database credentials.
+3. **Web Server:**
+  - Place the project files in your web server's root directory (e.g., `htdocs` for XAMPP or `www` for WAMP).
+  - Ensure PHP and MySQL are running.
+4. **File Permissions:**
+  - Make sure the `app/uploads/profiles/` directory is writable for profile image uploads.
+5. **Access the Application:**
+  - Open your browser and navigate to the appropriate URL (e.g., `http://localhost/Pampeers/public/`).
+
+---
+
+For further details, see the in-code documentation and comments provided in each PHP file.
 - `send.php` - Sends messages between users
 - `sendSupport.php` - Sends messages to admin support
 
@@ -83,7 +98,7 @@ Contains presentation layer and user-facing pages.
   - Payment history
 
 ## `sql/` - Database
-- `pampeers.sql` - Complete database schema (SQL dump)
+- `Pampeers.sql` - Complete database schema (SQL dump)
   - Defines all tables for users, bookings, payments, messages, etc.
   - Used for initial database setup and restoration
 
