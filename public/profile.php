@@ -78,7 +78,6 @@ if ($isSitter && $verificationStatus === 'verified') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="/Pampeers/public/css/guardianProfile.css">
-    <link rel="stylesheet" href="/Pampeers/public/css/sitterDashboard.css">
 </head>
 
 <body>
@@ -86,21 +85,24 @@ if ($isSitter && $verificationStatus === 'verified') {
 <header class="sticky-top custom-header">
     <div class="nav-container d-flex align-items-center justify-content-between px-3">
 
-        <div class="d-flex align-items-center gap-2">
-            <img src="/Pampeers/app/uploads/pampeerlogo.png" class="logo-img" alt="Pampeers Logo">
+        <div class="d-flex d-none d-md-flex align-items-center gap-2">
+            <a href="/Pampeers/public/guardian/guardianDashboard.php">
+                <img src="/Pampeers/app/uploads/pampeerlogo.png" class="logo-img" alt="Pampeers Logo">
+            </a>
             <p class="brand m-0">Pampeers</p>
         </div>
 
-        <div class="right-side-p d-flex align-items-center gap-3">
+        <div class="right-side-p d-flex align-items-center justify-content-end gap-3">
             
-            <a href="/Pampeers/public/guardian/guardianDashboard.php" class="signup-btn">
-                Guardian Dashboard
-            </a>
+                <?php if ($isSitter): ?>
+                    <?php else: ?>
+                        <a href="..." class="btnbecome">become a Sitter</a>
+                    <?php endif; ?>
 
             <?php if ($isSitter): ?>
                 <?php if ($verificationStatus === 'verified'): ?>
                     <a href="/Pampeers/public/sitter/sitterDashboard.php" class="signup-btn">
-                        Sitter Dashboard
+                        Verified Sitter
                     </a>
                 <?php elseif ($verificationStatus === 'pending'): ?>
                     <span class="btn btn-secondary btn-sm disabled">
@@ -112,26 +114,32 @@ if ($isSitter && $verificationStatus === 'verified') {
                     </span>
                 <?php endif; ?>
             <?php endif; ?>
+            
+            <div class="nav-btn d-flex gap-2">
+                <a href="profile.php" class="text-decoration-none">
+                    <div class="profile-wrapper">
+                        <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($profilePic); ?>" class="profile-img" alt="Profile" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                    </div>
+                </a>
 
-            <a href="profile.php" class="text-decoration-none">
-                <div class="profile-wrapper">
-                    <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($profilePic); ?>" class="profile-img" alt="Profile" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                <div class="dropdown">
+                    <button class="btn" type="button" data-bs-toggle="dropdown" data-bs-offset="0,15" =aria-expanded="false">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="profile.php"><i class="fa-regular fa-user me-2"></i>View Profile</a>
+                        </li>
+                        <li><button class="dropdown-item" type="button"><i class="fa-regular fa-heart me-2"></i>Favourites</button>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/Pampeers/public/sitter/sitterDashboard.php"><i class="fa-solid fa-baby-carriage me-2"></i>Bookings</a>
+                        </li>
+                        <li class="logout">
+                            <a class="dropdown-item" href="/Pampeers/app/controllers/auth/logout.php"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Logout</a>
+                        </li>
+                    </ul>
                 </div>
-            </a>
-
-            <div class="dropdown">
-                <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><button class="dropdown-item" type="button">Favourites</button></li>
-                    <li>
-                        <a class="dropdown-item" href="profile.php"><b>Profile</b></a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="/Pampeers/app/controllers/auth/logout.php">Logout</a>
-                    </li>
-                </ul>
             </div>
 
         </div>
@@ -151,47 +159,43 @@ if ($isSitter && $verificationStatus === 'verified') {
         </div>
     <?php endif; ?>
 
-    <div class="row justify-content-center gx-4 mb-4">
+<div class="row justify-content-center gx-4 mb-4">
 
-        <div class="col-lg-5 col-sm-12 align-self-center">
-            <div class="profile-card d-flex flex-column flex-md-row gap-4 border p-3"> 
-                <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($profilePic) ?>" alt="Profile Picture" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
-                
-                <div class="flex-column">
-                    <p class="text-muted m-0"><?= htmlspecialchars($email) ?></p>
-                    <h4><?= htmlspecialchars($fullName) ?></h4>
-                    <p><?= !empty($bio) ? htmlspecialchars($bio) : 'Bio place here' ?></p>
-                        
-                    <div class="d-flex gap-2 flex-wrap">
-                        <a href="/Pampeers/public/editProfile.php" class="btnedit btn btn-primary btn-sm">Edit Profile</a>
-
-                        <?php if ($isSitter): ?>
-                            <a href="/Pampeers/public/editProfile.php" class="btn btn-warning btn-sm">Edit Sitter Profile</a>
-
-                            <?php if ($verificationStatus === 'pending'): ?>
-                                <span class="btn btn-secondary btn-sm disabled">Pending Verification</span>
-                            <?php endif; ?>
-                            
-                        <?php else: ?>
-                            <a href="/Pampeers/app/controllers/user/becomeSitter.php" class="btnbecome btn btn-success btn-sm">Become a Sitter</a>
-                        <?php endif; ?>
+    <div class="col-lg-5 col-sm-12 mb-3 mb-lg-0">
+        <div class="profile-card d-flex flex-column flex-md-row gap-4 border p-3 h-100"> 
+            <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($profilePic) ?>" 
+                 alt="Profile Picture">
+            
+            <div class="d-flex flex-column justify-content-center">
+                <div>
+                    <p class="text-muted m-0" style="font-size: 0.9rem;"><?= htmlspecialchars($email) ?></p>
+                    <div class="d-flex align-items-center gap-2">
+                        <h4 class="mb-1"><?= htmlspecialchars($fullName) ?></h4>
+                        <a href="/Pampeers/public/editProfile.php" class="edit-icon">
+                            <i class="fa-solid fa-pen" alt="Edit Profile"></i>
+                        </a>
+                        </i>
                     </div>
+                    <p class="mb-3"><?= !empty($bio) ? htmlspecialchars($bio) : 'Bio place here' ?></p>
                 </div>
-            </div>
+            </div>  
         </div>
 
-        <div class="col-lg-4 col-sm-12 align-self-center mt-3 mt-lg-0">
-            <div class="details-card d-flex gap-4 border p-3 h-100">
-                <div class="d-flex flex-column w-100 justify-content-center">
-                    <p class="m-0 py-2"><i class="fa-solid fa-cake-candles me-2"></i> Age: 67</p>
-                    <hr class="m-0">
-                    <p class="m-0 py-2"><i class="fa-solid fa-location-arrow me-2"></i> Address: <?= htmlspecialchars($location) ?></p>
-                    <hr class="m-0">
-                    <p class="m-0 py-2"><i class="fa-solid fa-users me-2"></i> Joined: 67 Years ago</p>
-                </div>
+    </div>
+
+    <div class="col-lg-4 col-sm-12">
+        <div class="details-card d-flex border p-3 h-100">
+            <div class="d-flex flex-column justify-content-center w-100">
+                <p class="m-2 py-2"><i class="fa-solid fa-cake-candles me-2"></i> Age: 67</p>
+                <hr class="m-0">
+                <p class="m-2 py-2"><i class="fa-solid fa-location-arrow me-2"></i> Address: <?= htmlspecialchars($location) ?></p>
+                <hr class="m-0">
+                <p class="m-2 py-2"><i class="fa-solid fa-users me-2"></i> Joined: 67 Years ago</p>
             </div>
         </div>
     </div>
+
+</div>
     
     <div class="row justify-content-center mb-5">
         <div class="col-lg-9">
