@@ -25,8 +25,9 @@ $stmt->close();
 $role = $user['role'] ?? 'guardian';
 
 /* ================= SITTER DATA ================= */
+// FIX: Removed 'bio' from this query because it is now in the 'users' table!
 $sitterStmt = $conn->prepare("
-    SELECT sitterID, verificationStatus, bio, hourlyRate, experience, isAvailable
+    SELECT sitterID, verificationStatus, hourlyRate, experience, isAvailable
     FROM sitters
     WHERE userID = ?
     LIMIT 1
@@ -77,7 +78,6 @@ $backLink = ($role === 'sitter') ? 'profile.php' : 'profile.php';
             <div class="small-card p-4 shadow-sm bg-white rounded-4">
                 <form action="/Pampeers/app/controllers/user/updateProfile.php" method="POST" enctype="multipart/form-data">
                     
-                    <!-- PROFILE PIC SECTION -->
                     <div class="text-center mb-4">
                         <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($user['profilePic'] ?? 'default.jpg') ?>"
                              class="rounded-circle shadow-sm border"
@@ -90,7 +90,14 @@ $backLink = ($role === 'sitter') ? 'profile.php' : 'profile.php';
 
                     <hr class="my-4">
 
-                    <!-- PERSONAL INFO -->
+                    <h6 class="fw-bold mb-3">About Me</h6>
+                    <div class="mb-4">
+                        <textarea name="bio" class="form-control" rows="4" placeholder="Tell everyone a little bit about yourself..."><?= htmlspecialchars($user['bio'] ?? '') ?></textarea>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h6 class="fw-bold mb-3">Personal Information</h6>
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label">First Name</label>
@@ -124,7 +131,7 @@ $backLink = ($role === 'sitter') ? 'profile.php' : 'profile.php';
 
                     <hr class="my-4">
 
-                    <!-- ACCOUNT & CONTACT -->
+                    <h6 class="fw-bold mb-3">Account & Contact</h6>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Username</label>
@@ -138,7 +145,6 @@ $backLink = ($role === 'sitter') ? 'profile.php' : 'profile.php';
 
                     <hr class="my-4">
 
-                    <!-- ADDRESS SECTION -->
                     <h6 class="fw-bold mb-3">Address Information</h6>
                     <div class="row g-3">
                         <div class="col-md-8">
@@ -163,15 +169,9 @@ $backLink = ($role === 'sitter') ? 'profile.php' : 'profile.php';
                         </div>
                     </div>
 
-                    <!-- SITTER SPECIFIC SECTION -->
                     <?php if ($isVerifiedSitter): ?>
                         <hr class="my-4">
                         <h5 class="fw-bold text-primary mb-3"><i class="fa-solid fa-baby-carriage me-2"></i>Sitter Settings</h5>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Professional Bio</label>
-                            <textarea name="bio" class="form-control" rows="4" placeholder="Tell parents about your experience and care style..."><?= htmlspecialchars($sitterData['bio'] ?? '') ?></textarea>
-                        </div>
 
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -194,7 +194,7 @@ $backLink = ($role === 'sitter') ? 'profile.php' : 'profile.php';
 
                     <?php elseif ($isSitter): ?>
                         <div class="alert alert-info mt-4 rounded-3 border-0">
-                            <i class="fa-solid fa-circle-info me-2"></i> Your sitter application is currently <strong>Pending Verification</strong>. Once approved, you can set your rates and bio.
+                            <i class="fa-solid fa-circle-info me-2"></i> Your sitter application is currently <strong>Pending Verification</strong>. Once approved, you can set your rates.
                         </div>
                     <?php else: ?>
                         <div class="mt-4 text-center p-3 bg-light rounded-3">

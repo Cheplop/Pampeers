@@ -15,7 +15,7 @@ $stmt = $conn->prepare("
         u.profilePic,
         u.cityMunicipality,
         s.hourlyRate,
-        u.bio, -- CHANGED from s.bio to u.bio because you moved it to the users table!
+        u.bio, -- CHANGED from u.bio to u.bio because you moved it to the users table!
         s.verificationStatus,
         s.isAvailable
     FROM users u

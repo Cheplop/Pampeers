@@ -64,6 +64,16 @@ $userCity = $user['cityMunicipality'] ?? 'Cagayan de Oro';
         <div class="search-bar d-flex align-items-center justify-content-between">
             <div class="search-labels d-flex align-items-center gap-3 flex-grow-1">
                 <div class="field-group">
+                    <label for="input-where">Where</label>
+                    <input type="text" id="input-where" placeholder="City or area" />
+                </div>
+                <div class="divider"></div>
+                <div class="field-group">
+                    <label for="input-when">When</label>
+                    <input type="date" id="input-when" />
+                </div>
+                <div class="divider"></div>
+                <div class="field-group">
                     <label for="input-who">Who</label>
                     <select id="input-who" class="form-control border-0 bg-transparent p-0 shadow-none text-muted">
                         <option value="">Any Age</option>
@@ -237,8 +247,6 @@ document.querySelector('.search-btn').addEventListener('click', function(e) {
 });
 
 // 2. EVENT DELEGATION FOR LIKE BUTTONS
-// By attaching this listener to the container instead of the buttons directly,
-// it will continue to work even after the search replaces the HTML inside the container!
 document.getElementById('avail-carousel').addEventListener('click', function(e) {
     const btn = e.target.closest('.like-btn');
     if (!btn) return; // If they didn't click a like button, do nothing

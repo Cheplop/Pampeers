@@ -95,7 +95,7 @@ INSERT INTO `reviews` (`reviewID`, `uuid`, `bookingID`, `userID`, `sitterID`, `r
 CREATE TABLE `sitters` (
   `sitterID` int(11) NOT NULL,
   `uuid` char(36) NOT NULL,
-  `userID` int(11) NOT NULL,
+  `userID ` int(11) NOT NULL,
   `hourlyRate` decimal(10,2) NOT NULL DEFAULT 0.00,
   `experience` int(11) NOT NULL DEFAULT 0,
   `isAvailable` tinyint(1) NOT NULL DEFAULT 1,

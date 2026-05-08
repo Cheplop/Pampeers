@@ -27,7 +27,7 @@ $province         = trim($_POST['province'] ?? '');
 $country          = trim($_POST['country'] ?? '');
 $zipCode          = trim($_POST['zipCode'] ?? '');
 
-/* SITTER FIELDS */
+/* BIO MOVED TO USERS, RATE/EXP STAY IN SITTERS */
 $bio         = trim($_POST['bio'] ?? '');
 $hourlyRate  = trim($_POST['hourlyRate'] ?? '0.00');
 $experience  = trim($_POST['experience'] ?? '0');
@@ -55,13 +55,12 @@ $current = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
 $currentPic = $current['profilePic'] ?? 'default.jpg';
-$userRole   = $current['role']; // Store role for redirection
+$userRole   = $current['role']; 
 $sitterId   = $current['sitterID'] ?? null;
 $isVerifiedSitter = ($current['verificationStatus'] ?? '') === 'verified';
 
 /* ================= IMAGE UPLOAD ================= */
 if (!empty($_FILES['profilePic']['name'])) {
-    // Corrected path based on your pampeersFolder_4.txt[cite: 3]
     $uploadDir = __DIR__ . '/../../uploads/profiles/'; 
 
     $ext = strtolower(pathinfo($_FILES['profilePic']['name'], PATHINFO_EXTENSION));
@@ -81,29 +80,29 @@ if (!empty($_FILES['profilePic']['name'])) {
 /* ================= TRANSACTION ================= */
 $conn->begin_transaction();
 try {
+    // FIX: Added 'bio' to the users update query!
     $updateUser = $conn->prepare("
         UPDATE users SET firstName=?, middleName=?, lastName=?, suffix=?, birthDate=?, sex=?, 
         contactNumber=?, username=?, streetAddress=?, barangay=?, cityMunicipality=?, 
-        province=?, country=?, zipCode=?, profilePic=? WHERE id=?
+        province=?, country=?, zipCode=?, profilePic=?, bio=? WHERE id=?
     ");
-    $updateUser->bind_param("sssssssssssssssi", $firstName, $middleName, $lastName, $suffix, $birthDate, $sex, 
+    $updateUser->bind_param("ssssssssssssssssi", $firstName, $middleName, $lastName, $suffix, $birthDate, $sex, 
         $contactNumber, $usernameInput, $streetAddress, $barangay, $cityMunicipality, 
-        $province, $country, $zipCode, $currentPic, $userId);
+        $province, $country, $zipCode, $currentPic, $bio, $userId);
     $updateUser->execute();
 
-    // Only update sitters table if they are a verified sitter
+    // FIX: Removed 'bio' from the sitters update query!
     if ($sitterId && $isVerifiedSitter) {
-        $updateSitter = $conn->prepare("UPDATE sitters SET bio=?, hourlyRate=?, experience=?, isAvailable=? WHERE sitterID=?");
+        $updateSitter = $conn->prepare("UPDATE sitters SET hourlyRate=?, experience=?, isAvailable=? WHERE sitterID=?");
         $rate = (float)$hourlyRate;
         $exp  = (int)$experience;
-        $updateSitter->bind_param("sdiii", $bio, $rate, $exp, $isAvailable, $sitterId);
+        $updateSitter->bind_param("diii", $rate, $exp, $isAvailable, $sitterId);
         $updateSitter->execute();
     }
 
     $conn->commit();
     $_SESSION['username'] = $usernameInput;
 
-    // Redirect based on role[cite: 3]
     $redirectPage = ($userRole === 'sitter') ? 'profile.php' : 'profile.php';
     header("Location: /Pampeers/public/$redirectPage?update=success");
     exit();

@@ -75,7 +75,7 @@ $sittersStmt = $conn->prepare("
     SELECT
         s.sitterID,
         s.uuid AS sitterUUID,
-        s.bio,
+        u.bio,
         s.hourlyRate,
         s.experience,
         s.isAvailable,
@@ -136,7 +136,7 @@ $sitters = [];
 $sittersStmt = $conn->prepare("
     SELECT
         s.sitterID,
-        s.bio,
+        u.bio,
         s.hourlyRate,
         s.experience,
         s.isAvailable,
@@ -185,7 +185,7 @@ $sittersNear = [];
 $nearStmt = $conn->prepare("
     SELECT
         s.sitterID,
-        s.bio,
+        u.bio,
         s.hourlyRate,
         u.id,
         u.firstName,
