@@ -64,18 +64,14 @@ $userCity = $user['cityMunicipality'] ?? 'Cagayan de Oro';
         <div class="search-bar d-flex align-items-center justify-content-between">
             <div class="search-labels d-flex align-items-center gap-3 flex-grow-1">
                 <div class="field-group">
-                    <label for="input-where">Where</label>
-                    <input type="text" id="input-where" placeholder="City or area" />
-                </div>
-                <div class="divider"></div>
-                <div class="field-group">
-                    <label for="input-when">When</label>
-                    <input type="date" id="input-when" />
-                </div>
-                <div class="divider"></div>
-                <div class="field-group">
                     <label for="input-who">Who</label>
-                    <input type="text" id="input-who" placeholder="e.g. newborn" />
+                    <select id="input-who" class="form-control border-0 bg-transparent p-0 shadow-none text-muted">
+                        <option value="">Any Age</option>
+                        <option value="Baby">Baby (0-1 yrs)</option>
+                        <option value="Toddler">Toddler (1-3 yrs)</option>
+                        <option value="Child">Child (4-8 yrs)</option>
+                        <option value="Kid">Kid (9+ yrs)</option>
+                    </select>
                 </div>
             </div>
             <button class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
