@@ -29,9 +29,9 @@ if (!isVerifiedSitter($conn, $userId)) {
 }
 
 /* ================= GET SITTER INFO & BOOKINGS ================= */
-// 1. Get Sitter's specific ID and User details
+// 1. Get Sitter's specific ID, User details, AND Rating Average
 $stmt = $conn->prepare("
-    SELECT s.sitterID, u.firstName, u.lastName, u.profilePic 
+    SELECT s.sitterID, s.ratingAverage, u.firstName, u.lastName, u.profilePic 
     FROM users u 
     JOIN sitters s ON u.id = s.userID 
     WHERE u.id = ? 
@@ -44,6 +44,7 @@ $stmt->close();
 
 $sitterId = $sitterInfo['sitterID'] ?? 0;
 $userPic  = $sitterInfo['profilePic'] ?? 'default.jpg';
+$ratingAverage = $sitterInfo['ratingAverage'] ?? null;
 
 // 2. Fetch incoming bookings for this specific sitter
 $bookings = [];
@@ -81,31 +82,27 @@ if ($sitterId > 0) {
     <link rel="stylesheet" href="../css/sitterDashboard.css">
 </head>
 
-<body>
+<body class="bg-light">
 
-<header class="sticky-top custom-header">
-    <div class="nav-container d-flex align-items-center justify-content-between px-3">
+<header class="sticky-top custom-header bg-white shadow-sm">
+    <div class="nav-container d-flex align-items-center justify-content-between px-3 py-2">
         <div class="d-flex align-items-center gap-2">
-            <img src="/Pampeers/app/uploads/pampeerlogo.png" alt="logo" class="logo-img">
-            <p class="brand m-0">Pampeers (Sitter)</p>
+            <img src="/Pampeers/app/uploads/pampeerlogo.png" alt="logo" class="logo-img" style="width: 40px;">
+            <p class="brand m-0 fw-bold text-primary">Pampeers (Sitter)</p>
         </div>
 
-        <div class="right-side-p d-flex align-items-center gap-1">
-            <button type="button" class="btn btn-link">
-                <a href="../profile.php">
-                    <div class="profile-wrapper">
-                        <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" class="profile-img" alt="Profile">
-                    </div>
-                </a>
-            </button>
+        <div class="right-side-p d-flex align-items-center gap-2">
+            <a href="../profile.php" class="text-decoration-none">
+                <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" class="rounded-circle shadow-sm" style="width: 40px; height: 40px; object-fit: cover;" alt="Profile">
+            </a>
             <div class="dropdown">
-                <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-light rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-solid fa-bars"></i>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="../profile.php">Profile</a></li>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                    <li><a class="dropdown-item" href="../profile.php"><i class="fa-regular fa-user me-2"></i> Profile</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-danger" href="../../app/controllers/auth/logout.php">Logout</a></li>
+                    <li><a class="dropdown-item text-danger" href="../../app/controllers/auth/logout.php"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Logout</a></li>
                 </ul>
             </div>
         </div>
@@ -113,11 +110,27 @@ if ($sitterId > 0) {
 </header>
 
 <main class="container mt-4 px-4 pb-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold m-0" style="font-family: 'Poppins', sans-serif;">Booking Requests</h4>
+    
+    <div class="d-flex align-items-center mb-4 bg-white p-3 rounded-4 shadow-sm border-0">
+        <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic) ?>" class="rounded-circle me-3 shadow-sm" style="width: 65px; height: 65px; object-fit: cover;">
+        <div>
+            <h5 class="m-0 fw-bold" style="font-family: 'Poppins', sans-serif;">Welcome, <?= htmlspecialchars($sitterInfo['firstName'] ?? 'Sitter') ?>!</h5>
+            <div class="mt-1">
+                <?php if (!empty($ratingAverage)): ?>
+                    <span class="badge bg-warning text-dark fs-6 rounded-pill px-3 py-2 shadow-sm">
+                        <i class="fa-solid fa-star me-1"></i> <?= number_format($ratingAverage, 1) ?> Rating
+                    </span>
+                <?php else: ?>
+                    <span class="badge bg-light text-muted border px-3 py-2 rounded-pill">No reviews yet</span>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
 
-    <!-- Notifications[cite: 3] -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold m-0" style="font-family: 'Poppins', sans-serif;"><i class="fa-solid fa-inbox me-2 text-primary"></i> Booking Requests</h5>
+    </div>
+
     <?php if (isset($_GET['status_updated'])): ?>
         <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm border-0 mb-4" role="alert">
             <i class="fa-solid fa-circle-check me-2"></i>
@@ -127,9 +140,9 @@ if ($sitterId > 0) {
     <?php endif; ?>
 
     <?php if (empty($bookings)): ?>
-        <div class="alert alert-light text-center p-5 rounded-4 shadow-sm border-0 mt-5">
+        <div class="alert alert-light text-center p-5 rounded-4 shadow-sm border-0 mt-3">
             <i class="fa-regular fa-calendar-xmark fa-3x text-muted mb-3"></i>
-            <h5 class="text-muted">No booking requests yet.</h5>
+            <h5 class="text-muted fw-bold">No booking requests yet.</h5>
             <p class="text-muted small">When guardians book you, their requests will appear here.</p>
         </div>
     <?php else: ?>
@@ -162,14 +175,14 @@ if ($sitterId > 0) {
                                 <strong><?= htmlspecialchars($booking['hoursRequested']) ?> hrs</strong>
                             </div>
                             <?php if (!empty($booking['notes'])): ?>
-                                <div class="mt-2 text-muted italic">
+                                <div class="mt-2 text-muted fst-italic">
                                     <i class="fa-solid fa-quote-left me-1 opacity-50"></i><?= htmlspecialchars($booking['notes']) ?>
                                 </div>
                             <?php endif; ?>
                             <hr class="my-2">
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-between align-items-center">
                                 <span class="text-muted">Total Payout:</span> 
-                                <strong class="text-primary fs-6">₱<?= number_format($booking['totalAmount'], 2) ?></strong>
+                                <strong class="text-primary fs-5">₱<?= number_format($booking['totalAmount'], 2) ?></strong>
                             </div>
                         </div>
 

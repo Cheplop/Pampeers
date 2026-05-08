@@ -1,66 +1,62 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 header('Content-Type: application/json');
 
-// Include the config file to connect to the database
-require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/config.php'; // Adjust path if necessary
 
-$name = isset($_GET['name']) ? trim($_GET['name']) : '';
+// 1. Match the exact parameters sent by the JavaScript fetch()
+$keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
 $location = isset($_GET['location']) ? trim($_GET['location']) : '';
-// Determine if we are searching for 'sitter' or 'user' (defaults to sitter for Pampeers)
 $type = isset($_GET['type']) ? trim($_GET['type']) : 'sitter';
 
-if ($name === '' && $location === '') {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Enter a name or location.'
-    ]);
-    exit();
-}
+// We need the logged-in user to check if they favourited these sitters
+$userId = $_SESSION['user_id'] ?? 0;
 
 try {
     $params = [];
     $types = "";
 
-    /**
-     * Build query based on search type
-     * Sitter: Joins users and sitters tables to get rates, bios, and ratings[cite: 2].
-     * User: Queries only the users table for general guardian/user info[cite: 2].
-     */
     if ($type === 'sitter') {
+        // 2. We use a LEFT JOIN to check if this user has favourited the sitter
         $sql = "SELECT 
                     s.sitterID, s.userID, u.uuid AS userUUID,
                     u.firstName, u.middleName, u.lastName, u.username, u.profilePic,
                     u.barangay, u.cityMunicipality, u.province,
                     s.bio, s.hourlyRate, s.experience, s.isAvailable,
-                    s.ratingAverage, s.verificationStatus
+                    s.ratingAverage, s.verificationStatus,
+                    IF(f.id IS NOT NULL, 1, 0) AS isFavourite
                 FROM sitters s
                 INNER JOIN users u ON s.userID = u.id
-                WHERE u.isActive = 1"; // Ensure only active users appear
+                LEFT JOIN favourites f ON s.sitterID = f.sitter_id AND f.guardian_id = ?
+                WHERE u.isActive = 1 
+                  AND s.isAvailable = 1 
+                  AND s.verificationStatus = 'verified'";
+        
+        $params[] = $userId;
+        $types .= "i";
     } else {
-        $sql = "SELECT 
-                    id, uuid, firstName, middleName, lastName, 
-                    username, profilePic, barangay, cityMunicipality, province
-                FROM users 
-                WHERE isActive = 1";
+        $sql = "SELECT id, uuid, firstName, middleName, lastName, username, profilePic, barangay, cityMunicipality, province FROM users WHERE isActive = 1";
     }
 
-    // Dynamic Filter: Name
-    if ($name !== '') {
+    // Dynamic Filter: Keyword (Who)
+    if ($keyword !== '') {
         $sql .= ($type === 'sitter') 
-            ? " AND (u.firstName LIKE ? OR u.middleName LIKE ? OR u.lastName LIKE ? OR u.username LIKE ?)"
-            : " AND (firstName LIKE ? OR middleName LIKE ? OR lastName LIKE ? OR username LIKE ?)";
+            ? " AND (u.firstName LIKE ? OR u.lastName LIKE ? OR u.username LIKE ?)"
+            : " AND (firstName LIKE ? OR lastName LIKE ? OR username LIKE ?)";
         
-        $searchName = "%$name%";
-        for ($i = 0; $i < 4; $i++) {
-            $params[] = $searchName;
+        $searchKeyword = "%$keyword%";
+        for ($i = 0; $i < 3; $i++) {
+            $params[] = $searchKeyword;
             $types .= "s";
         }
     }
 
-    // Dynamic Filter: Location
+    // Dynamic Filter: Location (Where)
     if ($location !== '') {
         $sql .= ($type === 'sitter')
             ? " AND (u.barangay LIKE ? OR u.cityMunicipality LIKE ? OR u.province LIKE ?)"
@@ -73,7 +69,6 @@ try {
         }
     }
 
-    // Final ordering based on type
     $sql .= ($type === 'sitter') 
         ? " ORDER BY s.ratingAverage DESC, s.createdAt DESC"
         : " ORDER BY dateCreated DESC";
@@ -92,28 +87,23 @@ try {
     $data = [];
 
     while ($row = $result->fetch_assoc()) {
-        // Standardize output fields
-        $row['fullName'] = trim(
-            $row['firstName'] . ' ' .
-            (!empty($row['middleName']) ? $row['middleName'] . ' ' : '') .
-            $row['lastName']
-        );
-
-        $row['location'] = trim(
-            $row['barangay'] . ', ' .
-            $row['cityMunicipality'] . ', ' .
-            $row['province']
-        );
-
+        $row['fullName'] = trim($row['firstName'] . ' ' . $row['lastName']);
+        $row['location'] = trim($row['cityMunicipality'] . ', ' . $row['province']);
         $row['profilePic'] = $row['profilePic'] ?: 'default.jpg';
+        
+        // Ensure the boolean flag is properly passed to JS
+        if (isset($row['isFavourite'])) {
+            $row['isFavourite'] = (bool) $row['isFavourite']; 
+        }
+
         $data[] = $row;
     }
 
     echo json_encode([
-        'success' => count($data) > 0,
+        'success' => true,
         'type' => $type,
         'data' => $data,
-        'message' => count($data) > 0 ? ucfirst($type) . 's found' : 'No results found'
+        'message' => count($data) > 0 ? count($data) . ' sitter(s) found' : 'No available sitters found.'
     ]);
 
     $stmt->close();

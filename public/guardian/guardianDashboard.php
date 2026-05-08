@@ -185,35 +185,91 @@ function scrollCarousel(carouselId, direction) {
     container.scrollBy({ left: direction * 220, behavior: 'smooth' });
 }
 
-// Updated JavaScript to handle the heart icon correctly
-document.querySelectorAll('.like-btn').forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        const sitterId = this.getAttribute('data-id');
-        const icon = this.querySelector('i');
-        if(!sitterId) return;
+// 1. AJAX SEARCH LOGIC
+document.querySelector('.search-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    // Get values from the search bar
+    const where = document.getElementById('input-where').value.trim();
+    const when = document.getElementById('input-when').value; 
+    const who = document.getElementById('input-who').value.trim();
+    
+    // Build the query string dynamically
+    const params = new URLSearchParams({
+        location: where,
+        date: when,
+        keyword: who
+    });
 
-        // Absolute path guarantees it works no matter what page we are on
-        fetch('/Pampeers/app/controllers/user/toggleFavourite.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `sitterId=${sitterId}` // Match exactly to POST request in backend
-        })
+    // Make the request to your backend search endpoint
+    fetch(`/Pampeers/app/controllers/user/search.php?${params.toString()}`)
         .then(response => response.json())
-        .then(data => {
-            // Updated to reflect the proper PHP responses ('added' or 'removed')
-            if (data.status === 'added') {
-                icon.classList.remove('fa-regular');
-                icon.classList.add('fa-solid', 'text-danger'); // Makes heart solid red
-            } else if (data.status === 'removed') {
-                icon.classList.remove('fa-solid', 'text-danger');
-                icon.classList.add('fa-regular'); // Reverts to hollow outline
+        .then(res => {
+            const container = document.getElementById('avail-carousel');
+            container.innerHTML = ''; // Clear current sitters
+
+            if (res.success && res.data.length > 0) {
+                // Loop through results and build new cards
+                res.data.forEach(sitter => {
+                    const profilePic = sitter.profilePic ? sitter.profilePic : 'default.jpg';
+                    const heartClass = sitter.isFavourite ? 'fa-solid text-danger' : 'fa-regular';
+                    
+                    container.innerHTML += `
+                        <div class="carousel-card">
+                            <div class="small-card">
+                                <div class="card-img-container">
+                                    <button class="like-btn" data-id="${sitter.sitterID}">
+                                        <i class="${heartClass} fa-heart"></i>
+                                    </button>
+                                    <img src="../../app/uploads/profiles/${profilePic}" alt="Sitter">
+                                </div>
+                                <h6>${sitter.firstName} ${sitter.lastName}</h6>
+                                <p class="city">${sitter.cityMunicipality}</p>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <p class="m-0">₱${sitter.hourlyRate}/hr</p>
+                                    <a href="bookSitter.php?sitterID=${sitter.sitterID}" class="btn btn-sm btn-primary rounded-pill px-3">Book</a>   
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
             } else {
-                console.error("Error toggling favourite:", data.message);
+                container.innerHTML = `<div class="text-muted p-5 text-center w-100">No available sitters found matching your criteria.</div>`;
             }
         })
-        .catch(err => console.error('Fetch error:', err));
-    });
+        .catch(err => console.error('Search error:', err));
+});
+
+// 2. EVENT DELEGATION FOR LIKE BUTTONS
+// By attaching this listener to the container instead of the buttons directly,
+// it will continue to work even after the search replaces the HTML inside the container!
+document.getElementById('avail-carousel').addEventListener('click', function(e) {
+    const btn = e.target.closest('.like-btn');
+    if (!btn) return; // If they didn't click a like button, do nothing
+    
+    e.preventDefault();
+    const sitterId = btn.getAttribute('data-id');
+    const icon = btn.querySelector('i');
+    if(!sitterId) return;
+
+    fetch('/Pampeers/app/controllers/user/toggleFavourite.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `sitterId=${sitterId}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'added') {
+            icon.classList.remove('fa-regular');
+            icon.classList.add('fa-solid', 'text-danger'); 
+        } else if (data.status === 'removed') {
+            icon.classList.remove('fa-solid', 'text-danger');
+            icon.classList.add('fa-regular'); 
+        } else {
+            console.error("Error toggling favourite:", data.message);
+        }
+    })
+    .catch(err => console.error('Fetch error:', err));
 });
 </script>
 </body>
