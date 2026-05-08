@@ -104,7 +104,7 @@ $userCity = $user['cityMunicipality'] ?? 'Cagayan de Oro';
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><a class="dropdown-item" href="../profile.php">Profile</a></li>
                     <li><a class="dropdown-item" href="myBookings.php">My Bookings</a></li>
-                    <li><a class="dropdown-item" href="favourites.php">Favourites</a></li>
+                    <li><a class="dropdown-item" href="myFavourites.php">Favourites</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-danger" href="../../app/controllers/auth/logout.php">Logout</a></li>
                 </ul>
