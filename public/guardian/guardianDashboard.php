@@ -164,7 +164,7 @@ $stmtN->close();
         <div class="carousel-card">
             <div class="small-card" style="cursor: pointer;" onclick="window.location.href='viewSitterProfile.php?sitterID=<?= htmlspecialchars($peer['sitterID']) ?>'">
                 <div class="card-img-container">
-                    <button class="like-btn" data-id="<?= htmlspecialchars($peer['sitterID']) ?>" aria-label="Like" onclick="event.stopPropagation();">
+                    <button class="like-btn" data-id="<?= htmlspecialchars($peer['sitterID']) ?>" aria-label="Like" onclick="toggleFav(event, this)">
                         <i class="fa-<?= !empty($peer['isFav']) ? 'solid text-danger' : 'regular' ?> fa-heart"></i> 
                     </button>
                     <img src="/Pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter">
@@ -197,7 +197,7 @@ $stmtN->close();
         <div class="carousel-card">
             <div class="small-card" style="cursor: pointer;" onclick="window.location.href='viewSitterProfile.php?sitterID=<?= htmlspecialchars($peer['sitterID']) ?>'">
                 <div class="card-img-container">
-                    <button class="like-btn" data-id="<?= htmlspecialchars($peer['sitterID']) ?>" aria-label="Like" onclick="event.stopPropagation();">
+                    <button class="like-btn" data-id="<?= htmlspecialchars($peer['sitterID']) ?>" aria-label="Like" onclick="toggleFav(event, this)">
                         <i class="fa-<?= !empty($peer['isFav']) ? 'solid text-danger' : 'regular' ?> fa-heart"></i>
                     </button>
                     <img src="/Pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter">
@@ -261,7 +261,7 @@ document.getElementById('search-button').addEventListener('click', function(e) {
                         <div class="carousel-card">
                             <div class="small-card" style="cursor: pointer;" onclick="window.location.href='viewSitterProfile.php?sitterID=${sitter.sitterID}'">
                                 <div class="card-img-container">
-                                    <button class="like-btn" data-id="${sitter.sitterID}" aria-label="Like" onclick="event.stopPropagation();">
+                                    <button class="like-btn" data-id="${sitter.sitterID}" aria-label="Like" onclick="toggleFav(event, this)">
                                         <i class="fa-${heartClass} fa-heart"></i>
                                     </button>
                                     <img src="/Pampeers/app/uploads/profiles/${sitter.profilePic || 'default.jpg'}" alt="Sitter">
@@ -281,13 +281,10 @@ document.getElementById('search-button').addEventListener('click', function(e) {
         });
 });
 
-// 3. Updated Database Like Button Logic (Includes your old animation)
-document.addEventListener('click', function(e) {
-    const btn = e.target.closest('.like-btn');
-    if (!btn) return;
-    
+// 3. NEW: toggleFav Function handles both stopping the card redirect AND firing the DB logic
+function toggleFav(e, btn) {
     e.preventDefault();
-    e.stopPropagation(); // UPDATED: Prevent the heart click from triggering the view profile redirect
+    e.stopPropagation(); // Prevents the heart click from triggering the view profile redirect
     
     const sitterId = btn.getAttribute('data-id');
     const icon = btn.querySelector('i');
@@ -315,7 +312,7 @@ document.addEventListener('click', function(e) {
         }
     })
     .catch(err => console.error("Error toggling favourite:", err));
-});
+}
 </script>
 
 </body>

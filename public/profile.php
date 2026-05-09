@@ -39,6 +39,7 @@ if ($isSitter) {
 }
 
 /* ================= FETCH INCOMING BOOKINGS ================= */
+/* ================= FETCH INCOMING BOOKINGS ================= */
 $bookings = [];
 if ($isSitter && $verificationStatus === 'verified') {
     $sitterId = $sitterData['sitterID'] ?? 0;
@@ -51,7 +52,7 @@ if ($isSitter && $verificationStatus === 'verified') {
             WHERE b.sitterID = ?
             ORDER BY 
                 CASE WHEN b.status = 'pending' THEN 1 ELSE 2 END, 
-                b.bookingDate ASC
+                b.startDateTime ASC -- CHANGED FROM bookingDate TO startDateTime
         ");
         $bStmt->bind_param("i", $sitterId);
         $bStmt->execute();
