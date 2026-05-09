@@ -28,7 +28,7 @@ if (!$sitterId) {
 }
 
 // Check if already favorited
-$check = $conn->prepare("SELECT favouriteID FROM favourites WHERE guardian_id = ? AND sitter_id = ?");
+$check = $conn->prepare("SELECT id FROM favourites WHERE guardian_id = ? AND sitter_id = ?");
 $check->bind_param("ii", $userId, $sitterId);
 $check->execute();
 $result = $check->get_result();

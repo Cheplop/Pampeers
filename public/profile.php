@@ -23,7 +23,7 @@ $stmt->close();
 
 // Map database columns to the variables used in your design
 $profilePic = $user['profilePic'] ?? 'default.jpg';
-$email      = $user['email'] ?? 'No email set';
+$emailAddress      = $user['emailAddress'] ?? 'No email set';
 $fullName   = trim(($user['firstName'] ?? '') . ' ' . ($user['lastName'] ?? ''));
 $bio        = $user['bio'] ?? '';
 $location   = trim(($user['cityMunicipality'] ?? '') . ', ' . ($user['province'] ?? ''));
@@ -39,6 +39,7 @@ if ($isSitter) {
 }
 
 /* ================= FETCH INCOMING BOOKINGS ================= */
+/* ================= FETCH INCOMING BOOKINGS ================= */
 $bookings = [];
 if ($isSitter && $verificationStatus === 'verified') {
     $sitterId = $sitterData['sitterID'] ?? 0;
@@ -51,7 +52,7 @@ if ($isSitter && $verificationStatus === 'verified') {
             WHERE b.sitterID = ?
             ORDER BY 
                 CASE WHEN b.status = 'pending' THEN 1 ELSE 2 END, 
-                b.bookingDate ASC
+                b.startDateTime ASC -- CHANGED FROM bookingDate TO startDateTime
         ");
         $bStmt->bind_param("i", $sitterId);
         $bStmt->execute();
@@ -124,7 +125,7 @@ if ($isSitter && $verificationStatus === 'verified') {
                     <i class="fa-solid fa-bars"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><button class="dropdown-item" type="button">Favourites</button></li>
+                    <li><a class="dropdown-item" href="/Pampeers/public/guardian/myFavourites.php">Favourites</a></li>
                     <li>
                         <a class="dropdown-item" href="profile.php"><b>Profile</b></a>
                     </li>
@@ -158,23 +159,12 @@ if ($isSitter && $verificationStatus === 'verified') {
                 <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($profilePic) ?>" alt="Profile Picture" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
                 
                 <div class="flex-column">
-                    <p class="text-muted m-0"><?= htmlspecialchars($email) ?></p>
+                    <p class="text-muted m-0"><?= htmlspecialchars($emailAddress) ?></p>
                     <h4><?= htmlspecialchars($fullName) ?></h4>
                     <p><?= !empty($bio) ? htmlspecialchars($bio) : 'Bio place here' ?></p>
                         
                     <div class="d-flex gap-2 flex-wrap">
                         <a href="/Pampeers/public/editProfile.php" class="btnedit btn btn-primary btn-sm">Edit Profile</a>
-
-                        <?php if ($isSitter): ?>
-                            <a href="/Pampeers/public/editProfile.php" class="btn btn-warning btn-sm">Edit Sitter Profile</a>
-
-                            <?php if ($verificationStatus === 'pending'): ?>
-                                <span class="btn btn-secondary btn-sm disabled">Pending Verification</span>
-                            <?php endif; ?>
-                            
-                        <?php else: ?>
-                            <a href="/Pampeers/app/controllers/user/becomeSitter.php" class="btnbecome btn btn-success btn-sm">Become a Sitter</a>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>

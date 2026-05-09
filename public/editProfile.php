@@ -148,11 +148,15 @@ $backLink = ($role === 'sitter') ? 'profile.php' : 'profile.php';
                 </select>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label class="form-label">Username</label>
                 <input type="text" name="username" class="form-control" value="<?= htmlspecialchars($user['username'] ?? '') ?>" required>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="emailAddress" class="form-control" value="<?= htmlspecialchars($user['emailAddress'] ?? '') ?>" required>
+            </div>
+            <div class="col-md-4">
                 <label class="form-label">Contact Number</label>
                 <input type="text" name="contactNumber" class="form-control" value="<?= htmlspecialchars($user['contactNumber'] ?? '') ?>" required>
             </div>

@@ -146,9 +146,9 @@ try {
         <?php if (!empty($sitters)): ?>
             <?php foreach ($sitters as $peer): ?>
             <div class="carousel-card">
-                <div class="small-card">
+                <div class="small-card" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                     <div class="card-img-container">
-                        <button class="like-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        <button class="like-btn" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                             <i class="fa-regular fa-heart"></i>
                         </button>
                         <img src="../app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter">
@@ -157,7 +157,7 @@ try {
                     <p class="city"><?= htmlspecialchars($peer['city']) ?></p>
                     <div class="d-flex justify-content-between align-items-center mt-2">
                         <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate']) ?>/hr</p>
-                        <button class="btn btn-sm btn-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        <button class="btn btn-sm btn-primary rounded-pill px-3" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                             Book
                         </button>
                     </div>
@@ -181,9 +181,9 @@ try {
         <?php if (!empty($sittersNear)): ?>
             <?php foreach ($sittersNear as $peer): ?>
                 <div class="carousel-card">
-                    <div class="small-card">
+                    <div class="small-card" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                         <div class="card-img-container">
-                            <button class="like-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            <button class="like-btn" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                                 <i class="fa-regular fa-heart"></i>
                             </button>
                             <img src="../app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter">
@@ -192,7 +192,7 @@ try {
                         <p class="city"><?= htmlspecialchars($peer['city']) ?></p>
                         <div class="d-flex justify-content-between align-items-center mt-2">
                             <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate']) ?>/hr</p>
-                            <button class="btn btn-sm btn-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            <button class="btn btn-sm btn-primary rounded-pill px-3" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                                 Book
                             </button>
                         </div>
@@ -237,16 +237,16 @@ document.getElementById('search-button').addEventListener('click', function(e) {
                 data.forEach(sitter => {
                     container.innerHTML += `
                         <div class="carousel-card">
-                            <div class="small-card">
+                            <div class="small-card" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                                 <div class="card-img-container">
-                                    <button class="like-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fa-regular fa-heart"></i></button>
+                                    <button class="like-btn" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fa-regular fa-heart"></i></button>
                                     <img src="../app/uploads/profiles/${sitter.profilePic || 'default.jpg'}" alt="Sitter">
                                 </div>
                                 <h6>${sitter.firstName} ${sitter.lastName}</h6>
                                 <p class="city">${sitter.cityMunicipality}</p>
                                 <div class="d-flex justify-content-between align-items-center mt-2">
                                     <p class="m-0 fw-bold">₱${sitter.hourlyRate}/hr</p>
-                                    <button class="btn btn-sm btn-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Book</button>
+                                    <button class="btn btn-sm btn-primary rounded-pill px-3" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Book</button>
                                 </div>
                             </div>
                         </div>`;
