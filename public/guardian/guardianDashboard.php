@@ -140,10 +140,10 @@ $stmtN->close();
                             <a class="dropdown-item" href="../profile.php"><i class="fa-regular fa-user me-2"></i>View Profile</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="guardian/myFavourites.php"><i class="fa-regular fa-heart me-2"></i>Favourites</a>
+                            <a class="dropdown-item" href="myFavourites.php"><i class="fa-regular fa-heart me-2"></i>Favourites</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="/Pampeers/public/guardian/myBookings.php"><i class="fa-solid fa-baby-carriage me-2"></i>Bookings</a>
+                            <a class="dropdown-item" href="myBookings.php"><i class="fa-regular fa-calendar me-2"></i>Bookings</a>
                         </li>
                         <li class="logout">
                             <a class="dropdown-item" href="/Pampeers/app/controllers/auth/logout.php"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Logout</a>
