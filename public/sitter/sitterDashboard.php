@@ -56,7 +56,7 @@ if ($sitterId > 0) {
         WHERE b.sitterID = ?
         ORDER BY 
             CASE WHEN b.status = 'pending' THEN 1 ELSE 2 END, 
-            b.bookingDate ASC
+            b.startDateTime ASC -- FIXED: Changed bookingDate to startDateTime
     ");
     $bStmt->bind_param("i", $sitterId);
     $bStmt->execute();
@@ -164,11 +164,11 @@ if ($sitterId > 0) {
                         <div class="bg-light p-3 rounded-3 mb-3 small" style="font-family: 'Poppins', sans-serif;">
                             <div class="d-flex justify-content-between mb-1">
                                 <span class="text-muted">Date:</span> 
-                                <strong><?= date('M d, Y', strtotime($booking['bookingDate'])) ?></strong>
+                                <strong><?= date('M d, Y', strtotime($booking['startDateTime'])) ?></strong>
                             </div>
                             <div class="d-flex justify-content-between mb-1">
                                 <span class="text-muted">Time:</span> 
-                                <strong><?= date('h:i A', strtotime($booking['startTime'])) ?> - <?= date('h:i A', strtotime($booking['endTime'])) ?></strong>
+                                <strong><?= date('h:i A', strtotime($booking['startDateTime'])) ?> - <?= date('h:i A', strtotime($booking['endDateTime'])) ?></strong>
                             </div>
                             <div class="d-flex justify-content-between mb-1">
                                 <span class="text-muted">Hours:</span> 

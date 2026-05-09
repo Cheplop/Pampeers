@@ -162,9 +162,9 @@ $stmtN->close();
     <div class="carousel-wrapper" id="avail-carousel">
         <?php foreach ($sitters as $peer): ?>
         <div class="carousel-card">
-            <div class="small-card">
+            <div class="small-card" style="cursor: pointer;" onclick="window.location.href='viewSitterProfile.php?sitterID=<?= htmlspecialchars($peer['sitterID']) ?>'">
                 <div class="card-img-container">
-                    <button class="like-btn" data-id="<?= htmlspecialchars($peer['sitterID']) ?>" aria-label="Like">
+                    <button class="like-btn" data-id="<?= htmlspecialchars($peer['sitterID']) ?>" aria-label="Like" onclick="toggleFav(event, this)">
                         <i class="fa-<?= !empty($peer['isFav']) ? 'solid text-danger' : 'regular' ?> fa-heart"></i> 
                     </button>
                     <img src="/Pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter">
@@ -173,7 +173,7 @@ $stmtN->close();
                 <p class="city"><?= htmlspecialchars($peer['city'] ?? 'Location N/A') ?></p>
                 <div class="d-flex justify-content-between align-items-center mt-2">
                     <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
-                    <a href="bookSitter.php?sitterID=<?= htmlspecialchars($peer['sitterID']) ?>" class="btn btn-sm btn-primary rounded-pill px-3">Book</a>
+                    <a href="bookSitter.php?sitterID=<?= htmlspecialchars($peer['sitterID']) ?>" class="btn btn-sm btn-primary rounded-pill px-3" onclick="event.stopPropagation();">Book</a>
                 </div>
             </div>
         </div>
@@ -195,9 +195,9 @@ $stmtN->close();
     <div class="carousel-wrapper" id="near-carousel">
         <?php foreach ($sittersNear as $peer): ?>
         <div class="carousel-card">
-            <div class="small-card">
+            <div class="small-card" style="cursor: pointer;" onclick="window.location.href='viewSitterProfile.php?sitterID=<?= htmlspecialchars($peer['sitterID']) ?>'">
                 <div class="card-img-container">
-                    <button class="like-btn" data-id="<?= htmlspecialchars($peer['sitterID']) ?>" aria-label="Like">
+                    <button class="like-btn" data-id="<?= htmlspecialchars($peer['sitterID']) ?>" aria-label="Like" onclick="toggleFav(event, this)">
                         <i class="fa-<?= !empty($peer['isFav']) ? 'solid text-danger' : 'regular' ?> fa-heart"></i>
                     </button>
                     <img src="/Pampeers/app/uploads/profiles/<?= !empty($peer['img']) ? htmlspecialchars($peer['img']) : 'default.jpg'; ?>" alt="Sitter">
@@ -206,7 +206,7 @@ $stmtN->close();
                 <p class="city"><?= htmlspecialchars($peer['city'] ?? 'Location N/A') ?></p>
                 <div class="d-flex justify-content-between align-items-center mt-2">
                     <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
-                    <a href="bookSitter.php?sitterID=<?= htmlspecialchars($peer['sitterID']) ?>" class="btn btn-sm btn-primary rounded-pill px-3">Book</a>
+                    <a href="bookSitter.php?sitterID=<?= htmlspecialchars($peer['sitterID']) ?>" class="btn btn-sm btn-primary rounded-pill px-3" onclick="event.stopPropagation();">Book</a>
                 </div>
             </div>
         </div>
@@ -259,9 +259,9 @@ document.getElementById('search-button').addEventListener('click', function(e) {
                     const heartClass = sitter.isFavourite ? 'solid text-danger' : 'regular';
                     container.innerHTML += `
                         <div class="carousel-card">
-                            <div class="small-card">
+                            <div class="small-card" style="cursor: pointer;" onclick="window.location.href='viewSitterProfile.php?sitterID=${sitter.sitterID}'">
                                 <div class="card-img-container">
-                                    <button class="like-btn" data-id="${sitter.sitterID}" aria-label="Like">
+                                    <button class="like-btn" data-id="${sitter.sitterID}" aria-label="Like" onclick="toggleFav(event, this)">
                                         <i class="fa-${heartClass} fa-heart"></i>
                                     </button>
                                     <img src="/Pampeers/app/uploads/profiles/${sitter.profilePic || 'default.jpg'}" alt="Sitter">
@@ -270,7 +270,7 @@ document.getElementById('search-button').addEventListener('click', function(e) {
                                 <p class="city">${sitter.cityMunicipality}</p>
                                 <div class="d-flex justify-content-between align-items-center mt-2">
                                     <p class="m-0 fw-bold">₱${sitter.hourlyRate}/hr</p>
-                                    <a href="bookSitter.php?sitterID=${sitter.sitterID}" class="btn btn-sm btn-primary rounded-pill px-3">Book</a>
+                                    <a href="bookSitter.php?sitterID=${sitter.sitterID}" class="btn btn-sm btn-primary rounded-pill px-3" onclick="event.stopPropagation();">Book</a>
                                 </div>
                             </div>
                         </div>`;
@@ -281,12 +281,11 @@ document.getElementById('search-button').addEventListener('click', function(e) {
         });
 });
 
-// 3. Updated Database Like Button Logic (Includes your old animation)
-document.addEventListener('click', function(e) {
-    const btn = e.target.closest('.like-btn');
-    if (!btn) return;
-    
+// 3. NEW: toggleFav Function handles both stopping the card redirect AND firing the DB logic
+function toggleFav(e, btn) {
     e.preventDefault();
+    e.stopPropagation(); // Prevents the heart click from triggering the view profile redirect
+    
     const sitterId = btn.getAttribute('data-id');
     const icon = btn.querySelector('i');
     
@@ -313,7 +312,7 @@ document.addEventListener('click', function(e) {
         }
     })
     .catch(err => console.error("Error toggling favourite:", err));
-});
+}
 </script>
 
 </body>

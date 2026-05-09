@@ -18,11 +18,11 @@ $query = "
         u.lastName AS sitterLastName, 
         u.profilePic AS sitterPic,
         s.hourlyRate,
-        r.reviewID -- ADDED THIS
+        r.reviewID
     FROM bookings b
     JOIN sitters s ON b.sitterID = s.sitterID
     JOIN users u ON s.userID = u.id
-    LEFT JOIN reviews r ON b.bookingID = r.bookingID -- ADDED THIS
+    LEFT JOIN reviews r ON b.bookingID = r.bookingID
     WHERE b.userID = ?
     ORDER BY b.createdAt DESC
 ";
@@ -39,76 +39,93 @@ $myBookings = $result->fetch_all(MYSQLI_ASSOC);
 <head>
     <meta charset="UTF-8">
     <title>My Bookings - Pampeers</title>
+    <link rel="icon" type="image/png" href="/Pampeers/app/uploads/pampeerlogo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
     <style>
-        .star-rating { font-size: 1.5rem; color: #ddd; cursor: pointer; }
-        .star-rating .fa-star.active { color: #ffc107; }
+        body { background-color: #FDF9F1; font-family: 'Poppins', sans-serif; }
+        .booking-card { background: #fff; border-radius: 15px; border: none; transition: transform 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .booking-card:hover { transform: translateY(-5px); }
+        .sitter-img { width: 60px; height: 60px; object-fit: cover; border-radius: 50%; }
+        .status-badge { font-weight: 600; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; }
+        .status-pending { background-color: #fff3cd; color: #856404; }
+        .status-accepted { background-color: #d4edda; color: #155724; }
+        .status-completed { background-color: #cce5ff; color: #004085; }
+        .status-cancelled { background-color: #f8d7da; color: #721c24; }
+        .star-rating i { color: #ddd; cursor: pointer; font-size: 1.5rem; transition: color 0.2s; }
+        .star-rating i.active, .star-rating i:hover, .star-rating i:hover ~ i { color: #f5b301; }
     </style>
 </head>
-<body class="bg-light">
+<body>
 
-<header class="sticky-top custom-header bg-white shadow-sm p-3 mb-4">
-    <div class="container d-flex justify-content-between align-items-center">
-        <a href="guardianDashboard.php" class="text-decoration-none text-dark">
-            <i class="fa-solid fa-arrow-left me-2"></i>
-            <span class="fw-bold">My Bookings</span>
-        </a>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold m-0">My Bookings</h2>
+        <a href="guardianDashboard.php" class="btn btn-outline-dark rounded-pill px-4">Back to Dashboard</a>
     </div>
-</header>
 
-<main class="container">
     <?php if (empty($myBookings)): ?>
-        <div class="text-center py-5">
-            <i class="fa-solid fa-calendar-xmark fa-3x text-muted mb-3"></i>
-            <p class="text-muted">You haven't made any bookings yet.</p>
-            <a href="guardianDashboard.php" class="btn btn-primary rounded-pill">Find a Sitter</a>
+        <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+            <h5 class="text-muted">You haven't made any bookings yet.</h5>
+            <a href="guardianDashboard.php" class="btn btn-primary rounded-pill px-4 mt-3">Find a Sitter</a>
         </div>
     <?php else: ?>
-        <div class="row">
-            <?php foreach ($myBookings as $b): ?>
-                <div class="col-12 mb-3">
-                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-                        <div class="row g-0">
-                            <div class="col-md-2 bg-light d-flex align-items-center justify-content-center p-3">
-                                <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($b['sitterPic'] ?: 'default.jpg') ?>" 
-                                     class="rounded-circle shadow-sm" 
-                                     style="width: 80px; height: 80px; object-fit: cover;">
-                            </div>
-                            <div class="col-md-7 p-3">
-                                <h5 class="fw-bold mb-1">Sitter: <?= htmlspecialchars($b['sitterFirstName'] . ' ' . $b['sitterLastName']) ?></h5>
-                                <p class="text-muted small mb-2">
-                                    <i class="fa-regular fa-calendar me-1"></i> <?= date('M d, Y', strtotime($b['bookingDate'])) ?> 
-                                    <i class="fa-regular fa-clock ms-3 me-1"></i> <?= date('h:i A', strtotime($b['startTime'])) ?> - <?= date('h:i A', strtotime($b['endTime'])) ?>
-                                </p>
-                                <div class="d-flex gap-3 mt-2">
-                                    <span class="small text-muted">Total: <strong>₱<?= number_format($b['totalAmount'], 2) ?></strong></span>
-                                    <span class="small text-muted">Status: 
-                                        <strong class="text-capitalize <?php 
-                                            echo in_array($b['status'], ['accepted', 'completed']) ? 'text-success' : ($b['status'] === 'pending' ? 'text-warning' : 'text-danger'); 
-                                        ?>"><?= $b['status'] ?></strong>
-                                    </span>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <?php foreach ($myBookings as $b): 
+                
+                // Format the new datetime columns
+                $start = new DateTime($b['startDateTime']);
+                $end = new DateTime($b['endDateTime']);
+                
+                $dateDisplay = $start->format('M j, Y');
+                $timeDisplay = $start->format('g:i A') . ' - ' . $end->format('g:i A');
+                
+                // Duration and total fallback
+                $hours = $b['hoursRequested'] ?? round(($end->getTimestamp() - $start->getTimestamp()) / 3600, 2);
+                $total = $b['totalAmount'] ?? ($hours * $b['hourlyRate']);
+            ?>
+                <div class="col">
+                    <div class="booking-card p-4 h-100 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($b['sitterPic'] ?: 'default.jpg') ?>" class="sitter-img" alt="Sitter">
+                                <div>
+                                    <h6 class="mb-0 fw-bold"><?= htmlspecialchars($b['sitterFirstName'] . ' ' . $b['sitterLastName']) ?></h6>
+                                    <small class="text-muted">₱<?= number_format($b['hourlyRate'], 2) ?>/hr</small>
                                 </div>
                             </div>
-                            <div class="col-md-3 p-3 d-flex flex-column justify-content-center border-start bg-white text-center">
-                                <?php if ($b['status'] === 'pending'): ?>
-                                    <button class="btn btn-outline-danger btn-sm rounded-pill">Cancel Request</button>
-                                <?php elseif ($b['status'] === 'completed'): ?>
-                                    
-                                    <?php if (empty($b['reviewID'])): ?>
-                                        <button class="btn btn-primary btn-sm rounded-pill" 
-                                                onclick="openReviewModal(<?= $b['bookingID'] ?>, '<?= htmlspecialchars($b['sitterFirstName'] . ' ' . $b['sitterLastName']) ?>')">
-                                            Leave a Review
-                                        </button>
-                                    <?php else: ?>
-                                        <button class="btn btn-outline-secondary btn-sm rounded-pill" disabled>
-                                            Reviewed <i class="fa-solid fa-check"></i>
-                                        </button>
-                                    <?php endif; ?>
+                            <span class="status-badge status-<?= htmlspecialchars($b['status']) ?>">
+                                <?= ucfirst(htmlspecialchars($b['status'])) ?>
+                            </span>
+                        </div>
 
-                                <?php else: ?>
-                                    <button class="btn btn-light btn-sm rounded-pill" disabled>No Actions</button>
+                        <div class="mb-3 flex-grow-1">
+                            <p class="mb-1"><i class="fa-regular fa-calendar text-primary me-2"></i> <strong>Date:</strong> <?= $dateDisplay ?></p>
+                            <p class="mb-1"><i class="fa-regular fa-clock text-primary me-2"></i> <strong>Time:</strong> <?= $timeDisplay ?></p>
+                            <p class="mb-1"><i class="fa-solid fa-hourglass-half text-primary me-2"></i> <strong>Duration:</strong> <?= $hours ?> hrs</p>
+                            <?php if (!empty($b['notes'])): ?>
+                                <p class="mb-0 mt-2 small text-muted"><strong>Notes:</strong> <?= htmlspecialchars($b['notes']) ?></p>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="border-top pt-3 mt-auto d-flex justify-content-between align-items-center">
+                            <h5 class="m-0 fw-bold text-success">₱<?= number_format($total, 2) ?></h5>
+                            
+                            <div>
+                                <?php if ($b['status'] === 'pending' || $b['status'] === 'accepted'): ?>
+                                    <button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold me-2" 
+                                            onclick="cancelBooking(<?= $b['bookingID'] ?>)">
+                                        Cancel
+                                    </button>
+                                <?php endif; ?>
+
+                                <?php if ($b['status'] === 'completed' && empty($b['reviewID'])): ?>
+                                    <button class="btn btn-sm btn-warning rounded-pill px-3 fw-bold text-dark" 
+                                            onclick="openReviewModal(<?= $b['bookingID'] ?>)">
+                                        Leave a Review
+                                    </button>
+                                <?php elseif ($b['status'] === 'completed' && !empty($b['reviewID'])): ?>
+                                    <span class="badge bg-light text-dark border"><i class="fa-solid fa-check text-success me-1"></i> Reviewed</span>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -117,16 +134,17 @@ $myBookings = $result->fetch_all(MYSQLI_ASSOC);
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
-</main>
+</div>
 
-<div class="modal fade" id="reviewModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="reviewModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4 shadow">
-            <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold">Rate <span id="modalSitterName"></span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Rate your experience</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body text-center">
+            <div class="modal-body text-center pt-2">
+                <p class="text-muted small">How was your babysitter?</p>
                 <div class="star-rating mb-3" id="starRating">
                     <i class="fa-solid fa-star" data-value="1"></i>
                     <i class="fa-solid fa-star" data-value="2"></i>
@@ -134,13 +152,12 @@ $myBookings = $result->fetch_all(MYSQLI_ASSOC);
                     <i class="fa-solid fa-star" data-value="4"></i>
                     <i class="fa-solid fa-star" data-value="5"></i>
                 </div>
-                <textarea id="reviewComment" class="form-control rounded-3" rows="3" placeholder="How was your experience?"></textarea>
-                <input type="hidden" id="modalBookingID">
                 <input type="hidden" id="selectedRating" value="0">
+                <input type="hidden" id="modalBookingID" value="">
+                <textarea class="form-control rounded-3 bg-light border-0" id="reviewComment" rows="3" placeholder="Write a brief review (optional)..."></textarea>
             </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary rounded-pill px-4" onclick="submitReview()">Post Review</button>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-primary w-100 rounded-pill py-2 fw-bold" onclick="submitReview()">Submit Review</button>
             </div>
         </div>
     </div>
@@ -149,11 +166,9 @@ $myBookings = $result->fetch_all(MYSQLI_ASSOC);
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const reviewModal = new bootstrap.Modal(document.getElementById('reviewModal'));
-    
-    function openReviewModal(bookingID, sitterName) {
+
+    function openReviewModal(bookingID) {
         document.getElementById('modalBookingID').value = bookingID;
-        document.getElementById('modalSitterName').innerText = sitterName;
-        // Reset modal
         document.querySelectorAll('#starRating i').forEach(s => s.classList.remove('active'));
         document.getElementById('selectedRating').value = 0;
         document.getElementById('reviewComment').value = '';
@@ -165,8 +180,14 @@ $myBookings = $result->fetch_all(MYSQLI_ASSOC);
         star.addEventListener('click', function() {
             const val = this.getAttribute('data-value');
             document.getElementById('selectedRating').value = val;
-            document.querySelectorAll('#starRating i').forEach(s => {
-                s.classList.toggle('active', s.getAttribute('data-value') <= val);
+            
+            const stars = Array.from(document.querySelectorAll('#starRating i'));
+            stars.forEach((s, index) => {
+                if (index < val) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
             });
         });
     });
@@ -188,6 +209,14 @@ $myBookings = $result->fetch_all(MYSQLI_ASSOC);
             alert(data.message);
             if (data.status === 'success') location.reload();
         });
+    }
+
+    // NEW: Cancellation Logic
+    function cancelBooking(bookingID) {
+        if(confirm("Are you sure you want to cancel this booking?")) {
+            // Adjust this URL if your cancel controller is named differently!
+            window.location.href = `../../app/controllers/booking/cancelBooking.php?bookingID=${bookingID}`;
+        }
     }
 </script>
 

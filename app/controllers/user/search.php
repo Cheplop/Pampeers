@@ -2,8 +2,11 @@
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 require_once __DIR__ . '/../../config/config.php';
 
+// DO NOT put requireAuth() here so Guests can use this file!
+
 header('Content-Type: application/json');
 
+// If logged in, get their ID. If Guest, default to 0.
 $userId = $_SESSION['user_id'] ?? 0;
 
 // 1. Grab the search inputs from the URL
@@ -11,7 +14,8 @@ $location = trim($_GET['location'] ?? '');
 $date     = trim($_GET['date'] ?? '');
 $who      = trim($_GET['keyword'] ?? '');
 
-// 2. Start the base SQL query (Only get verified, active, and available sitters)
+// 2. Start the base SQL query
+// If userId is 0 (Guest), `u.id != 0` just means it won't hide any sitters by mistake.
 $sql = "SELECT s.sitterID, s.hourlyRate, u.firstName, u.lastName, u.profilePic, u.cityMunicipality,
         (SELECT COUNT(*) FROM favourites f WHERE f.sitter_id = s.sitterID AND f.guardian_id = ?) as isFavourite
         FROM sitters s 
@@ -24,7 +28,7 @@ $types = "ii";
 // 3. SMART FILTER: Where (Location)
 if ($location !== '') {
     $sql .= " AND u.cityMunicipality LIKE ?";
-    $params[] = "%" . $location . "%"; // % allows partial matches
+    $params[] = "%" . $location . "%"; 
     $types .= "s";
 }
 
@@ -37,7 +41,6 @@ if ($who !== '') {
 
 // 5. SMART FILTER: When (Date Check)
 if ($date !== '') {
-    // Hide sitters who are already booked on this exact date
     $sql .= " AND s.sitterID NOT IN (
                 SELECT sitterID FROM bookings 
                 WHERE DATE(startDateTime) <= ? AND DATE(endDateTime) >= ? 
@@ -63,7 +66,7 @@ while ($row = $result->fetch_assoc()) {
 
 $stmt->close();
 
-// 7. Send the results back to the Javascript on the dashboard
+// 7. Send the results back to the Dashboard
 echo json_encode($sitters);
 exit();
 ?>

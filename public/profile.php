@@ -23,7 +23,7 @@ $stmt->close();
 
 // Map database columns to the variables used in your design
 $profilePic = $user['profilePic'] ?? 'default.jpg';
-$email      = $user['email'] ?? 'No email set';
+$emailAddress      = $user['emailAddress'] ?? 'No email set';
 $fullName   = trim(($user['firstName'] ?? '') . ' ' . ($user['lastName'] ?? ''));
 $bio        = $user['bio'] ?? '';
 $location   = trim(($user['cityMunicipality'] ?? '') . ', ' . ($user['province'] ?? ''));
@@ -39,6 +39,7 @@ if ($isSitter) {
 }
 
 /* ================= FETCH INCOMING BOOKINGS ================= */
+/* ================= FETCH INCOMING BOOKINGS ================= */
 $bookings = [];
 if ($isSitter && $verificationStatus === 'verified') {
     $sitterId = $sitterData['sitterID'] ?? 0;
@@ -51,7 +52,7 @@ if ($isSitter && $verificationStatus === 'verified') {
             WHERE b.sitterID = ?
             ORDER BY 
                 CASE WHEN b.status = 'pending' THEN 1 ELSE 2 END, 
-                b.bookingDate ASC
+                b.startDateTime ASC -- CHANGED FROM bookingDate TO startDateTime
         ");
         $bStmt->bind_param("i", $sitterId);
         $bStmt->execute();
@@ -96,7 +97,7 @@ if ($isSitter && $verificationStatus === 'verified') {
             
                 <?php if ($isSitter): ?>
                     <?php else: ?>
-                        <a href="..." class="btnbecome">become a Sitter</a>
+                        <a href="/Pampeers/public/sitter/becomeSitter.php" class="btnbecome">become a Sitter</a>
                     <?php endif; ?>
 
             <?php if ($isSitter): ?>
@@ -166,7 +167,7 @@ if ($isSitter && $verificationStatus === 'verified') {
                 
                 <div class="d-flex flex-column justify-content-center">
                     <div>
-                        <p class="text-muted m-0" style="font-size: 0.9rem;"><?= htmlspecialchars($email) ?></p>
+                        <p class="text-muted m-0" style="font-size: 0.9rem;"><?= htmlspecialchars($emailAddress) ?></p>
                         <div class="d-flex align-items-center gap-2">
                             <h4 class="mb-1"><?= htmlspecialchars($fullName) ?></h4>
                             <a href="/Pampeers/public/editProfile.php" class="edit-icon">
