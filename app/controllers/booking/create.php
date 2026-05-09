@@ -59,31 +59,50 @@ if (!$sitterData) {
     header("Location: $guardianDash?error=sitter_not_found");
     exit();
 }
+$sitterStmt->close();
+
+/* ================= NEW: PREVENT MULTIPLE ACTIVE BOOKINGS ================= */
+// This checks if the guardian already has a booking with this sitter that isn't finished
+$checkStmt = $conn->prepare("
+    SELECT COUNT(*) as activeCount 
+    FROM bookings 
+    WHERE userID = ? AND sitterID = ? 
+    AND status NOT IN ('completed', 'cancelled', 'declined')
+");
+$checkStmt->bind_param("ii", $userId, $sitterId);
+$checkStmt->execute();
+$existingBooking = $checkStmt->get_result()->fetch_assoc();
+
+if ($existingBooking['activeCount'] > 0) {
+    // Redirect back with a specific error message
+    header("Location: $guardianDash?error=already_booked");
+    $checkStmt->close();
+    exit();
+}
+$checkStmt->close();
+/* ========================================================================= */
 
 // 5. Calculate total duration in hours and total amount
 $hoursRequested = ($endTimestamp - $startTimestamp) / 3600;
-$totalAmount = $hoursRequested * (float)$sitterData['hourlyRate'];
-$sitterStmt->close();
+
+// RANGE FIX: Ensure hoursRequested does not exceed DECIMAL(5,2) limit (999.99)
+if ($hoursRequested > 999.99) {
+    header("Location: $guardianDash?error=duration_too_long");
+    exit();
+}
+
+$hoursRequested = round($hoursRequested, 2);
+$totalAmount = round($hoursRequested * (float)$sitterData['hourlyRate'], 2);
 
 $bookingUUID = generateUUIDv4();
 $status = 'pending';
 
-// 6. Insert into database using the new startDateTime and endDateTime columns
+// 6. Insert into database
 $insertStmt = $conn->prepare("
     INSERT INTO bookings (uuid, userID, sitterID, startDateTime, endDateTime, hoursRequested, totalAmount, status, notes) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 ");
 
-// siissddss mapping:
-// s = string (uuid)
-// i = integer (userID)
-// i = integer (sitterID)
-// s = string (startDateTime)
-// s = string (endDateTime)
-// d = double/decimal (hoursRequested)
-// d = double/decimal (totalAmount)
-// s = string (status)
-// s = string (notes)
 $insertStmt->bind_param("siissddss", 
     $bookingUUID, 
     $userId, 
