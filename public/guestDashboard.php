@@ -157,9 +157,6 @@ try {
                     <p class="city"><?= htmlspecialchars($peer['city']) ?></p>
                     <div class="d-flex justify-content-between align-items-center mt-2">
                         <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate']) ?>/hr</p>
-                        <button class="btn btn-sm btn-primary rounded-pill px-3" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                            Book
-                        </button>
                     </div>
                 </div>
             </div>
@@ -192,9 +189,6 @@ try {
                         <p class="city"><?= htmlspecialchars($peer['city']) ?></p>
                         <div class="d-flex justify-content-between align-items-center mt-2">
                             <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate']) ?>/hr</p>
-                            <button class="btn btn-sm btn-primary rounded-pill px-3" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                Book
-                            </button>
                         </div>
                     </div>
                 </div>
