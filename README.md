@@ -5,99 +5,261 @@
 Pampeers is a web-based babysitting booking platform built with PHP and MySQL. The system is designed to connect guardians (parents) with qualified sitters, providing a secure and efficient way to manage bookings, profiles, and reviews. The platform supports three main user roles:
 
 ### Guardian
-- Can search for sitters based on location, availability, and age group requirements.
-- Can book, review, and manage favourite sitters.
-- Has access to a personalized dashboard to manage bookings and profile information.
+- Can search for sitters based on location, availability, and age group requirements
+- Can book, review, and manage favourite sitters
+- Has access to a personalized dashboard to manage bookings and profile information
 
 ### Sitter
-- Can set availability, update professional information, and manage bookings.
-- Receives booking requests from guardians and can accept or decline them.
-- Has a dashboard to view upcoming jobs and manage their profile.
+- Can set availability, update professional information, and manage bookings
+- Receives booking requests from guardians and can accept or decline them
+- Has a dashboard to view upcoming jobs and manage their profile
+- Can select which age groups they are willing to babysit
 
 ### Admin
-- Manages user accounts, including activating, deactivating, or deleting users and sitters.
-- Verifies sitter credentials and oversees platform activity.
-- Accesses an admin dashboard for system-wide management.
+- Manages user accounts, including activating, deactivating, or deleting users and sitters
+- Verifies sitter credentials and oversees platform activity
+- Accesses an admin dashboard for system-wide management
+- Can view user roles and manage platform activity
 
-## Database Logic
+## Database Schema
 
-- **Users Table:** Stores basic information for all users (guardians and sitters), such as name, email, password, and role.
-- **Sitters Table:** Stores professional information specific to sitters (e.g., bio, experience, certifications). Each sitter is linked to a user via a one-to-one relationship (one user can be one sitter, but not all users are sitters).
-- **Bookings Table:** Manages booking records, linking guardians and sitters. Each booking includes `startDateTime` and `endDateTime` fields to specify the booking period.
+### Users Table
+- Stores basic information for all users (guardians and sitters)
+- Fields: userID, username, emailAddress, password, phoneNumber, role (Guardian/Sitter)
+- Also stores bio information for all users
 
-## Search Mechanism
+### Sitters Table
+- Stores professional information specific to sitters
+- Fields: sitterID, userID (foreign key), bio, experience, certifications, acceptedAges
+- One-to-one relationship with Users table (not all users are sitters)
+- **acceptedAges:** Comma-separated list of age groups (Baby, Toddler, Child, Kid)
 
-The search functionality allows guardians to find suitable sitters using three main filters:
+### Bookings Table
+- Manages booking records linking guardians and sitters
+- Fields: bookingID, guardianID, sitterID, startDateTime, endDateTime, status, createdAt
+- Uses **startDateTime** and **endDateTime** (DATETIME format) for precise date/time range management
+- Replaces old bookingDate, bookingTime, duration columns for better reliability
 
-- **Location (WHERE):** Filters sitters based on the location field in the sitters or users table using SQL `WHERE` clauses.
-- **Date Availability (WHEN):** Checks sitter availability by ensuring there are no conflicting bookings in the specified date range (`startDateTime` and `endDateTime`).
-- **Age Groups (WHO):** Filters sitters based on the age groups they are willing to care for, typically stored as a field in the sitters table.
+## Search Mechanism (WHERE, WHEN, WHO)
+
+The search functionality allows guardians to find suitable sitters using three dynamic filters:
+
+### WHERE - Location Filter
+- Filters sitters based on cityMunicipality using partial LIKE matching
+- Only applied if user provides a location input
+
+### WHEN - Date Availability Filter
+- Checks sitter availability by ensuring no conflicting bookings in the requested date range
+- Uses NOT IN with a subquery on the bookings table
+- Compares against startDateTime and endDateTime for precise availability checking
+
+### WHO - Age Groups Filter
+- Filters sitters based on the acceptedAges they are willing to care for
+- Supports partial matching on comma-separated age group strings
+- Age group options: Baby, Toddler, Child, Kid
 
 ## Setup Instructions
 
 1. **Clone the Repository:**
   ```bash
   git clone <repository-url>
+  cd Pampeers
   ```
+
 2. **Database Setup:**
-  - Import the database schema and sample data from `sql/pampeers2.sql` into your MySQL server.
-  - Update `app/config/config.php` with your database credentials.
+  - Import the database schema and sample data from `sql/pampeers2.sql` into your MySQL server
+  - Update `app/config/config.php` with your database credentials
+  - Ensure the following tables exist: users, sitters, bookings, reviews, favourites
+
 3. **Web Server:**
-  - Place the project files in your web server's root directory (e.g., `htdocs` for XAMPP or `www` for WAMP).
-  - Ensure PHP and MySQL are running.
+  - Place the project files in your web server's root directory (e.g., `htdocs` for XAMPP or `www` for WAMP)
+  - Ensure PHP and MySQL are running
+
 4. **File Permissions:**
-  - Make sure the `app/uploads/profiles/` directory is writable for profile image uploads.
+  - Make sure the `app/uploads/profiles/` directory is writable for profile image uploads
+
 5. **Access the Application:**
-  - Open your browser and navigate to the appropriate URL (e.g., `http://localhost/Pampeers/public/`).
+  - Open your browser and navigate to the appropriate URL (e.g., `http://localhost/Pampeers/public/`)
 
 ---
 
-For further details, see the in-code documentation and comments provided in each PHP file.
-- `send.php` - Sends messages between users
-- `sendSupport.php` - Sends messages to admin support
+## Recent Updates & Improvements (Current Branch: improvedProfile)
 
-#### Payment Module (`payment/`)
-- `create.php` - Creates payment records for bookings
-- `fetchByBooking.php` - Retrieves payment info for a specific booking
-- `updateStatus.php` - Updates payment status (pending → paid/failed)
+### ✅ Database Schema Enhancements
+- **Bookings Table:** Migrated from `bookingDate`, `bookingTime`, `duration` to `startDateTime` and `endDateTime` for more precise date/time management
+- **Sitters Table:** Added `acceptedAges` column to store comma-separated age groups (Baby, Toddler, Child, Kid)
+- **Users Table:** Confirmed `bio` column for storing user biography information
 
-#### User Management (`user/`)
-- `updateProfile.php` - Updates user profile information
-- `becomeSitter.php` - Converts regular user to pet sitter
-- `fetchDashboard.php` - Gets user dashboard data
-- `deactivateAccount.php` - Deactivates user account
+### ✅ Backend Logic Updates
 
-#### Sitter Management (`sitter/`)
-- `updateProfile.php` - Updates sitter-specific profile data
-- `toggleAvailability.php` - Sitter sets availability status
-- `fetchDashboard.php` - Gets sitter dashboard data
+#### Authentication (`app/controllers/auth/login.php`)
+- **Dual Login Support:** Users can now login using either email OR username
+- Updated SQL query to check both credentials
 
-#### Admin Management (`admin/`)
-- `deleteUser.php` - Removes user from system
-- `deactivateUser.php` - Deactivates user account
-- `reactivateUser.php` - Reactivates deactivated user
+#### User Management (`app/controllers/user/becomeSitter.php`)
+- **Fixed:** Resolved "Unknown column 'bio'" error
+- Now correctly inserts sitter profile without bio field (bio stays in users table)
 
-### `uploads/`
-- Directory reserved for storing user-uploaded files (profile pictures, documents, etc.)
-- Currently shown as empty; would grow as users upload content
+#### Smart Search Engine (`app/controllers/user/search.php`)
+- **Dynamic Filter Application:** Blank fields no longer break search functionality
+- **WHERE Filter:** Uses LIKE matching on cityMunicipality with partial string support
+- **WHEN Filter:** Uses subquery on bookings table with NOT IN clause to check availability
+- **WHO Filter:** Supports comma-separated acceptedAges with partial string matching
 
-## `public/` - Frontend & Entry Points
-Contains presentation layer and user-facing pages.
+#### Booking Creation (`app/controllers/booking/create.php`)
+- **Updated:** Now captures startDate, startTime, endDate, endTime from form
+- **Conversion:** Uses PHP strtotime() and date() functions to convert to YYYY-MM-DD HH:MM:SS format
+- **Database:** Properly saves to startDateTime and endDateTime columns
 
-- `.htaccess` - Apache configuration for URL routing and access rules
+#### Profile Updates (`app/controllers/user/updateProfile.php`)
+- **Age Groups:** Receives acceptedAges[] checkbox array from frontend
+- **Storage:** Converts to comma-separated string using implode() before saving to database
 
-### `admin/` - Admin dashboard interface
-- Currently empty; likely contains admin management pages for user control, booking oversight, etc.
+### ✅ Frontend Improvements
 
-### `user/` - User portal interface  
-- Currently empty; likely contains pages like:
-  - Dashboard (user overview)
-  - Booking interface
-  - Messaging/inbox UI
-  - Profile management
-  - Payment history
+#### Admin Dashboard (`public/admin/adminDashboard.php`)
+- **Fixed:** Admin table now correctly displays user roles (Guardian / Sitter)
+- Uses LEFT JOIN with IF() statement for dynamic role display
 
-## `sql/` - Database
+#### Guardian Dashboard (`public/guardian/guardianDashboard.php`)
+- **Fixed:** Restored profile dropdown menu navigation
+- **Updated:** Search inputs now match guest view layout
+- **Ensured:** bootstrap.bundle.min.js is properly loaded
+
+#### Book Sitter Form (`public/guardian/bookSitter.php`)
+- **Updated:** Form now captures Start Date, Start Time, End Date, End Time
+- Properly collects all datetime data required by backend
+
+---
+
+## 📋 Project Structure
+
+### `app/` - Backend Application Logic
+```
+config/
+  └── config.php              # Database connection & configuration
+  
+controllers/
+  ├── admin/                  # Admin user management
+  ├── auth/                   # Authentication (login/logout/register)
+  ├── booking/                # Booking operations (create, fetch, update)
+  ├── review/                 # Review submission
+  ├── sitter/                 # Sitter-specific operations
+  └── user/                   # User management, search, profile
+  
+helpers/
+  └── sitter.php              # Sitter utility functions
+  
+middleware/
+  └── auth.php                # Authentication middleware
+
+uploads/
+  └── profiles/               # User profile picture storage
+```
+
+### `public/` - Frontend & Entry Points
+```
+admin/
+  └── adminDashboard.php      # Admin management interface
+  
+guardian/
+  ├── bookSitter.php          # Booking form for guardians
+  ├── guardianDashboard.php   # Guardian home dashboard
+  ├── myBookings.php          # Guardian's booking list
+  ├── myFavourites.php        # Saved favorite sitters
+  └── viewSitterProfile.php   # Sitter profile view
+  
+sitter/
+  └── sitterDashboard.php     # Sitter home dashboard
+  
+css/
+  ├── dashboard.css
+  ├── adminDashboard.css
+  ├── guardianDashboard.css
+  ├── sitterDashboard.css
+  └── [other styling files]
+
+editProfile.php             # Profile editing interface
+guestDashboard.php          # Guest/public home page
+profile.php                 # User profile display
+register.php                # User registration
+```
+
+### `sql/` - Database Files
+```
+└── pampeers2.sql           # Database schema and sample data
+```
+
+### `storage/` - File Storage
+Reserved for application data storage
+
+---
+
+## 🚀 Current Status & Next Steps
+
+### ✅ Completed
+- Core platform functionality (search, booking, profiles)
+- Database schema optimization
+- Dual login system
+- Smart search with WHERE/WHEN/WHO filters
+- Admin role management
+- Age group filtering for sitters
+
+### 🔄 In Progress / Pending Frontend
+1. **Sitter Edit Profile Page** (`public/editProfile.php`)
+   - Add checkboxes for accepted age groups (Baby, Toddler, Child, Kid)
+   - **CRITICAL:** Input names must be exactly `name="acceptedAges[]"`
+   - Allow sitters to update their profile with age preferences
+
+2. **Sitter Profile Display** (`public/profile.php`)
+   - Fetch and display acceptedAges on sitter's profile
+   - Show age groups to both sitters and guardians
+   - Improve profile visibility for search results
+
+### 📝 Technical Notes
+- All dates/times use MySQL DATETIME format (YYYY-MM-DD HH:MM:SS)
+- Age groups are stored as comma-separated strings in the database
+- Search filters are applied dynamically based on user input
+- Profile uploads are stored in `app/uploads/profiles/`
+
+---
+
+## Project Configuration
+
+For additional information about specific controllers and their functionality, refer to the inline code documentation in each PHP file. The codebase follows a Model-View-Controller (MVC) pattern with clear separation of concerns.
+
+### Key Configuration Files
+- `app/config/config.php` - Database credentials and connection settings
+- `.htaccess` (if present) - URL rewriting and access control rules
+
+---
+
+## Contributing & Development
+
+- **Branch:** Currently working on the `improvedProfile` branch for UI/UX enhancements
+- **Testing:** Ensure all search filters work correctly with various input combinations
+- **Code Style:** Follow existing PHP and HTML formatting conventions
+- **Database Queries:** Always use prepared statements to prevent SQL injection
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Profile Uploads Not Working**
+   - Ensure `app/uploads/profiles/` directory has write permissions (chmod 755)
+   - Check that PHP file upload settings allow sufficient file size
+
+2. **Search Not Finding Sitters**
+   - Verify sitters have `acceptedAges` populated in database
+   - Check date ranges don't conflict with existing bookings
+   - Ensure location field matches search input
+
+3. **Login Issues**
+   - Try logging in with both username and email
+   - Verify database credentials in `app/config/config.php`
+   - Check that user role is correctly set (Guardian/Sitter)
 - `Pampeers.sql` - Complete database schema (SQL dump)
   - Defines all tables for users, bookings, payments, messages, etc.
   - Used for initial database setup and restoration
