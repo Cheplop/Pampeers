@@ -10,7 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-$loginInput = trim($_POST['login'] ?? '');
+// Accepts either 'login' or 'username' depending on how the form named it
+$loginInput = trim($_POST['login'] ?? $_POST['username'] ?? '');
 $password   = $_POST['password'] ?? '';
 
 if ($loginInput === '' || $password === '') {

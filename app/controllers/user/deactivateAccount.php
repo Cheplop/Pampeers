@@ -1,45 +1,48 @@
 <?php
-// Include the config file to connect to the database
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../../config/config.php';
-// Include the auth middleware to check if user is logged in
 require_once __DIR__ . '/../../middleware/auth.php';
 
-// Make sure user is logged in
 requireAuth();
 
-// Check if the request is a POST request, if not, redirect to dashboard
+// Only allow POST requests for deactivation
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /Pampeers/public/user/dashboard.php');
+    header('Location: /Pampeers/public/guardian/guardianDashboard.php');
     exit();
 }
 
-// Get the user ID from session
 $userId = $_SESSION['user_id'];
 
-// Prepare statement to update user as inactive and set deactivation time
+// Update user as inactive and log the deactivation time
 $stmt = $conn->prepare("
     UPDATE users
     SET isActive = 0, deactivatedAt = NOW()
     WHERE id = ?
 ");
-// Bind user ID
 $stmt->bind_param("i", $userId);
 
-// If update succeeds, close statement, clear session, and redirect to login
 if ($stmt->execute()) {
     $stmt->close();
 
-    // Clear all session data
+    // Securely clear and destroy the session
     $_SESSION = [];
-    session_unset();
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
+    }
     session_destroy();
 
-    header('Location: /Pampeers/public/login.php?account=deactivated');
+    // Redirect to the guest/login dashboard
+    header('Location: /Pampeers/public/guestDashboard.php?account=deactivated');
     exit();
 }
 
-// If failed, close statement and redirect with error
 $stmt->close();
-header('Location: /Pampeers/public/user/dashboard.php?error=deactivate_failed');
+header('Location: /Pampeers/public/guardian/guardianDashboard.php?error=deactivate_failed');
 exit();
-?>

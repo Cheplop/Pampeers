@@ -1,74 +1,69 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-header('Content-Type: application/json');
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
 require_once __DIR__ . '/../../config/config.php';
 
-$keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : ''; // This is now the Age Group
-$location = isset($_GET['location']) ? trim($_GET['location']) : '';
-$date = isset($_GET['date']) ? trim($_GET['date']) : ''; // The When
-$type = isset($_GET['type']) ? trim($_GET['type']) : 'sitter';
+header('Content-Type: application/json');
 
 $userId = $_SESSION['user_id'] ?? 0;
 
-try {
-    $params = [$userId];
-    $types = "i";
+// 1. Grab the search inputs from the URL
+$location = trim($_GET['location'] ?? '');
+$date     = trim($_GET['date'] ?? '');
+$who      = trim($_GET['keyword'] ?? '');
 
-    $sql = "SELECT 
-                s.sitterID, s.userID, u.firstName, u.lastName, u.profilePic,
-                u.barangay, u.cityMunicipality, u.province,
-                s.hourlyRate, s.ratingAverage, s.allowedAges,
-                IF(f.id IS NOT NULL, 1, 0) AS isFavourite
-            FROM sitters s
-            INNER JOIN users u ON s.userID = u.id
-            LEFT JOIN favourites f ON s.sitterID = f.sitter_id AND f.guardian_id = ?
-            WHERE u.isActive = 1 AND s.isAvailable = 1 AND s.verificationStatus = 'verified'";
+// 2. Start the base SQL query (Only get verified, active, and available sitters)
+$sql = "SELECT s.sitterID, s.hourlyRate, u.firstName, u.lastName, u.profilePic, u.cityMunicipality,
+        (SELECT COUNT(*) FROM favourites f WHERE f.sitter_id = s.sitterID AND f.guardian_id = ?) as isFavourite
+        FROM sitters s 
+        JOIN users u ON s.userID = u.id 
+        WHERE s.verificationStatus = 'verified' AND u.isActive = 1 AND s.isAvailable = 1 AND u.id != ?";
 
-    // 1. WHERE: Filter by Location
-    if ($location !== '') {
-        $sql .= " AND (u.barangay LIKE ? OR u.cityMunicipality LIKE ? OR u.province LIKE ?)";
-        $searchLocation = "%$location%";
-        for ($i = 0; $i < 3; $i++) { $params[] = $searchLocation; $types .= "s"; }
-    }
+$params = [$userId, $userId];
+$types = "ii";
 
-    // 2. WHO: Filter by Age Group (Baby, Toddler, etc.)
-    if ($keyword !== '') {
-        $sql .= " AND s.allowedAges LIKE ?";
-        $params[] = "%$keyword%";
-        $types .= "s";
-    }
-
-    // 3. WHEN: Exclude sitters already booked on this exact date
-    if ($date !== '') {
-        $sql .= " AND s.sitterID NOT IN (
-                    SELECT sitterID FROM bookings 
-                    WHERE bookingDate = ? AND status IN ('accepted', 'pending')
-                  )";
-        $params[] = $date;
-        $types .= "s";
-    }
-
-    $sql .= " ORDER BY s.ratingAverage DESC, s.createdAt DESC";
-
-    $stmt = $conn->prepare($sql);
-    if (!empty($params)) {
-        $stmt->bind_param($types, ...$params);
-    }
-
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $data = [];
-
-    while ($row = $result->fetch_assoc()) {
-        $row['profilePic'] = $row['profilePic'] ?: 'default.jpg';
-        $row['isFavourite'] = (bool) $row['isFavourite'];
-        $data[] = $row;
-    }
-
-    echo json_encode(['success' => true, 'data' => $data]);
-
-} catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+// 3. SMART FILTER: Where (Location)
+if ($location !== '') {
+    $sql .= " AND u.cityMunicipality LIKE ?";
+    $params[] = "%" . $location . "%"; // % allows partial matches
+    $types .= "s";
 }
+
+// 4. SMART FILTER: Who (Accepted Ages)
+if ($who !== '') {
+    $sql .= " AND s.acceptedAges LIKE ?";
+    $params[] = "%" . $who . "%";
+    $types .= "s";
+}
+
+// 5. SMART FILTER: When (Date Check)
+if ($date !== '') {
+    // Hide sitters who are already booked on this exact date
+    $sql .= " AND s.sitterID NOT IN (
+                SELECT sitterID FROM bookings 
+                WHERE DATE(startDateTime) <= ? AND DATE(endDateTime) >= ? 
+                AND status IN ('pending', 'accepted')
+              )";
+    $params[] = $date;
+    $params[] = $date;
+    $types .= "ss";
+}
+
+// 6. Execute the query
+$stmt = $conn->prepare($sql);
+if (!empty($params)) {
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$result = $stmt->get_result();
+
+$sitters = [];
+while ($row = $result->fetch_assoc()) {
+    $sitters[] = $row;
+}
+
+$stmt->close();
+
+// 7. Send the results back to the Javascript on the dashboard
+echo json_encode($sitters);
+exit();
+?>

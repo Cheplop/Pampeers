@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 08, 2026 at 09:30 AM
+-- Generation Time: May 08, 2026 at 02:30 PM
 -- Server version: 11.8.6-MariaDB-0+deb13u1 from Debian
 -- PHP Version: 8.4.16
 
@@ -33,6 +33,7 @@ CREATE TABLE `bookings` (
   `userID` int(11) NOT NULL,
   `sitterID` int(11) NOT NULL,
   `bookingDate` date NOT NULL,
+  `endDate` date NOT NULL,
   `startTime` time NOT NULL,
   `endTime` time NOT NULL,
   `hoursRequested` decimal(5,2) DEFAULT NULL,
@@ -46,8 +47,8 @@ CREATE TABLE `bookings` (
 -- Dumping data for table `bookings`
 --
 
-INSERT INTO `bookings` (`bookingID`, `uuid`, `userID`, `sitterID`, `bookingDate`, `startTime`, `endTime`, `hoursRequested`, `totalAmount`, `status`, `notes`, `createdAt`) VALUES
-(1, '54c7deaf-29b1-49dd-a33f-886e3c246059', 4, 3, '2026-12-31', '00:31:00', '12:31:00', 12.00, 0.00, 'completed', '', '2026-05-05 08:45:50');
+INSERT INTO `bookings` (`bookingID`, `uuid`, `userID`, `sitterID`, `bookingDate`, `endDate`, `startTime`, `endTime`, `hoursRequested`, `totalAmount`, `status`, `notes`, `createdAt`) VALUES
+(1, '54c7deaf-29b1-49dd-a33f-886e3c246059', 4, 3, '2026-12-31', '0000-00-00', '00:31:00', '12:31:00', 12.00, 0.00, 'completed', '', '2026-05-05 08:45:50');
 
 -- --------------------------------------------------------
 
@@ -95,9 +96,10 @@ INSERT INTO `reviews` (`reviewID`, `uuid`, `bookingID`, `userID`, `sitterID`, `r
 CREATE TABLE `sitters` (
   `sitterID` int(11) NOT NULL,
   `uuid` char(36) NOT NULL,
-  `userID ` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
   `hourlyRate` decimal(10,2) NOT NULL DEFAULT 0.00,
   `experience` int(11) NOT NULL DEFAULT 0,
+  `acceptedAges` varchar(255) DEFAULT NULL,
   `isAvailable` tinyint(1) NOT NULL DEFAULT 1,
   `ratingAverage` decimal(3,2) DEFAULT NULL,
   `verificationStatus` enum('pending','verified','rejected') NOT NULL DEFAULT 'pending',
@@ -109,9 +111,11 @@ CREATE TABLE `sitters` (
 -- Dumping data for table `sitters`
 --
 
-INSERT INTO `sitters` (`sitterID`, `uuid`, `userID`, `hourlyRate`, `experience`, `isAvailable`, `ratingAverage`, `verificationStatus`, `createdAt`, `allowedAges`) VALUES
-(2, '460b5d85478ef4979c30cc96c1e63413', 2, 0.00, 0, 0, NULL, 'verified', '2026-05-02 06:18:52', 'Baby, Toddler, Child, Kid'),
-(3, '0fe63d8db80e820aa406e20b1b190b76', 3, 20.00, 2, 1, 5.00, 'verified', '2026-05-02 13:00:27', 'Baby, Toddler, Child, Kid');
+INSERT INTO `sitters` (`sitterID`, `uuid`, `userID`, `hourlyRate`, `experience`, `acceptedAges`, `isAvailable`, `ratingAverage`, `verificationStatus`, `createdAt`, `allowedAges`) VALUES
+(2, '460b5d85478ef4979c30cc96c1e63413', 2, 0.00, 0, NULL, 0, NULL, 'verified', '2026-05-02 06:18:52', 'Baby, Toddler, Child, Kid'),
+(3, '0fe63d8db80e820aa406e20b1b190b76', 3, 20.00, 2, NULL, 1, 5.00, 'verified', '2026-05-02 13:00:27', 'Baby, Toddler, Child, Kid'),
+(4, '11700876-6e0f-4b69-a1b0-132472db5c82', 6, 12.00, 5, NULL, 1, NULL, 'verified', '2026-05-08 13:58:40', 'Baby, Toddler, Child, Kid'),
+(5, '1f11d6b3-da95-44fe-aa3c-1582c0a87ef5', 5, 0.00, 0, NULL, 1, NULL, 'verified', '2026-05-08 14:07:49', 'Baby, Toddler, Child, Kid');
 
 -- --------------------------------------------------------
 
@@ -125,7 +129,7 @@ CREATE TABLE `users` (
   `firstName` varchar(100) NOT NULL,
   `middleName` varchar(100) DEFAULT NULL,
   `lastName` varchar(100) NOT NULL,
-  `bio` text NOT NULL,
+  `bio` text DEFAULT NULL,
   `suffix` varchar(10) DEFAULT NULL,
   `birthDate` date NOT NULL,
   `sex` enum('male','female','other') NOT NULL,
@@ -143,18 +147,22 @@ CREATE TABLE `users` (
   `dateCreated` timestamp NOT NULL DEFAULT current_timestamp(),
   `profilePic` varchar(255) NOT NULL DEFAULT 'default.jpg',
   `isActive` tinyint(1) NOT NULL DEFAULT 1,
-  `deactivatedAt` datetime DEFAULT NULL
+  `deactivatedAt` datetime DEFAULT NULL,
+  `deletedAt` datetime DEFAULT NULL,
+  `createdAt` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `uuid`, `firstName`, `middleName`, `lastName`, `bio`, `suffix`, `birthDate`, `sex`, `role`, `contactNumber`, `emailAddress`, `username`, `password`, `streetAddress`, `barangay`, `cityMunicipality`, `province`, `country`, `zipCode`, `dateCreated`, `profilePic`, `isActive`, `deactivatedAt`) VALUES
-(1, '22951542-4596-11f1-8ef7-d822244c147e', 'Nea', '', 'Satunero', '', '', '2005-10-11', 'female', 'admin', '0912 345 6789', 'sean@gmail.com', 'aengela', '$2y$12$yv4Rg3TArLLCjSR6CCRw5OWEKHyFyANk13EuKZoBEG/vuijeJkJBu', 'Agora', 'Lapasan', 'Cagayan de Oro', 'Misamis Oriental', 'Philippines', '9000', '2026-05-02 03:09:32', '1777699320_572852305076.jpeg', 1, NULL),
-(2, '87cf60a9-45b0-11f1-8ef7-d822244c147e', 'Remiel', '', 'Fugnit', '', '', '2003-12-30', 'male', 'guardian', 'asdasdasd', 'rem@gmail.com', 'remyel', '$2y$12$SBRHnm.AG8arUdRMSxd35OcPi0Xa7pI7wNTQ83SlcNNdE8woIE0ly', 'asdad', 'asdasd', 'asdasd', 'dsadsad', 'asdasd', 'asdasd', '2026-05-02 06:18:29', 'default.jpg', 1, NULL),
-(3, 'c40cfb24-45fe-11f1-8c32-d0008dc532ac', 'Clark', '', 'Galleon', '', '', '2003-12-06', 'male', 'guardian', '092323453', 'clark@gmail.com', 'clarkbayot', '$2y$12$a5psCRFkmqApl45QE5plreX15kBMw3PKtw2LSDbc0mKTXV07e4Qb6', 'Burgos', 'Consolacion', 'Cagayan de Oro', 'Misamis Oriental', '', '9000', '2026-05-02 12:51:59', 'default.jpg', 1, NULL),
-(4, 'c15e5eb1-46bf-11f1-9f98-08f3aa7c6ca8', 'Nea', NULL, 'Satunero', '', NULL, '2005-10-11', 'female', 'guardian', '0912 435 3456', 'nea@gmail.com', 'satunero', '$2y$12$8RVv0.8oHWy2DGzl4Zvw7u7nPQVconOPdqWGBNJNySxtkQoWahp0K', 'Agora', 'Lapasan', 'Cagayan de Oro', 'Misamis Oriental', 'Philippines', '9000', '2026-05-03 10:53:17', 'default.jpg', 1, NULL);
+INSERT INTO `users` (`id`, `uuid`, `firstName`, `middleName`, `lastName`, `bio`, `suffix`, `birthDate`, `sex`, `role`, `contactNumber`, `emailAddress`, `username`, `password`, `streetAddress`, `barangay`, `cityMunicipality`, `province`, `country`, `zipCode`, `dateCreated`, `profilePic`, `isActive`, `deactivatedAt`, `deletedAt`, `createdAt`) VALUES
+(1, '22951542-4596-11f1-8ef7-d822244c147e', 'Nea', '', 'Satunero', '', '', '2005-10-11', 'female', 'admin', '0912 345 6789', 'sean@gmail.com', 'aengela', '$2y$12$yv4Rg3TArLLCjSR6CCRw5OWEKHyFyANk13EuKZoBEG/vuijeJkJBu', 'Agora', 'Lapasan', 'Cagayan de Oro', 'Misamis Oriental', 'Philippines', '9000', '2026-05-02 03:09:32', '1777699320_572852305076.jpeg', 1, NULL, NULL, '2026-05-08 20:01:52'),
+(2, '87cf60a9-45b0-11f1-8ef7-d822244c147e', 'Remiel', '', 'Fugnit', '', '', '2003-12-30', 'male', 'guardian', 'asdasdasd', 'rem@gmail.com', 'remyel', '$2y$12$SBRHnm.AG8arUdRMSxd35OcPi0Xa7pI7wNTQ83SlcNNdE8woIE0ly', 'asdad', 'asdasd', 'asdasd', 'dsadsad', 'asdasd', 'asdasd', '2026-05-02 06:18:29', 'default.jpg', 1, NULL, NULL, '2026-05-08 20:01:52'),
+(3, 'c40cfb24-45fe-11f1-8c32-d0008dc532ac', 'Clark', '', 'Galleon', '', '', '2003-12-06', 'male', 'guardian', '092323453', 'clark@gmail.com', 'clarkbayot', '$2y$12$a5psCRFkmqApl45QE5plreX15kBMw3PKtw2LSDbc0mKTXV07e4Qb6', 'Burgos', 'Consolacion', 'Cagayan de Oro', 'Misamis Oriental', 'Philippines', '9000', '2026-05-02 12:51:59', 'default.jpg', 1, NULL, NULL, '2026-05-08 20:01:52'),
+(4, 'c15e5eb1-46bf-11f1-9f98-08f3aa7c6ca8', 'Nea', NULL, 'Satunero', '', NULL, '2005-10-11', 'female', 'guardian', '0912 435 3456', 'nea@gmail.com', 'satunero', '$2y$12$8RVv0.8oHWy2DGzl4Zvw7u7nPQVconOPdqWGBNJNySxtkQoWahp0K', 'Agora', 'Lapasan', 'Cagayan de Oro', 'Misamis Oriental', 'Philippines', '9000', '2026-05-03 10:53:17', 'default.jpg', 1, NULL, NULL, '2026-05-08 20:01:52'),
+(5, 'd22e0cbe-6806-4dcd-b451-b7a32a9b383b', 'asdad', 's', 'asdad', '', 'sd', '2003-06-28', 'other', 'guardian', '09230923', 'hays@gmail.com', 'hays', '$2y$12$9C7Kv7lAU/h5gHvWe2xorONCp51IcZOC2BrRUVCivy9ip5qoE/BO6', 'asdad', 'asdads', 'asdasd', 'asdasd', 'asdasda', '1234', '2026-05-08 12:31:31', '1778243491_69fdd7a3b77bb.jpeg', 1, NULL, NULL, '2026-05-08 20:31:31'),
+(6, '31b86a09-43b5-447f-be9a-498fba574eca', 'asdsad', 'asdasd', 'asdasd', 'HAHAHAHAHA', 'asd', '2003-12-31', 'other', 'guardian', '12312313', 'user@gmail.com', 'username', '$2y$12$yyXtLTE2pmaXTlluKKyA8.p9KpV8yIwofT90t9bANC.Xz9P/elsnq', 'asdadasd', 'adad', 'asdasd', 'asd', 'asdadads', '1234', '2026-05-08 13:39:05', 'default.jpg', 0, NULL, '2026-05-08 22:08:35', '2026-05-08 21:39:05');
 
 --
 -- Indexes for dumped tables
@@ -230,13 +238,13 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `sitters`
 --
 ALTER TABLE `sitters`
-  MODIFY `sitterID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `sitterID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables

@@ -2,10 +2,13 @@
 
 /*
 |--------------------------------------------------------------------------
+| SITTER HELPERS primary purpose is Authorization and Identity
+|--------------------------------------------------------------------------
 | GET SITTER DATA
 |--------------------------------------------------------------------------
 */
 function getSitter(mysqli $conn, int $userId) {
+    // We join users and sitters to get the full profile
     $stmt = $conn->prepare("
         SELECT s.*, u.*
         FROM sitters s
@@ -22,13 +25,11 @@ function getSitter(mysqli $conn, int $userId) {
 
 /*
 |--------------------------------------------------------------------------
-| CHECK IF USER IS A SITTER
+| CHECK IF USER IS A SITTER (ANY STATUS)
 |--------------------------------------------------------------------------
 */
 function isSitter($conn, $userId) {
-    $stmt = $conn->prepare("
-        SELECT 1 FROM sitters WHERE userID = ? LIMIT 1
-    ");
+    $stmt = $conn->prepare("SELECT 1 FROM sitters WHERE userID = ? LIMIT 1");
     $stmt->bind_param("i", $userId);
     $stmt->execute();
     return $stmt->get_result()->num_rows > 0;
@@ -41,16 +42,9 @@ function isSitter($conn, $userId) {
 */
 function isVerifiedSitter(mysqli $conn, int $userId): bool
 {
-    $stmt = $conn->prepare("
-        SELECT verificationStatus
-        FROM sitters
-        WHERE userID = ?
-        LIMIT 1
-    ");
-
+    $stmt = $conn->prepare("SELECT verificationStatus FROM sitters WHERE userID = ? LIMIT 1");
     $stmt->bind_param("i", $userId);
     $stmt->execute();
-
     $row = $stmt->get_result()->fetch_assoc();
 
     return ($row['verificationStatus'] ?? '') === 'verified';
@@ -63,39 +57,36 @@ function isVerifiedSitter(mysqli $conn, int $userId): bool
 */
 function isPendingSitter(mysqli $conn, int $userId): bool
 {
-    $stmt = $conn->prepare("
-        SELECT verificationStatus
-        FROM sitters
-        WHERE userID = ?
-        LIMIT 1
-    ");
-
+    $stmt = $conn->prepare("SELECT verificationStatus FROM sitters WHERE userID = ? LIMIT 1");
     $stmt->bind_param("i", $userId);
     $stmt->execute();
-
     $row = $stmt->get_result()->fetch_assoc();
 
     return ($row['verificationStatus'] ?? '') === 'pending';
 }
 
+/*
+|--------------------------------------------------------------------------
+| GET COMBINED ROLES (For Display)
+|--------------------------------------------------------------------------
+*/
 function getUserRoles(mysqli $conn, int $userId): string
 {
-    // get base role
+    // 1. Get base role from users table
     $stmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
     $stmt->bind_param("i", $userId);
     $stmt->execute();
     $user = $stmt->get_result()->fetch_assoc();
+    $baseRole = ucfirst($user['role'] ?? 'guardian');
 
-    $role = ucfirst($user['role'] ?? 'guardian');
-
-    // check if also sitter
-    $stmt = $conn->prepare("SELECT 1 FROM sitters WHERE userID = ? LIMIT 1");
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-
-    if ($stmt->get_result()->num_rows > 0) {
-        $role .= ', Sitter';
+    // 2. Check if they have a sitter record
+    $stmtSitter = $conn->prepare("SELECT 1 FROM sitters WHERE userID = ? LIMIT 1");
+    $stmtSitter->bind_param("i", $userId);
+    $stmtSitter->execute();
+    
+    if ($stmtSitter->get_result()->num_rows > 0) {
+        return ($baseRole === 'Sitter') ? 'Sitter' : $baseRole . ' / Sitter';
     }
 
-    return $role;
+    return $baseRole;
 }

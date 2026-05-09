@@ -9,64 +9,77 @@ require_once __DIR__ . '/../../middleware/auth.php';
 // Ensure the user is logged in
 requireAuth();
 
-// Define the correct redirect path for sitters
-$sitterDash = '/Pampeers/public/sitter/sitterDashboard.php';
-
 // 1. Get the booking ID and the new status from the URL
 $bookingId = $_GET['id'] ?? null;
 $newStatus = $_GET['status'] ?? null;
 $userId    = $_SESSION['user_id'];
+$userRole  = $_SESSION['role'] ?? 'guardian';
 
 // 2. Validate input and allowed status values
 $allowedStatuses = ['accepted', 'declined', 'completed', 'cancelled'];
 if (!$bookingId || !in_array($newStatus, $allowedStatuses)) {
-    header("Location: $sitterDash?error=invalid_request");
+    header("Location: /Pampeers/public/guestDashboard.php?error=invalid_request");
     exit();
 }
 
 /**
- * 3. SECURITY CHECK: 
- * Ensure the logged-in user is actually the sitter assigned to this booking.
- * We find the sitterID associated with the current user first.
+ * 3. SECURITY & PERMISSION CHECK
+ * We ensure that users can only update bookings they are part of.
  */
-$sitterQuery = $conn->prepare("SELECT sitterID FROM sitters WHERE userID = ? LIMIT 1");
-$sitterQuery->bind_param("i", $userId);
-$sitterQuery->execute();
-$sitterResult = $sitterQuery->get_result()->fetch_assoc();
-$sitterQuery->close();
+if ($userRole === 'sitter') {
+    // Sitters can update any status for bookings assigned to them
+    $sitterQuery = $conn->prepare("SELECT sitterID FROM sitters WHERE userID = ? LIMIT 1");
+    $sitterQuery->bind_param("i", $userId);
+    $sitterQuery->execute();
+    $sitterResult = $sitterQuery->get_result()->fetch_assoc();
+    $sitterQuery->close();
 
-if (!$sitterResult) {
-    header("Location: $sitterDash?error=not_a_sitter");
-    exit();
-}
-
-$sitterId = $sitterResult['sitterID'];
-
-/**
- * 4. PERFORM UPDATE
- * We include sitterID in the WHERE clause so a sitter can't 
- * update a booking belonging to someone else.
- */
-$updateStmt = $conn->prepare("
-    UPDATE bookings 
-    SET status = ? 
-    WHERE bookingID = ? AND sitterID = ?
-");
-$updateStmt->bind_param("sii", $newStatus, $bookingId, $sitterId);
-
-if ($updateStmt->execute()) {
-    if ($updateStmt->affected_rows > 0) {
-        $updateStmt->close();
-        header("Location: $sitterDash?status_updated=" . $newStatus);
-        exit();
-    } else {
-        // No rows updated (likely booking ID doesn't match this sitter)
-        $updateStmt->close();
-        header("Location: $sitterDash?error=unauthorized_action");
+    if (!$sitterResult) {
+        header("Location: /Pampeers/public/sitter/sitterDashboard.php?error=not_a_sitter");
         exit();
     }
+
+    $sitterId = $sitterResult['sitterID'];
+
+    // Update query restricted to the sitter's ID
+    $updateStmt = $conn->prepare("
+        UPDATE bookings 
+        SET status = ? 
+        WHERE bookingID = ? AND sitterID = ?
+    ");
+    $updateStmt->bind_param("sii", $newStatus, $bookingId, $sitterId);
+
+} else {
+    // Guardians can ONLY "cancel" their own bookings
+    if ($newStatus !== 'cancelled') {
+        header("Location: /Pampeers/public/guardian/guardianDashboard.php?error=unauthorized_action");
+        exit();
+    }
+
+    // Update query restricted to the guardian's (user) ID
+    $updateStmt = $conn->prepare("
+        UPDATE bookings 
+        SET status = ? 
+        WHERE bookingID = ? AND userID = ?
+    ");
+    $updateStmt->bind_param("sii", $newStatus, $bookingId, $userId);
 }
 
-$updateStmt->close();
-header("Location: $sitterDash?error=database_error");
-exit();
+/**
+ * 4. EXECUTE & REDIRECT
+ */
+if ($updateStmt->execute()) {
+    $updateStmt->close();
+
+    // Determine the redirect path based on the role
+    $redirectPath = ($userRole === 'sitter') 
+        ? '/Pampeers/public/sitter/sitterDashboard.php' 
+        : '/Pampeers/public/guardian/guardianDashboard.php';
+
+    header("Location: $redirectPath?success=updated");
+    exit();
+} else {
+    // Handle database failure
+    header("Location: /Pampeers/public/guestDashboard.php?error=db_error");
+    exit();
+}
