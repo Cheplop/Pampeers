@@ -47,13 +47,13 @@ body {
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-
-/* --- 3. BUTTONS & PROFILE --- */
-.dropdown {
+/* --- 4. BUTTONS & PROFILE --- */
+.dropdown{
     width: 45px;
     height: 45px;
     border-radius: 50%;
-    background-color: #F0F8FF;
+    text-decoration: none;
+    color: #666;
 
     display: flex;
     justify-content: center;
@@ -70,26 +70,39 @@ body {
     color: red;
 }
 
-.dropdown a{
-    text-decoration: none;
-    color: black;
+.dropdown button {
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    background-color: #F0F8FF;
+
+    width: 40px;
+    height: 40px;
+
+    font-size: 18px;
+    transition: 0.2s ease;
 }
+
 
 .dropdown:active,
 .dropdown:focus,
 .dropdown:hover {
-    border: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
 }
 
-.dropdown .btn:focus {
+btn-dropdown:focus {
     outline: none;
     border: none;
 }
 
-.dropdown-menu {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+.dropdown .dropdown-menu:focus,
+.dropdown .dropdown-menu:hover,
+.dropdown .dropdown-menu:active {
+    border-radius: 50%;
+    outline: none;
+    border: none;
 }
+
 
 .signup-btn{
     font-size: 15px;
@@ -107,20 +120,18 @@ body {
     background-color: #F0F8FF;
 }
 
-.login-btn{
+.verified-btn{
     font-size: 15px;
-    font-weight: bold;
-    color: black;
-    background-color: #F0F8FF;
+    font-weight: light;
+    color: #666;
     text-decoration: none;
     padding: 6px 15px;
-    border: 1px solid black;
     border-radius: 15px;
     transition: 0.2s ease;
 }
 
-.login-btn:hover {
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+.verified-btn:hover {
+    color: black;
 }
 
 .search-btn:hover {

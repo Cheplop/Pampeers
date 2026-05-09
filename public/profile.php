@@ -102,8 +102,8 @@ if ($isSitter && $verificationStatus === 'verified') {
 
             <?php if ($isSitter): ?>
                 <?php if ($verificationStatus === 'verified'): ?>
-                    <a href="/Pampeers/public/sitter/sitterDashboard.php" class="signup-btn">
-                        Verified Sitter
+                    <a href="/Pampeers/public/sitter/sitterDashboard.php" class="verified-btn">
+                        verified sitter
                     </a>
                 <?php elseif ($verificationStatus === 'pending'): ?>
                     <span class="btn btn-secondary btn-sm disabled">
@@ -124,17 +124,18 @@ if ($isSitter && $verificationStatus === 'verified') {
                 </a>
 
                 <div class="dropdown">
-                    <button class="btn" type="button" data-bs-toggle="dropdown" data-bs-offset="0,15" =aria-expanded="false">
+                    <button class="btn-dropdown border-1" type="button" data-bs-toggle="dropdown" data-bs-offset="0,15" aria-expanded="false">
                         <i class="fa-solid fa-bars"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
                             <a class="dropdown-item" href="profile.php"><i class="fa-regular fa-user me-2"></i>View Profile</a>
                         </li>
-                        <li><button class="dropdown-item" type="button"><i class="fa-regular fa-heart me-2"></i>Favourites</button>
+                        <li>
+                            <a class="dropdown-item" href="guardian/myFavourites.php"><i class="fa-regular fa-heart me-2"></i>Favourites</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="/Pampeers/public/sitter/sitterDashboard.php"><i class="fa-solid fa-baby-carriage me-2"></i>Bookings</a>
+                            <a class="dropdown-item" href="/Pampeers/public/guardian/myBookings.php"><i class="fa-solid fa-baby-carriage me-2"></i>Bookings</a>
                         </li>
                         <li class="logout">
                             <a class="dropdown-item" href="/Pampeers/app/controllers/auth/logout.php"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Logout</a>
@@ -146,6 +147,7 @@ if ($isSitter && $verificationStatus === 'verified') {
         </div>
     </div>
 </header>
+
 <main class="container-fluid-lg mt-4 px-4 pb-5">
     
     <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>

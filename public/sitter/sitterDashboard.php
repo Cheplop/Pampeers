@@ -95,16 +95,25 @@ if ($sitterId > 0) {
             <a href="../profile.php" class="text-decoration-none">
                 <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" class="rounded-circle shadow-sm" style="width: 40px; height: 40px; object-fit: cover;" alt="Profile">
             </a>
-            <div class="dropdown">
-                <button class="btn btn-light rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                    <li><a class="dropdown-item" href="../profile.php"><i class="fa-regular fa-user me-2"></i> Profile</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-danger" href="../../app/controllers/auth/logout.php"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Logout</a></li>
-                </ul>
-            </div>
+                <div class="dropdown">
+                    <button class="btn" type="button" data-bs-toggle="dropdown" data-bs-offset="0,15" =aria-expanded="false">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="../profile.php"><i class="fa-regular fa-user me-2"></i>View Profile</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="guardian/myFavourites.php"><i class="fa-regular fa-heart me-2"></i>Favourites</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/Pampeers/public/guardian/myBookings.php"><i class="fa-solid fa-baby-carriage me-2"></i>Bookings</a>
+                        </li>
+                        <li class="logout">
+                            <a class="dropdown-item" href="/Pampeers/app/controllers/auth/logout.php"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Logout</a>
+                        </li>
+                    </ul>
+                </div>
         </div>
     </div>
 </header>
