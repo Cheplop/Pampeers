@@ -9,12 +9,15 @@ requireAuth();
 
 $uID = $_SESSION['user_id'];
 
-// FIXED: Corrected column names (userID instead of uID, firstName/lastName instead of name)
+// FIXED: Corrected column names and fixed the string syntax error
 $query = "SELECT s.*, u.firstName, u.lastName, u.profilePic as img, u.cityMunicipality as city 
           FROM favourites f 
           JOIN sitters s ON f.sitter_id = s.sitterID 
           JOIN users u ON s.userID = u.id 
-          WHERE f.guardian_id = ?";
+          WHERE f.guardian_id = ? 
+          AND s.isAvailable = 1 
+          AND u.isActive = 1 
+          AND s.verificationStatus = 'verified'";
           
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $uID);

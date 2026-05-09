@@ -9,16 +9,15 @@ requireAuth();
 
 $uID = $_SESSION['user_id'];
 
-// Query adjusted to match your actual database columns
-$query = "SELECT s.*, 
-                 u.firstName, u.lastName, 
-                 u.profilePic, 
-                 u.cityMunicipality,
-                 s.hourlyRate
+// FIXED: Removed the 'as img' and 'as city' aliases so the array keys match what your HTML expects
+$query = "SELECT s.*, u.firstName, u.lastName, u.profilePic, u.cityMunicipality 
           FROM favourites f 
           JOIN sitters s ON f.sitter_id = s.sitterID 
           JOIN users u ON s.userID = u.id 
-          WHERE f.guardian_id = ?";
+          WHERE f.guardian_id = ? 
+          AND s.isAvailable = 1 
+          AND u.isActive = 1 
+          AND s.verificationStatus = 'verified'";
           
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $uID);
