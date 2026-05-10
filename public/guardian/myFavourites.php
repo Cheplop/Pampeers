@@ -7,9 +7,10 @@ require_once __DIR__ . '/../../app/middleware/auth.php';
 require_once __DIR__ . '/../../app/config/config.php';
 requireAuth();
 
+// Make sure we are using exactly ONE variable name: $uID
 $uID = $_SESSION['user_id'];
 
-// FIXED: Removed the 'as img' and 'as city' aliases so the array keys match what your HTML expects
+// Fetch the favorite sitters
 $query = "SELECT s.*, u.firstName, u.lastName, u.profilePic, u.cityMunicipality 
           FROM favourites f 
           JOIN sitters s ON f.sitter_id = s.sitterID 
@@ -26,14 +27,14 @@ $favSitters = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 /* ================= FETCH USER PHOTO ONLY ================= */
 $stmt = $conn->prepare("SELECT profilePic FROM users WHERE id = ? LIMIT 1");
-$stmt->bind_param("i", $userId);
+// The fix: We safely pass the $uID variable we defined at the top
+$stmt->bind_param("i", $uID);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
 // Fallback to default if no image exists in database
 $profilePic = (!empty($user['profilePic'])) ? $user['profilePic'] : 'default.jpg';
-
 ?>
 
 <!DOCTYPE html>

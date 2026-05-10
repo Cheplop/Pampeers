@@ -114,7 +114,7 @@ if ($isSitter && $verificationStatus === 'verified') {
                         </span>
                     <?php endif; ?>
                 <?php else: ?>
-                    <a href="/Pampeers/public/sitter/becomeSitter.php" class="btnbecome">become a Sitter</a>
+                    <a href="/Pampeers/app/controllers/user/becomeSitter.php" class="btnbecome">become a Sitter</a>
                 <?php endif; ?>
             </div>
             
@@ -223,7 +223,7 @@ if ($isSitter && $verificationStatus === 'verified') {
                                 <div class="card rounded-4 p-3 h-100">
                                     <div class="d-flex align-items-center mb-3">
                                         <img src="/Pampeers/app/uploads/profiles/<?= !empty($latest['profilePic']) ? htmlspecialchars($latest['profilePic']) : 'default.jpg' ?>" 
-                                             class="booking-avatar-preview me-3" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;">
+                                            class="booking-avatar-preview me-3" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;">
                                         <div>
                                             <h6 class="m-0 fw-bold"><?= htmlspecialchars($latest['firstName']) ?></h6>
                                             <small class="text-muted"><?= htmlspecialchars($latest['cityMunicipality']) ?></small>
@@ -233,7 +233,7 @@ if ($isSitter && $verificationStatus === 'verified') {
                                     <div class="booking-sub-box p-3 rounded-3 mb-3 small">
                                         <div class="d-flex justify-content-between">
                                             <span class="text-muted">Date:</span>
-                                            <strong><?= date('M d', strtotime($latest['bookingDate'])) ?></strong>
+                                            <strong><?= date('M d', strtotime($latest['startDateTime'] ?? $latest['bookingDate'])) ?></strong>
                                         </div>
                                         <div class="d-flex justify-content-between">
                                             <span class="text-muted">Payout:</span>

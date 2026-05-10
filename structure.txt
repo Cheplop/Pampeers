@@ -13,6 +13,7 @@
 │   │   │   ├── logout.php
 │   │   │   └── register.php
 │   │   ├── booking
+│   │   │   ├── cancelBooking.php
 │   │   │   ├── create.php
 │   │   │   ├── fetchBookings.php
 │   │   │   └── updateStatus.php
@@ -54,6 +55,7 @@
 │       │   ├── 1777520743_69f2d06738c02.jpg
 │       │   ├── 1777699320_572852305076.jpeg
 │       │   ├── 1777885120_94f46180d535.jpg
+│       │   ├── 1778238810_69fdc55a34eb9.jpg
 │       │   ├── 1778243491_69fdd7a3b77bb.jpeg
 │       │   ├── 78faeaa15ce3f0b1b30795dc7f1144c4.jpg
 │       │   ├── ad201e26367b77453456fb33173d5e6c 1.png
@@ -70,6 +72,8 @@
 │   │   ├── dashboard.css
 │   │   ├── guardianDashboard.css
 │   │   ├── guardianProfile.css
+│   │   ├── myBookings.css
+│   │   ├── myfavourites.css
 │   │   ├── register.css
 │   │   ├── sitterDashboard.css
 │   │   ├── sitterProfile.css
@@ -94,4 +98,4 @@
 ├── test.php
 └── update.md
 
-20 directories, 75 files
+20 directories, 79 files
