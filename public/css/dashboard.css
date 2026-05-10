@@ -31,7 +31,7 @@ body {
     box-shadow: 0 4px 24px rgba(0,0,0,0.10);
     padding: 8px 8px 8px 24px;
     max-width: 780px;
-    width: 100%;
+    width: 90%;;
     border: 1.5px solid #f0ece8;
     transition: box-shadow 0.25s;
 }
@@ -136,6 +136,7 @@ body {
     display: none;
 }
 
+
 /* --- 4. BUTTONS & PROFILE --- */
 .dropdown{
     width: 45px;
@@ -143,32 +144,59 @@ body {
     border-radius: 50%;
     text-decoration: none;
     color: #666;
-    background-color: #F0F8FF;
 
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.dropdown a{
-    text-decoration: none;
-    color: black;
+.dropdown li{
+    font-size: 14px;
+    color: #666;
 }
+
+.dropdown li.logout a{
+    font-size: 14px;
+    color: red;
+}
+
+.dropdown button {
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    background-color: #F0F8FF;
+
+    width: 40px;
+    height: 40px;
+
+    font-size: 18px;
+    transition: 0.2s ease;
+}
+
 
 .dropdown:active,
 .dropdown:focus,
 .dropdown:hover {
+    border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0,0,0,0.15);
 }
 
-.dropdown .btn:focus {
+btn-dropdown:focus {
     outline: none;
     border: none;
 }
 
-.signup-btn{
+.dropdown .dropdown-menu:focus,
+.dropdown .dropdown-menu:hover,
+.dropdown .dropdown-menu:active {
+    border-radius: 50%;
+    outline: none;
+    border: none;
+}
+
+.signup-btn {
     font-size: 15px;
-    font-weight: bold;
+    font-weight: light;
+    text-decoration: none;
     color: black;
     background-color: transparent;
     text-decoration: none;
@@ -217,6 +245,12 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.profile-wrapper:active,
+.profile-wrapper:focus,
+.profile-wrapper:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 /* --- 5. CAROUSEL & CARDS --- */

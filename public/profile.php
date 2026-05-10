@@ -86,55 +86,59 @@ if ($isSitter && $verificationStatus === 'verified') {
 <header class="sticky-top custom-header">
     <div class="nav-container d-flex align-items-center justify-content-between px-3">
 
-        <div class="d-flex d-none d-md-flex align-items-center gap-2">
+        <!-- Changed d-none d-md-flex to d-none d-lg-flex so it disappears on tablets/phones -->
+        <!-- If you want it to disappear only on very small phones, use d-none d-sm-flex -->
+        <div class="d-none d-lg-flex align-items-center gap-2">
             <a href="/Pampeers/public/guardian/guardianDashboard.php">
                 <img src="/Pampeers/app/uploads/pampeerlogo.png" class="logo-img" alt="Pampeers Logo">
             </a>
-            <p class="brand m-0">Pampeers</p>
+            <p class="brand m-0"><a href="/Pampeers/public/guardian/guardianDashboard.php">Pampeers</a></p>
         </div>
 
-        <div class="right-side-p d-flex align-items-center justify-content-end gap-3">
+        <!-- Added ms-auto to ensure this stays on the right when the logo is gone -->
+        <div class="right-side-p d-flex align-items-center justify-content-end gap-3 ms-auto">
             
+            <div class="sitter-status-actions d-flex align-items-center gap-2">
                 <?php if ($isSitter): ?>
+                    <?php if ($verificationStatus === 'verified'): ?>
+                        <a href="/Pampeers/public/sitter/sitterDashboard.php" class="verified-btn">
+                            verified sitter
+                        </a>
+                    <?php elseif ($verificationStatus === 'pending'): ?>
+                        <span class="btn btn-secondary btn-sm disabled">
+                            Sitter Pending
+                        </span>
                     <?php else: ?>
-                        <a href="/Pampeers/public/sitter/becomeSitter.php" class="btnbecome">become a Sitter</a>
+                        <span class="btn btn-danger btn-sm disabled">
+                            Not Verified
+                        </span>
                     <?php endif; ?>
-
-            <?php if ($isSitter): ?>
-                <?php if ($verificationStatus === 'verified'): ?>
-                    <a href="/Pampeers/public/sitter/sitterDashboard.php" class="signup-btn">
-                        Verified Sitter
-                    </a>
-                <?php elseif ($verificationStatus === 'pending'): ?>
-                    <span class="btn btn-secondary btn-sm disabled">
-                        Sitter Pending
-                    </span>
                 <?php else: ?>
-                    <span class="btn btn-danger btn-sm disabled">
-                        Not Verified
-                    </span>
+                    <a href="/Pampeers/public/sitter/becomeSitter.php" class="btnbecome">become a Sitter</a>
                 <?php endif; ?>
-            <?php endif; ?>
+            </div>
             
-            <div class="nav-btn d-flex gap-2">
+            <div class="nav-btn d-flex align-items-center gap-2">
                 <a href="profile.php" class="text-decoration-none">
                     <div class="profile-wrapper">
-                        <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($profilePic); ?>" class="profile-img" alt="Profile" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                        <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($profilePic); ?>" class="profile-img" alt="Profile">
                     </div>
                 </a>
 
                 <div class="dropdown">
-                    <button class="btn" type="button" data-bs-toggle="dropdown" data-bs-offset="0,15" =aria-expanded="false">
+                    <button class="btn-dropdown border-1" type="button" data-bs-toggle="dropdown" data-bs-offset="0,15" aria-expanded="false">
                         <i class="fa-solid fa-bars"></i>
                     </button>
+                    <!-- Added dropdown-menu-end to keep the menu within screen bounds on mobile -->
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
                             <a class="dropdown-item" href="profile.php"><i class="fa-regular fa-user me-2"></i>View Profile</a>
                         </li>
-                        <li><button class="dropdown-item" type="button"><i class="fa-regular fa-heart me-2"></i>Favourites</button>
+                        <li>
+                            <a class="dropdown-item" href="guardian/myFavourites.php"><i class="fa-regular fa-heart me-2"></i>Favourites</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="/Pampeers/public/sitter/sitterDashboard.php"><i class="fa-solid fa-baby-carriage me-2"></i>Bookings</a>
+                            <a class="dropdown-item" href="/Pampeers/public/guardian/myBookings.php"><i class="fa-regular fa-calendar me-2"></i>Bookings</a>
                         </li>
                         <li class="logout">
                             <a class="dropdown-item" href="/Pampeers/app/controllers/auth/logout.php"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Logout</a>
@@ -146,6 +150,7 @@ if ($isSitter && $verificationStatus === 'verified') {
         </div>
     </div>
 </header>
+
 <main class="container-fluid-lg mt-4 px-4 pb-5">
     
     <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>

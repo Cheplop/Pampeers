@@ -23,6 +23,17 @@ $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $uID);
 $stmt->execute();
 $favSitters = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+/* ================= FETCH USER PHOTO ONLY ================= */
+$stmt = $conn->prepare("SELECT profilePic FROM users WHERE id = ? LIMIT 1");
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$user = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+
+// Fallback to default if no image exists in database
+$profilePic = (!empty($user['profilePic'])) ? $user['profilePic'] : 'default.jpg';
+
 ?>
 
 <!DOCTYPE html>
@@ -33,37 +44,67 @@ $favSitters = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     <title>My Favourites - Pampeers</title>
     
     <link rel="icon" type="image/png" href="/Pampeers/app/uploads/pampeerlogo.png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Ribeye&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <link rel="stylesheet" href="../css/sitterDashboard.css">
-    
-    <style>
-        body { background-color: #f8f9fa; font-family: 'Poppins', sans-serif; }
-        .fav-card {
-            transition: transform 0.2s;
-            border: none;
-            border-radius: 20px;
-        }
-        .fav-card:hover { transform: translateY(-5px); }
-        .btn-heart {
-            background: #fff;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            border: none;
-        }
-    </style>
+
+
+    <link rel="stylesheet" href="../css/myFavourites.css">
 </head>
+
+
 <body>
+
+
+<header class="sticky-top custom-header">
+    <div class="nav-container d-flex align-items-center justify-content-between px-3">
+
+        <!-- Changed d-none d-md-flex to d-none d-lg-flex so it disappears on tablets/phones -->
+        <!-- If you want it to disappear only on very small phones, use d-none d-sm-flex -->
+        <div class="d-none d-lg-flex align-items-center gap-2">
+            <a href="/Pampeers/public/guardian/guardianDashboard.php">
+                <img src="/Pampeers/app/uploads/pampeerlogo.png" class="logo-img" alt="Pampeers Logo" >
+            </a>
+            <p class="brand m-0"><a href="/Pampeers/public/guardian/guardianDashboard.php">Pampeers</a></p>
+        </div>
+
+        <!-- Added ms-auto to ensure this stays on the right when the logo is gone -->
+        <div class="right-side-p d-flex align-items-center justify-content-end gap-3 ms-auto">
+        
+            
+            <div class="nav-btn d-flex align-items-center gap-2">
+                <a href="../profile.php" class="text-decoration-none">
+                    <div class="profile-wrapper">
+                        <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($profilePic); ?>" class="profile-img" alt="Profile">
+                    </div>
+                </a>
+
+                <div class="dropdown">
+                    <button class="btn-dropdown border-1" type="button" data-bs-toggle="dropdown" data-bs-offset="0,15" aria-expanded="false">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <!-- Added dropdown-menu-end to keep the menu within screen bounds on mobile -->
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="../profile.php"><i class="fa-regular fa-user me-2"></i>View Profile</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="myFavourites.php"><i class="fa-regular fa-heart me-2"></i>Favourites</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/Pampeers/public/guardian/myBookings.php"><i class="fa-regular fa-calendar me-2"></i>Bookings</a>
+                        </li>
+                        <li class="logout">
+                            <a class="dropdown-item" href="/Pampeers/app/controllers/auth/logout.php"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</header>
 
 <div class="container py-5">
     <div class="d-flex align-items-center mb-5">

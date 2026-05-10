@@ -188,7 +188,7 @@ $backLink = ($role === 'sitter') ? 'profile.php' : 'profile.php';
 
             <?php if ($isVerifiedSitter): ?>
                 <div class="col-12 mt-4 mb-1">
-                    <h5 class="fw-bold text-primary m-0" style="font-family: 'Poppins', sans-serif;"><i class="fa-solid fa-baby-carriage me-2"></i>Sitter Settings</h5>
+                    <h5 class="fw-bold text-primary m-0" style="font-family: 'Poppins', sans-serif;"><i class="fa-regular fa-calendar me-2"></i>Sitter Settings</h5>
                 </div>
 
                 <div class="col-md-6">

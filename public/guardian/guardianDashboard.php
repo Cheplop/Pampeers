@@ -126,22 +126,30 @@ $stmtN->close();
             <button type="button" class="btn btn-link p-0 border-0">
                 <a href="../profile.php">
                     <div class="profile-wrapper">
-                        <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" class="profile-img" alt="Profile">
+                        <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" class="profile-img" alt="Profile" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
                     </div>
                 </a>
             </button>
 
-            <div class="dropdown">
-                <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="myFavourites.php">Favourites</a></li>
-                    <li><a class="dropdown-item" href="myBookings.php">My Bookings</a></li>
-                    <li><a class="dropdown-item" href="../profile.php">Profile</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-danger" href="/Pampeers/app/controllers/auth/logout.php">Logout</a></li>
-                </ul>
+                <div class="dropdown">
+                    <button class="btn" type="button" data-bs-toggle="dropdown" data-bs-offset="0,15" =aria-expanded="false">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="../profile.php"><i class="fa-regular fa-user me-2"></i>View Profile</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="myFavourites.php"><i class="fa-regular fa-heart me-2"></i>Favourites</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="myBookings.php"><i class="fa-regular fa-calendar me-2"></i>Bookings</a>
+                        </li>
+                        <li class="logout">
+                            <a class="dropdown-item" href="/Pampeers/app/controllers/auth/logout.php"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Logout</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
         </div>
@@ -173,7 +181,6 @@ $stmtN->close();
                 <p class="city"><?= htmlspecialchars($peer['city'] ?? 'Location N/A') ?></p>
                 <div class="d-flex justify-content-between align-items-center mt-2">
                     <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
-                    <a href="bookSitter.php?sitterID=<?= htmlspecialchars($peer['sitterID']) ?>" class="btn btn-sm btn-primary rounded-pill px-3" onclick="event.stopPropagation();">Book</a>
                 </div>
             </div>
         </div>
@@ -206,7 +213,6 @@ $stmtN->close();
                 <p class="city"><?= htmlspecialchars($peer['city'] ?? 'Location N/A') ?></p>
                 <div class="d-flex justify-content-between align-items-center mt-2">
                     <p class="m-0 fw-bold">₱<?= htmlspecialchars($peer['rate'] ?? '0') ?>/hr</p>
-                    <a href="bookSitter.php?sitterID=<?= htmlspecialchars($peer['sitterID']) ?>" class="btn btn-sm btn-primary rounded-pill px-3" onclick="event.stopPropagation();">Book</a>
                 </div>
             </div>
         </div>
