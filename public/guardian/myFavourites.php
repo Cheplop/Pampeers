@@ -111,11 +111,11 @@ $profilePic = (!empty($user['profilePic'])) ? $user['profilePic'] : 'default.jpg
         <a href="guardianDashboard.php" class="btn btn-light rounded-circle me-3 shadow-sm">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
-        <h2 class="fw-bold m-0">My Favourite Peers</h2>
+        <h2 class="label">My Favourite Peers</h2>
     </div>
 
     <?php if (empty($favSitters)): ?>
-        <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+        <div class="empty-likes">
             <i class="fa-regular fa-heart fa-4x text-muted mb-3 opacity-25"></i>
             <h4 class="text-muted">No favourites yet</h4>
             <p class="text-muted mb-4">Start exploring to find the perfect peer for your needs.</p>

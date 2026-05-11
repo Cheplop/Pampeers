@@ -201,19 +201,19 @@ if ($isSitter && $verificationStatus === 'verified') {
     <div class="row justify-content-center profile-content-row mb-5">
         <div class="col-lg-9">
             <div class="row gx-4">
-                
-                <div class="col-lg-5 col-md-6 mb-4 d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-center mb-3 booking-header">
-                        <p class="m-0 fw-light">Booking Requests</p>
-                        <?php if ($isSitter && $verificationStatus === 'verified' && !empty($bookings)): ?>
-                            <a href="/Pampeers/public/sitter/sitterDashboard.php" class="see-all-text fw-bold">
-                                All <i class="fa-solid fa-arrow-right ms-1"></i>
-                            </a>
-                        <?php endif; ?>
-                    </div>
 
-                    <div class="flex-grow-1">
-                        <?php if ($isSitter && $verificationStatus === 'verified'): ?>
+                <?php if ($isSitter && $verificationStatus === 'verified'): ?>
+                    <div class="col-lg-5 col-md-6 mb-4 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center mb-3 booking-header">
+                            <p class="m-0 fw-light">Booking Requests</p>
+                            <?php if (!empty($bookings)): ?>
+                                <a href="/Pampeers/public/sitter/sitterDashboard.php" class="see-all-text fw-bold">
+                                    All <i class="fa-solid fa-arrow-right ms-1"></i>
+                                </a>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="flex-grow-1">
                             <?php if (empty($bookings)): ?>
                                 <div class="card p-4 text-center rounded-4 h-100 d-flex align-items-center justify-content-center">
                                     <small class="text-muted">No active requests</small>
@@ -232,11 +232,11 @@ if ($isSitter && $verificationStatus === 'verified') {
                                     
                                     <div class="booking-sub-box p-3 rounded-3 mb-3 small">
                                         <div class="d-flex justify-content-between">
-                                            <span class="text-muted">Date:</span>
-                                            <strong><?= date('M d', strtotime($latest['bookingDate'])) ?></strong>
+                                            <span class="text-muted"><i class="fa-regular fa-calendar-days me-2"></i>Date:</span>
+                                            <strong><?= !empty($latest['startDateTime']) ? date('M d', strtotime($latest['startDateTime'])) : 'N/A' ?></strong>
                                         </div>
                                         <div class="d-flex justify-content-between">
-                                            <span class="text-muted">Payout:</span>
+                                            <span class="text-muted"><i class="fa-regular fa-money-bill-1 me-2"></i>Payout:</span>
                                             <strong class="">₱<?= number_format($latest['totalAmount'], 2) ?></strong>
                                         </div>
                                     </div>
@@ -248,35 +248,34 @@ if ($isSitter && $verificationStatus === 'verified') {
                                     </div>
                                 </div>
                             <?php endif; ?>
-                        <?php else: ?>
-                            <div class="p-4 text-center border rounded-4 bg-light h-100 d-flex align-items-center justify-content-center">
-                                <i class="fa-solid fa-shield-cat text-muted opacity-25 fa-3x"></i>
-                            </div>
-                        <?php endif; ?>
+                        </div>
                     </div>
-                </div>
 
-                <div class="col-lg-7 col-md-6 mb-4 d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <p class="m-0 fw-light">Recent Reviews</p>
-                    </div>
-                    
-                    <div class="card p-4 rounded-4 flex-grow-1">
-                        <div class="d-flex flex-column h-100">
-                            <h6 class="fw-bold mb-3">
-                                <i class="fa-solid fa-quote-left review-quote-icon me-2"></i> 
-                                Latest Feedback
-                            </h6>
-                            <p class="mb-3 fst-italic small">
-                                "Charles was very kind and gentle to my kids. He is loved and favorites. I would work with him again"
-                            </p>
-                            <div class="mt-auto d-flex justify-content-between align-items-center">
-                                <span class="text-muted small">~ Jared</span>
-                                <a href="#" class="see-all-text text-decoration-none fw-bold">Read More</a>
+                    <div class="col-lg-7 col-md-6 mb-4 d-flex flex-column">
+                <?php else: ?>
+                    <div class="col-lg-12 mb-4 d-flex flex-column">
+                <?php endif; ?>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <p class="m-0 fw-light">Recent Reviews</p>
+                        </div>
+                        
+                        <div class="card p-4 rounded-4 flex-grow-1">
+                            <div class="d-flex flex-column h-100">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="fa-solid fa-quote-left review-quote-icon me-2"></i> 
+                                    Latest Feedback
+                                </h6>
+                                <p class="mb-3 fst-italic small">
+                                    "Charles was very kind and gentle to my kids. He is loved and favorites. I would work with him again"
+                                </p>
+                                <div class="mt-auto d-flex justify-content-between align-items-center">
+                                    <span class="text-muted small">~ Jared</span>
+                                    <a href="#" class="see-all-text text-decoration-none fw-bold">Read More</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
             </div>
         </div>

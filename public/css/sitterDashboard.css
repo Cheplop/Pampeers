@@ -1,156 +1,139 @@
-body { 
-    background-color: #FFFDF7; 
-    }
+/* --- 1. GLOBAL STYLES --- */
+body {
+    background: #FFFDF7;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+}
 
+/* --- 2. HEADER & NAVIGATION --- */
 .custom-header {
     background: #FFFDF7;
-    border-bottom: 1px solid #eee;
-    padding: 10px 10px 10px 10px;
+    border-bottom: 1px solid #000;
+    padding: 10px;
 }
 
-
-/* Brand */
-.brand-label {
-    font-weight: 600;
-    font-size: 18px;
-    color: #222;
-}
-
-.brand{
-    font-size: 20px;
-    font-family: 'Ribeye';
-}
-
-
-.logo-img{
+.logo-img {
     width: 50px;
     height: 50px;
 }
 
-/* Logout */
-.logout-btn {
-    font-size: 15px;
-    color: #555;
-    text-decoration: none;
-    padding: 6px 10px;
-    border-radius: 20px;
-    transition: 0.2s ease;
+.brand {
+    font-size: 25px;
+    font-family: 'Ribeye', cursive;
+    margin: 0;
 }
 
-.profile-img-p {
-    width: 50px;
-    height: 50px;
+.profile-wrapper {
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid #ddd;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-.logout-btn:hover {
-    background: #f7f7f7;
-}
-
-.profile-img:hover {
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-
-.queue{
-    margin-left: 60px;
-    margin-right: 60px;
-}
-
-/* Reusable Card Styles */
-.card-profile {
-    margin-bottom: 10px;
-
-    background: #F0F8FF;
-    border-radius: 20px;
-    border: none;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-.card-profile h2{
-    font-size: 50px;
-    font-weight: 700;
-}
-
-.card-profile p{
-    font-size: 15px;
-    color: #555;
-}
-
-.card-white {
-    margin-right: 40px;
-    margin-left: 40px;
-    background: #FFFDF7;
-    border-radius: 20px;
-    border: 1px solid rgba(0,0,0,0.05);
-}
-
-/* Components */
-.profile-img {
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-    object-fit: cover;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-
-    margin: 20px;
-}
-
-.info-item {
-    padding: 12px 0;
+    overflow: hidden;
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 0.95rem;
+    justify-content: center;
+    border: 1px solid #ddd;
 }
 
-.divider {
-    border-bottom: 1.5px solid rgba(0,0,0,0.1);
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.job-note {
-    font-size: 0.85rem;
-    color: #666;
-    line-height: 1.6;
-    margin: 15px 0;
+.profile-wrapper:active,
+.profile-wrapper:focus,
+.profile-wrapper:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-.job-details {
-    font-size: 0.8rem;
-    color: #888;
-}
-
-.price-tag {
-    font-size: 1.5rem;
-    font-weight: 700;
-}
-
-.currency {
-    font-size: 1.1rem;
-    margin-right: 2px;
-}
-
-.read-more, .view-all {
+/* --- 2. HEADER & NAVIGATION --- */
+.dropdown{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
     text-decoration: none;
-    font-size: 0.85rem;
-    color: #3C56A2;
-    font-weight: 500;
+    color: #666;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.read-more:hover, .view-all:hover {
-    text-decoration: underline;
+.dropdown li{
+    font-size: 14px;
+    color: #666;
 }
 
-.user-avatar-circle {
+.dropdown li.logout a{
+    font-size: 14px;
+    color: red;
+}
+
+.dropdown button {
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    background-color: #F0F8FF;
+
     width: 40px;
     height: 40px;
-    background: #e0e0e0;
-    border-radius: 50%;
-    display: inline-block;
+
+    font-size: 18px;
+    transition: 0.2s ease;
 }
+
+
+.dropdown:active,
+.dropdown:focus,
+.dropdown:hover {
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+btn-dropdown:focus {
+    outline: none;
+    border: none;
+}
+
+.dropdown .dropdown-menu:focus,
+.dropdown .dropdown-menu:hover,
+.dropdown .dropdown-menu:active {
+    border-radius: 50%;
+    outline: none;
+    border: none;
+}
+
+.brand a {
+    text-decoration: none;
+    color: black;
+}
+
+/*--- 3. JOB CARDS --- */
+
+.card {
+    border: #000 solid 1px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background-color: #FFFDF7;
+}
+
+.booking-sub-box {
+    border: 1px solid #eee;
+    background-color: #FFFDF7;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.09);
+}
+
+.btn-accept{
+    background-color: #AAC4F5;
+    text-decoration: none;
+    border: 1px solid #000;
+    color: #000;
+    text-align: center;
+}
+
+.btn-accept:hover {
+    background-color: #8AA7E5;
+    color: #000;
+}
+
 
 /* Responsive Tweaks */
 @media (max-width: 768px) {
