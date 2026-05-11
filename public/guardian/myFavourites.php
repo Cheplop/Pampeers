@@ -7,11 +7,10 @@ require_once __DIR__ . '/../../app/middleware/auth.php';
 require_once __DIR__ . '/../../app/config/config.php';
 requireAuth();
 
-// Use one consistent variable for the user ID
+// Make sure we are using exactly ONE variable name: $uID
 $uID = $_SESSION['user_id'];
 
-/* ================= FETCH FAVOURITE SITTERS ================= */
-// profilePic and cityMunicipality come from the 'users' table (u)
+// Fetch the favorite sitters
 $query = "SELECT s.*, u.firstName, u.lastName, u.profilePic, u.cityMunicipality 
           FROM favourites f 
           JOIN sitters s ON f.sitter_id = s.sitterID 
@@ -29,13 +28,14 @@ $stmt->close();
 
 /* ================= FETCH LOGGED-IN USER PHOTO ================= */
 $stmt = $conn->prepare("SELECT profilePic FROM users WHERE id = ? LIMIT 1");
-$stmt->bind_param("i", $uID); // Fixed: was $userId
+// The fix: We safely pass the $uID variable we defined at the top
+$stmt->bind_param("i", $uID);
 $stmt->execute();
 $userResult = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
-// Fallback to default if no image exists
-$profilePic = (!empty($userResult['profilePic'])) ? $userResult['profilePic'] : 'default.jpg';
+// Fallback to default if no image exists in database
+$profilePic = (!empty($user['profilePic'])) ? $user['profilePic'] : 'default.jpg';
 ?>
 
 <!DOCTYPE html>
@@ -92,11 +92,18 @@ $profilePic = (!empty($userResult['profilePic'])) ? $userResult['profilePic'] : 
         <a href="guardianDashboard.php" class="btn btn-light rounded-circle me-3 shadow-sm">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
-        <h2 class="label">FAVOURITE PEERS</h2>
+        <h2 class="fw-bold m-0">My Favourite Peers</h2>
     </div>
 
-    <?php if (!empty($favSitters)): ?>
-        <div class="carousel-wrapper" id="avail-carousel">
+    <?php if (empty($favSitters)): ?>
+        <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+            <i class="fa-regular fa-heart fa-4x text-muted mb-3 opacity-25"></i>
+            <h4 class="text-muted">No favourites yet</h4>
+            <p class="text-muted mb-4">Start exploring to find the perfect peer for your needs.</p>
+            <a href="guardianDashboard.php" class="btn btn-primary rounded-pill px-4">Browse Sitters</a>
+        </div>
+    <?php else: ?>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="fav-container">
             <?php foreach ($favSitters as $peer): ?>
             <div class="carousel-card fav-card" id="sitter-card-<?= htmlspecialchars($peer['sitterID']) ?>">
                 <div class="small-card" style="cursor: pointer;" onclick="window.location.href='viewSitterProfile.php?sitterID=<?= htmlspecialchars($peer['sitterID']) ?>'">

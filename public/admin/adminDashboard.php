@@ -19,9 +19,19 @@ $admin = $stmt->get_result()->fetch_assoc() ?? [];
 $stmt->close();
 
 /* ================= STATS ================= */
-$totalUsers = $conn->query("SELECT COUNT(*) AS total FROM users WHERE deletedAt IS NULL")->fetch_assoc()['total'] ?? 0;
+$totalUsers = $conn->query("SELECT COUNT(*) AS total FROM users WHERE role != 'admin' AND deletedAt IS NULL")->fetch_assoc()['total'] ?? 0;
+
 $totalGuardians = $conn->query("SELECT COUNT(*) AS total FROM users WHERE role = 'guardian' AND deletedAt IS NULL")->fetch_assoc()['total'] ?? 0;
-$totalSitters = $conn->query("SELECT COUNT(*) AS total FROM sitters WHERE verificationStatus = 'verified'")->fetch_assoc()['total'] ?? 0;
+
+// FIXED: Now we join the users table so we don't accidentally count an Admin's sitter profile or a deleted user's profile!
+$totalSitters = $conn->query("
+    SELECT COUNT(*) AS total 
+    FROM sitters s
+    JOIN users u ON s.userID = u.id
+    WHERE s.verificationStatus = 'verified' 
+    AND u.role != 'admin' 
+    AND u.deletedAt IS NULL
+")->fetch_assoc()['total'] ?? 0;
 
 /* ================= RECENT USERS ================= */
 // ADDED: displayRole logic using IF and LEFT JOIN
@@ -31,7 +41,7 @@ $recentUsersResult = $conn->query("
     FROM users u
     LEFT JOIN sitters s ON u.id = s.userID
     WHERE u.role != 'admin' AND u.deletedAt IS NULL
-    ORDER BY u.createdAt DESC LIMIT 10
+    ORDER BY u.createdAt DESC
 ");
 
 /* ================= PENDING SITTERS ================= */

@@ -1,139 +1,156 @@
-/* --- 1. GLOBAL STYLES --- */
-body {
-    background: #FFFDF7;
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-}
+body { 
+    background-color: #FFFDF7; 
+    }
 
-/* --- 2. HEADER & NAVIGATION --- */
 .custom-header {
     background: #FFFDF7;
-    border-bottom: 1px solid #000;
-    padding: 10px;
+    border-bottom: 1px solid #eee;
+    padding: 10px 10px 10px 10px;
 }
 
-.logo-img {
+
+/* Brand */
+.brand-label {
+    font-weight: 600;
+    font-size: 18px;
+    color: #222;
+}
+
+.brand{
+    font-size: 20px;
+    font-family: 'Ribeye';
+}
+
+
+.logo-img{
     width: 50px;
     height: 50px;
 }
 
-.brand {
-    font-size: 25px;
-    font-family: 'Ribeye', cursive;
-    margin: 0;
-}
-
-.profile-wrapper {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #ddd;
-}
-
-.profile-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.profile-wrapper:active,
-.profile-wrapper:focus,
-.profile-wrapper:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-/* --- 2. HEADER & NAVIGATION --- */
-.dropdown{
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
+/* Logout */
+.logout-btn {
+    font-size: 15px;
+    color: #555;
     text-decoration: none;
-    color: #666;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.dropdown li{
-    font-size: 14px;
-    color: #666;
-}
-
-.dropdown li.logout a{
-    font-size: 14px;
-    color: red;
-}
-
-.dropdown button {
-    border: 1px solid #ddd;
-    border-radius: 50%;
-    background-color: #F0F8FF;
-
-    width: 40px;
-    height: 40px;
-
-    font-size: 18px;
+    padding: 6px 10px;
+    border-radius: 20px;
     transition: 0.2s ease;
 }
 
-
-.dropdown:active,
-.dropdown:focus,
-.dropdown:hover {
+.profile-img-p {
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    object-fit: cover;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: 0.2s ease;
 }
 
-btn-dropdown:focus {
-    outline: none;
+.logout-btn:hover {
+    background: #f7f7f7;
+}
+
+.profile-img:hover {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.queue{
+    margin-left: 60px;
+    margin-right: 60px;
+}
+
+/* Reusable Card Styles */
+.card-profile {
+    margin-bottom: 10px;
+
+    background: #F0F8FF;
+    border-radius: 20px;
     border: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-.dropdown .dropdown-menu:focus,
-.dropdown .dropdown-menu:hover,
-.dropdown .dropdown-menu:active {
+.card-profile h2{
+    font-size: 50px;
+    font-weight: 700;
+}
+
+.card-profile p{
+    font-size: 15px;
+    color: #555;
+}
+
+.card-white {
+    margin-right: 40px;
+    margin-left: 40px;
+    background: #FFFDF7;
+    border-radius: 20px;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Components */
+.profile-img {
+    width: 250px;
+    height: 250px;
     border-radius: 50%;
-    outline: none;
-    border: none;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+    margin: 20px;
 }
 
-.brand a {
+.info-item {
+    padding: 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+}
+
+.divider {
+    border-bottom: 1.5px solid rgba(0,0,0,0.1);
+}
+
+.job-note {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 15px 0;
+}
+
+.job-details {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.price-tag {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.currency {
+    font-size: 1.1rem;
+    margin-right: 2px;
+}
+
+.read-more, .view-all {
     text-decoration: none;
-    color: black;
+    font-size: 0.85rem;
+    color: #3C56A2;
+    font-weight: 500;
 }
 
-/*--- 3. JOB CARDS --- */
-
-.card {
-    border: #000 solid 1px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    background-color: #FFFDF7;
+.read-more:hover, .view-all:hover {
+    text-decoration: underline;
 }
 
-.booking-sub-box {
-    border: 1px solid #eee;
-    background-color: #FFFDF7;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.09);
+.user-avatar-circle {
+    width: 40px;
+    height: 40px;
+    background: #e0e0e0;
+    border-radius: 50%;
+    display: inline-block;
 }
-
-.btn-accept{
-    background-color: #AAC4F5;
-    text-decoration: none;
-    border: 1px solid #000;
-    color: #000;
-    text-align: center;
-}
-
-.btn-accept:hover {
-    background-color: #8AA7E5;
-    color: #000;
-}
-
 
 /* Responsive Tweaks */
 @media (max-width: 768px) {

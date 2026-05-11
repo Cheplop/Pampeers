@@ -124,9 +124,8 @@ btn-dropdown:focus {
     margin: 0 auto;
 }
 
-.big{
-    font-size: 20px;
-    font-weight: bold;
+.fav-card:hover { 
+    transform: translateY(-5px); 
 }
 
 .small{
@@ -245,25 +244,9 @@ btn-dropdown:focus {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.like-btn:hover {
-    background: rgba(255, 255, 255, 0.5);
-    transform: scale(1.1);
-}
-
-.like-btn i {
-    color: #ffe6e6;
-    font-size: 16px;
-}
-
-.like-btn i.fa-solid {
-    color: #ff4d4d;
-}
-
-.heart-pop {
-    animation: pulse 0.3s linear;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    border: none;
 }
