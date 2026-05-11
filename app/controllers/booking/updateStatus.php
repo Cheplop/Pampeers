@@ -13,7 +13,6 @@ requireAuth();
 $bookingId = $_GET['id'] ?? null;
 $newStatus = $_GET['status'] ?? null;
 $userId    = $_SESSION['user_id'];
-$userRole  = $_SESSION['role'] ?? 'guardian';
 
 // 2. Validate input and allowed status values
 $allowedStatuses = ['accepted', 'declined', 'completed', 'cancelled'];
@@ -24,10 +23,11 @@ if (!$bookingId || !in_array($newStatus, $allowedStatuses)) {
 
 /**
  * 3. SECURITY & PERMISSION CHECK
- * We ensure that users can only update bookings they are part of.
+ * We now check authorization based on the ACTION, not the primary session role!
  */
-if ($userRole === 'sitter') {
-    // Sitters can update any status for bookings assigned to them
+if (in_array($newStatus, ['accepted', 'declined', 'completed'])) {
+    
+    // ACTION: Sitter responding to a booking
     $sitterQuery = $conn->prepare("SELECT sitterID FROM sitters WHERE userID = ? LIMIT 1");
     $sitterQuery->bind_param("i", $userId);
     $sitterQuery->execute();
@@ -48,9 +48,11 @@ if ($userRole === 'sitter') {
         WHERE bookingID = ? AND sitterID = ?
     ");
     $updateStmt->bind_param("sii", $newStatus, $bookingId, $sitterId);
+    $redirectPath = "/Pampeers/public/sitter/sitterDashboard.php?booking=updated";
 
 } else {
-    // Guardians can ONLY "cancel" their own bookings
+    
+    // ACTION: Guardian cancelling a booking
     if ($newStatus !== 'cancelled') {
         header("Location: /Pampeers/public/guardian/guardianDashboard.php?error=unauthorized_action");
         exit();
@@ -63,6 +65,7 @@ if ($userRole === 'sitter') {
         WHERE bookingID = ? AND userID = ?
     ");
     $updateStmt->bind_param("sii", $newStatus, $bookingId, $userId);
+    $redirectPath = "/Pampeers/public/guardian/guardianDashboard.php?booking=cancelled";
 }
 
 /**
@@ -70,16 +73,10 @@ if ($userRole === 'sitter') {
  */
 if ($updateStmt->execute()) {
     $updateStmt->close();
-
-    // Determine the redirect path based on the role
-    $redirectPath = ($userRole === 'sitter') 
-        ? '/Pampeers/public/sitter/sitterDashboard.php' 
-        : '/Pampeers/public/guardian/guardianDashboard.php';
-
-    header("Location: $redirectPath?success=updated");
-    exit();
+    header("Location: " . $redirectPath);
 } else {
-    // Handle database failure
-    header("Location: /Pampeers/public/guestDashboard.php?error=db_error");
-    exit();
+    $updateStmt->close();
+    header("Location: /Pampeers/public/guestDashboard.php?error=update_failed");
 }
+exit();
+?>
