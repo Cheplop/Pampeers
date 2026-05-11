@@ -205,7 +205,7 @@ if ($isSitter && $verificationStatus === 'verified') {
                 <?php if ($isSitter && $verificationStatus === 'verified'): ?>
                     <div class="col-lg-5 col-md-6 mb-4 d-flex flex-column">
                         <div class="d-flex justify-content-between align-items-center mb-3 booking-header">
-                            <p class="m-0 fw-light">Booking Requests</p>
+                            <p class="m-0 fw-light">Work Queue</p>
                             <?php if (!empty($bookings)): ?>
                                 <a href="/Pampeers/public/sitter/sitterDashboard.php" class="see-all-text fw-bold">
                                     All <i class="fa-solid fa-arrow-right ms-1"></i>

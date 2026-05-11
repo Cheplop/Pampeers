@@ -118,10 +118,10 @@ if ($sitterId > 0) {
                             <a class="dropdown-item" href="../profile.php"><i class="fa-regular fa-user me-2"></i>View Profile</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="myFavourites.php"><i class="fa-regular fa-heart me-2"></i>Favourites</a>
+                            <a class="dropdown-item" href="../guardian/myFavourites.php"><i class="fa-regular fa-heart me-2"></i>Favourites</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="myBookings.php"><i class="fa-regular fa-calendar me-2"></i>Bookings</a>
+                            <a class="dropdown-item" href="../guardian/myBookings.php"><i class="fa-regular fa-calendar me-2"></i>Bookings</a>
                         </li>
                         <li class="logout">
                             <a class="dropdown-item" href="../../app/controllers/auth/logout.php"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Logout</a>
@@ -153,7 +153,7 @@ if ($sitterId > 0) {
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold m-0" style="font-family: 'Poppins', sans-serif;"><i class="fa-solid fa-inbox me-2 text-primary"></i> Booking Requests</h5>
+        <h5 class="fw-bold m-0" style="font-family: 'Poppins', sans-serif;"><i class="fa-solid fa-inbox me-2 text-primary"></i> Work Queue</h5>
     </div>
 
     <?php if (isset($_GET['status_updated'])): ?>
@@ -167,7 +167,7 @@ if ($sitterId > 0) {
     <?php if (empty($bookings)): ?>
         <div class="alert alert-light text-center p-5 rounded-4 shadow-sm border-0 mt-3">
             <i class="fa-regular fa-calendar-xmark fa-3x text-muted mb-3"></i>
-            <h5 class="text-muted fw-bold">No booking requests yet.</h5>
+            <h5 class="text-muted fw-bold">No Work Queue yet.</h5>
             <p class="text-muted small">When guardians book you, their requests will appear here.</p>
         </div>
     <?php else: ?>
