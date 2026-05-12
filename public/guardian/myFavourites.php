@@ -7,9 +7,10 @@ require_once __DIR__ . '/../../app/middleware/auth.php';
 require_once __DIR__ . '/../../app/config/config.php';
 requireAuth();
 
+// Use uID consistently
 $uID = $_SESSION['user_id'];
 
-// FIXED: Removed the 'as img' and 'as city' aliases so the array keys match what your HTML expects
+/* ================= FETCH FAVOURITE SITTERS ================= */
 $query = "SELECT s.*, u.firstName, u.lastName, u.profilePic, u.cityMunicipality 
           FROM favourites f 
           JOIN sitters s ON f.sitter_id = s.sitterID 
@@ -27,14 +28,12 @@ $stmt->close();
 
 /* ================= FETCH LOGGED-IN USER PHOTO ================= */
 $stmt = $conn->prepare("SELECT profilePic FROM users WHERE id = ? LIMIT 1");
-$stmt->bind_param("i", $userId);
+$stmt->bind_param("i", $uID); // FIXED: Changed $userId to $uID to match session variable
 $stmt->execute();
 $userResult = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
-// Fallback to default if no image exists in database
-$profilePic = (!empty($user['profilePic'])) ? $user['profilePic'] : 'default.jpg';
-
+$profilePic = (!empty($userResult['profilePic'])) ? $userResult['profilePic'] : 'default.jpg';
 ?>
 
 <!DOCTYPE html>
@@ -48,7 +47,8 @@ $profilePic = (!empty($user['profilePic'])) ? $user['profilePic'] : 'default.jpg
     <link href="https://fonts.googleapis.com/css2?family=Ribeye&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/myFavourites.css">
+    
+    <link rel="stylesheet" href="../css/myfavourites.css"> 
 </head>
 
 <body>
@@ -95,7 +95,7 @@ $profilePic = (!empty($user['profilePic'])) ? $user['profilePic'] : 'default.jpg
     </div>
 
     <?php if (empty($favSitters)): ?>
-        <div class="empty-likes">
+        <div class="empty-likes text-center py-5">
             <i class="fa-regular fa-heart fa-4x text-muted mb-3 opacity-25"></i>
             <h4 class="text-muted">No favourites yet</h4>
             <p class="text-muted mb-4">Start exploring to find the perfect peer for your needs.</p>
@@ -123,12 +123,6 @@ $profilePic = (!empty($user['profilePic'])) ? $user['profilePic'] : 'default.jpg
             </div>
             <?php endforeach; ?>
         </div>
-    <?php else: ?>
-        <div class="empty-state text-center py-5">
-            <p class="big text-muted mt-4">No favourite sitters found</p>
-            <p class="small text-muted">Start exploring to find the perfect peer for your needs.</p>
-            <a href="guardianDashboard.php" class="btn-browse btn rounded-pill px-4 border-1">Browse Sitters</a>
-        </div>
     <?php endif; ?>
 </div>
 
@@ -148,7 +142,6 @@ document.querySelectorAll('.like-btn').forEach(button => {
         })
         .then(response => response.json())
         .then(data => {
-            // Assuming your controller returns 'removed' when a favorite is toggled off
             if (data.status === 'removed' || data.success) {
                 if (card) {
                     card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
@@ -157,7 +150,6 @@ document.querySelectorAll('.like-btn').forEach(button => {
                     
                     setTimeout(() => {
                         card.remove();
-                        // If no cards are left, reload to show the "empty state" message
                         if (document.querySelectorAll('.fav-card').length === 0) {
                             location.reload();
                         }
