@@ -75,45 +75,61 @@ if ($sitterId > 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pampeers - Sitter Dashboard</title>
     <link rel="icon" type="image/png" href="/Pampeers/app/uploads/pampeerlogo.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Ribeye&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/sitterDashboard.css">
+
+    <link rel="stylesheet" href="/Pampeers/public/css/sitterDashboard.css">
 </head>
 
-<body class="bg-light">
+<body>
 
-<header class="sticky-top custom-header bg-white shadow-sm">
-    <div class="nav-container d-flex align-items-center justify-content-between px-3 py-2">
-        <div class="d-flex align-items-center gap-2">
-            <img src="/Pampeers/app/uploads/pampeerlogo.png" alt="logo" class="logo-img" style="width: 40px;">
-            <p class="brand m-0 fw-bold text-primary">Pampeers (Sitter)</p>
+<header class="sticky-top custom-header">
+    <div class="nav-container d-flex align-items-center justify-content-between px-3">
+
+        <!-- Changed d-none d-md-flex to d-none d-lg-flex so it disappears on tablets/phones -->
+        <!-- If you want it to disappear only on very small phones, use d-none d-sm-flex -->
+        <div class="d-none d-lg-flex align-items-center gap-2">
+            <a href="/Pampeers/public/guardian/guardianDashboard.php">
+                <img src="/Pampeers/app/uploads/pampeerlogo.png" class="logo-img" alt="Pampeers Logo" >
+            </a>
+            <p class="brand m-0"><a href="/Pampeers/public/guardian/guardianDashboard.php">Pampeers</a></p>
         </div>
 
-        <div class="right-side-p d-flex align-items-center gap-2">
-            <a href="../profile.php" class="text-decoration-none">
-                <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" class="rounded-circle shadow-sm" style="width: 40px; height: 40px; object-fit: cover;" alt="Profile">
-            </a>
+        <!-- Added ms-auto to ensure this stays on the right when the logo is gone -->
+        <div class="right-side-p d-flex align-items-center justify-content-end gap-3 ms-auto">
+        
+            
+            <div class="nav-btn d-flex align-items-center gap-2">
+                <a href="../profile.php" class="text-decoration-none">
+                    <div class="profile-wrapper">
+                        <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic); ?>" class="profile-img" alt="Profile">
+                    </div>
+                </a>
+
                 <div class="dropdown">
-                    <button class="btn" type="button" data-bs-toggle="dropdown" data-bs-offset="0,15" =aria-expanded="false">
+                    <button class="btn-dropdown border-1" type="button" data-bs-toggle="dropdown" data-bs-offset="0,15" aria-expanded="false">
                         <i class="fa-solid fa-bars"></i>
                     </button>
+                    <!-- Added dropdown-menu-end to keep the menu within screen bounds on mobile -->
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
                             <a class="dropdown-item" href="../profile.php"><i class="fa-regular fa-user me-2"></i>View Profile</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="guardian/myFavourites.php"><i class="fa-regular fa-heart me-2"></i>Favourites</a>
+                            <a class="dropdown-item" href="myFavourites.php"><i class="fa-regular fa-heart me-2"></i>Favourites</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="/Pampeers/public/guardian/myBookings.php"><i class="fa-regular fa-calendar me-2"></i>Bookings</a>
+                            <a class="dropdown-item" href="myBookings.php"><i class="fa-regular fa-calendar me-2"></i>Bookings</a>
                         </li>
                         <li class="logout">
-                            <a class="dropdown-item" href="/Pampeers/app/controllers/auth/logout.php"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Logout</a>
+                            <a class="dropdown-item" href="../../app/controllers/auth/logout.php"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Logout</a>
                         </li>
                     </ul>
                 </div>
+            </div>
+
         </div>
     </div>
 </header>
@@ -158,7 +174,7 @@ if ($sitterId > 0) {
         <div class="row">
             <?php foreach ($bookings as $booking): ?>
                 <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card border-0 shadow-sm rounded-4 p-3 h-100">
+                    <div class="card shadow-sm rounded-4 p-3 h-100 width-90">
                         
                         <div class="d-flex align-items-center mb-3">
                             <img src="/Pampeers/app/uploads/profiles/<?= !empty($booking['profilePic']) ? htmlspecialchars($booking['profilePic']) : 'default.jpg' ?>" 
@@ -170,17 +186,17 @@ if ($sitterId > 0) {
                             </div>
                         </div>
                         
-                        <div class="bg-light p-3 rounded-3 mb-3 small" style="font-family: 'Poppins', sans-serif;">
+                        <div class="booking-sub-box p-3 rounded-3 mb-3 small">
                             <div class="d-flex justify-content-between mb-1">
-                                <span class="text-muted">Date:</span> 
+                                <span class="text-muted"><i class="fa-regular fa-calendar-days me-2"></i>Date:</span> 
                                 <strong><?= date('M d, Y', strtotime($booking['startDateTime'])) ?></strong>
                             </div>
                             <div class="d-flex justify-content-between mb-1">
-                                <span class="text-muted">Time:</span> 
+                                <span class="text-muted"><i class="fa-regular fa-clock me-2"></i>Time:</span> 
                                 <strong><?= date('h:i A', strtotime($booking['startDateTime'])) ?> - <?= date('h:i A', strtotime($booking['endDateTime'])) ?></strong>
                             </div>
                             <div class="d-flex justify-content-between mb-1">
-                                <span class="text-muted">Hours:</span> 
+                                <span class="text-muted"><i class="fa-regular fa-hourglass-half me-2"></i>Hours:</span> 
                                 <strong><?= htmlspecialchars($booking['hoursRequested']) ?> hrs</strong>
                             </div>
                             <?php if (!empty($booking['notes'])): ?>
@@ -190,8 +206,8 @@ if ($sitterId > 0) {
                             <?php endif; ?>
                             <hr class="my-2">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-muted">Total Payout:</span> 
-                                <strong class="text-primary fs-5">₱<?= number_format($booking['totalAmount'], 2) ?></strong>
+                                <span class="text-muted"><i class="fa-regular fa-money-bill-1 me-2"></i>Total Payout:</span> 
+                                <strong class="total-payout fs-5">₱<?= number_format($booking['totalAmount'], 2) ?></strong>
                             </div>
                         </div>
 
@@ -199,7 +215,7 @@ if ($sitterId > 0) {
                             <?php if ($booking['status'] === 'pending'): ?>
                                 <div class="d-flex gap-2">
                                     <a href="../../app/controllers/booking/updateStatus.php?id=<?= $booking['bookingID'] ?>&status=accepted" 
-                                       class="btn btn-primary btn-sm w-100 rounded-pill fw-bold py-2 shadow-sm">Accept</a>
+                                       class="btn-accept btn-sm w-100 rounded-pill fw-bold py-2 shadow-sm">Accept</a>
                                     <a href="../../app/controllers/booking/updateStatus.php?id=<?= $booking['bookingID'] ?>&status=declined" 
                                        class="btn btn-outline-danger btn-sm w-100 rounded-pill fw-bold py-2">Decline</a>
                                 </div>
