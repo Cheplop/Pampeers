@@ -12,7 +12,7 @@ Updated app/controllers/auth/login.php to make login work with both email and us
 
 Updated app/controllers/user/search.php to make the WHERE, WHEN, and WHO search logic work perfectly.
 
-Updated app/controllers/booking/create.php to make booking requests save the correct dates and times.
+Updated app/controllers/booking/create.php to make Work Queue save the correct dates and times.
 
 Updated updateProfile.php to save the sitter's selected age groups.
 

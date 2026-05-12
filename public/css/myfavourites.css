@@ -107,29 +107,163 @@ btn-dropdown:focus {
     color: black;
 }
 
-/* --- 3. CARDS --- */
+.label {
+    font-size: 18px;
+    font-weight: 400;
+    color: #333;
+}
 
-.fav-card {
-    transition: transform 0.2s;
-    border: none;
+/* --- 3. TYPOGRAPHY --- */
+
+.empty-state {
+    background-color: #FFFDF7;
+    border: #000 solid 1px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    max-width: 700px;
     border-radius: 20px;
+    margin: 0 auto;
 }
 
- .fav-card:hover { 
-    transform: translateY(-5px); 
+.big{
+    font-size: 20px;
+    font-weight: bold;
 }
 
-.btn-heart {
-    background: #fff;
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
+.small{
+    font-size: 14px;
+}
+
+.btn-browse {
+    background-color: #FFFDF7;
+    color: black;
+    font-weight: bold;
+    border: 1px solid #333;
+    transition: 0.2s ease;
+}
+
+.btn-browse:hover {
+    background-color: #8CA9FF;
+    border: 1px solid #333;
+}
+
+/* --- 4. CARDS --- */
+
+.carousel-wrapper {
+    display: flex;
+    gap: 20px;
+
+    overflow-x: auto;
+    margin-left: 20px;
+    padding: 10px;
+    border-radius: 15px;
+
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+}
+
+.carousel-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+/* CARD SIZE CONTROL */
+.carousel-card {
+    position: relative;
+    flex: 0 0 auto;
+    width: 250px;
+    height:300px;
+    min-width: 220px;
+    scroll-snap-align: start;
+}
+
+/* CARD */
+.small-card {
+    background: #FFF8DE;
+    border-radius: 15px;
+    padding: 12px;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    transition: 0.2s ease;
+}
+
+.small-card:hover {
+    transform: scale(1.03);
+}
+
+/* IMAGE */
+.small-card img {
+    width: 100%;
+    height: 200px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+/* TEXT */
+.small-card h6 {
+    margin-top: 10px;
+    margin-bottom: 0px;
+    font-size: 19px;
+    font-weight: bolder;
+}
+
+/* LIMIT TEXT (IMPORTANT) */
+.small-card p,
+.small-card .bio {
+    font-size: 11px;
+    margin-bottom: 2px;
+    color: grey;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.small-card .city {
+    font-size: 14px;
+    font-weight: regular;
+    color: black;
+}
+
+
+.like-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    border: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.like-btn:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+}
+
+.like-btn i {
+    color: #ffe6e6;
+    font-size: 16px;
+}
+
+.like-btn i.fa-solid {
+    color: #ff4d4d;
+}
+
+.heart-pop {
+    animation: pulse 0.3s linear;
 }

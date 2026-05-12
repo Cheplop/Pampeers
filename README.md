@@ -11,7 +11,7 @@ Pampeers is a web-based babysitting booking platform built with PHP and MySQL. T
 
 ### Sitter
 - Can set availability, update professional information, and manage bookings
-- Receives booking requests from guardians and can accept or decline them
+- Receives Work Queue from guardians and can accept or decline them
 - Has a dashboard to view upcoming jobs and manage their profile
 - Can select which age groups they are willing to babysit
 
