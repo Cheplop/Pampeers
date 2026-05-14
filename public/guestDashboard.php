@@ -119,7 +119,10 @@ try {
                             <label class="form-label">Password</label>
                             <div class="input-container">
                                 <span class="input-icon"><i class="fa-solid fa-key"></i></span>
-                                <input type="password" placeholder="Enter your password" name="password" class="custom-input" required>
+                                <input type="password" placeholder="Enter your password" name="password" id="passwordInput" class="custom-input" required>
+                                <span class="input-icon toggle-password" style="cursor: pointer;" onclick="togglePasswordVisibility()">
+                                    <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                                </span>
                             </div>
                         </div>
                         <button type="submit" class="btn-login">Log In</button>
@@ -250,6 +253,21 @@ document.getElementById('search-button').addEventListener('click', function(e) {
             }
         });
 });
+
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('passwordInput');
+    const eyeIcon = document.getElementById('eyeIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+    }
+}
 </script>
 </body>
 </html>

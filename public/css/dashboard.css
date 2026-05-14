@@ -429,7 +429,7 @@ btn-dropdown:focus {
 .custom-input {
     width: 100%;
     height: 45px;
-    padding: 12px 12px 12px 45px;
+    padding: 12px 45px 12px 45px;
     border-radius: 15px;
     border: 1.5px solid #000;
     background: #fff;
@@ -441,6 +441,11 @@ btn-dropdown:focus {
     position: absolute;
     left: 15px;
     font-size: 15px;
+}
+
+.toggle-password {
+    right: 15px;
+    left: auto;
 }
 
 /* Login Button */

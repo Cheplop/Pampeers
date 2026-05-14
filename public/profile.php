@@ -227,7 +227,7 @@ if ($isSitter) {
                 </div>
                 <?php endif; ?>
 
-                <div class="col-lg-12 col-md-6 mb-4 d-flex flex-column">
+                <div class="col-lg-<?php echo ($isSitter && $verificationStatus === 'verified') ? '7' : '12'; ?> col-md-6 mb-4 d-flex flex-column">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <p class="m-0 fw-light">Recent Reviews</p>
                     </div>
