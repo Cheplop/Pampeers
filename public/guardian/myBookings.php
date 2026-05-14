@@ -66,24 +66,13 @@ $profilePic = (!empty($user['profilePic'])) ? $user['profilePic'] : 'default.jpg
     <meta charset="UTF-8">
     <title>My Bookings - Pampeers</title>
     <link rel="icon" type="image/png" href="/Pampeers/app/uploads/pampeerlogo.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Ribeye&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="../css/myBookings.css">
-    <style>
-        body { background-color: #FDF9F1; font-family: 'Poppins', sans-serif; }
-        .booking-card { background: #fff; border-radius: 15px; border: none; transition: transform 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .booking-card:hover { transform: translateY(-5px); }
-        .sitter-img { width: 60px; height: 60px; object-fit: cover; border-radius: 50%; }
-        .status-badge { font-weight: 600; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; }
-        .status-pending { background-color: #fff3cd; color: #856404; }
-        .status-accepted { background-color: #d4edda; color: #155724; }
-        .status-completed { background-color: #cce5ff; color: #004085; }
-        .status-cancelled { background-color: #f8d7da; color: #721c24; }
-        .star-rating i { color: #ddd; cursor: pointer; font-size: 1.5rem; transition: color 0.2s; }
-        .star-rating i.active, .star-rating i:hover, .star-rating i:hover ~ i { color: #f5b301; }
-    </style>
+
 </head>
 <body>
 
@@ -137,9 +126,11 @@ $profilePic = (!empty($user['profilePic'])) ? $user['profilePic'] : 'default.jpg
 </header>
 
 <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold m-0">My Bookings</h2>
-        <a href="guardianDashboard.php" class="btn btn-outline-dark rounded-pill px-4">Back to Dashboard</a>
+    <div class="d-flex justify-content-start align-items-center mb-4">
+        <a href="guardianDashboard.php" class="btn btn-light rounded-circle me-3 shadow-sm">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <h1 class="label">My Bookings</h1>
     </div>
 
     <?php if (empty($myBookings)): ?>
@@ -177,10 +168,10 @@ $profilePic = (!empty($user['profilePic'])) ? $user['profilePic'] : 'default.jpg
                             </span>
                         </div>
 
-                        <div class="mb-3 flex-grow-1">
-                            <p class="mb-1"><i class="fa-regular fa-calendar text-primary me-2"></i> <strong>Date:</strong> <?= $dateDisplay ?></p>
-                            <p class="mb-1"><i class="fa-regular fa-clock text-primary me-2"></i> <strong>Time:</strong> <?= $timeDisplay ?></p>
-                            <p class="mb-1"><i class="fa-solid fa-hourglass-half text-primary me-2"></i> <strong>Duration:</strong> <?= $hours ?> hrs</p>
+                        <div class="details mb-3 flex-grow-1">
+                            <p class="mb-1"><i class="fa-regular fa-calendar me-2"></i> <strong>Date:</strong> <?= $dateDisplay ?></p>
+                            <p class="mb-1"><i class="fa-regular fa-clock me-2"></i> <strong>Time:</strong> <?= $timeDisplay ?></p>
+                            <p class="mb-1"><i class="fa-solid fa-hourglass-half me-2"></i> <strong>Duration:</strong> <?= $hours ?> hrs</p>
                             <?php if (!empty($b['notes'])): ?>
                                 <p class="mb-0 mt-2 small text-muted"><strong>Notes:</strong> <?= htmlspecialchars($b['notes']) ?></p>
                             <?php endif; ?>

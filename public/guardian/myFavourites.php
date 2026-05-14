@@ -88,11 +88,11 @@ $profilePic = (!empty($userResult['profilePic'])) ? $userResult['profilePic'] : 
 </header>
 
 <div class="container py-5">
-    <div class="d-flex align-items-center mb-5">
+    <div class="label-header d-flex justify-content-start mb-2">
         <a href="guardianDashboard.php" class="btn btn-light rounded-circle me-3 shadow-sm">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
-        <h2 class="label">FAVOURITE PEERS</h2>
+        <h2 class="label">Favourite Peers</h2>
     </div>
 
     <?php if (!empty($favSitters)): ?>

@@ -136,10 +136,10 @@ if ($sitterId > 0) {
 
 <main class="container mt-4 px-4 pb-5">
     
-    <div class="d-flex align-items-center mb-4 bg-white p-3 rounded-4 shadow-sm border-0">
-        <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic) ?>" class="rounded-circle me-3 shadow-sm" style="width: 65px; height: 65px; object-fit: cover;">
+    <div class="profile-card d-flex align-items-center mb-4 p-3 rounded-4">
+        <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($userPic) ?>" class="rounded-circle me-3 shadow-sm">
         <div>
-            <h5 class="m-0 fw-bold" style="font-family: 'Poppins', sans-serif;">Welcome, <?= htmlspecialchars($sitterInfo['firstName'] ?? 'Sitter') ?>!</h5>
+            <h5 class="m-0 fw-bold">Welcome, <?= htmlspecialchars($sitterInfo['firstName'] ?? 'Sitter') ?>!</h5>
             <div class="mt-1">
                 <?php if (!empty($ratingAverage)): ?>
                     <span class="badge bg-warning text-dark fs-6 rounded-pill px-3 py-2 shadow-sm">
@@ -152,8 +152,8 @@ if ($sitterId > 0) {
         </div>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold m-0" style="font-family: 'Poppins', sans-serif;"><i class="fa-solid fa-inbox me-2 text-primary"></i> Work Queue</h5>
+    <div class="label-header d-flex justify-content-between align-items-center mb-3">
+        <p class="label"><i class="fa-solid fa-inbox me-2"></i> Work Queue</p>
     </div>
 
     <?php if (isset($_GET['status_updated'])): ?>

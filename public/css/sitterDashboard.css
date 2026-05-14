@@ -109,6 +109,19 @@ btn-dropdown:focus {
 
 /*--- 3. JOB CARDS --- */
 
+.label {
+    font-size: 18px;
+    margin-bottom:10px ;
+    font-weight: 400;
+    color: #333;
+}
+
+.label-header .label i{
+    color: #333;
+}
+
+/* 4. CARDS FOR BOOKINGS */
+
 .card {
     border: #000 solid 1px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -132,6 +145,32 @@ btn-dropdown:focus {
 .btn-accept:hover {
     background-color: #8AA7E5;
     color: #000;
+}
+
+
+/* 5. CARD FOR PROFILE */
+
+.profile-card h5{
+    font-size: 28px;
+}
+
+.profile-card {
+    display: flex;
+    align-items: center;
+    
+    background: #FFFDF7;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 20px;
+    transition: box-shadow 0.2s ease;
+}
+
+.profile-card img{
+    width:200px;
+    height:200px;
+    border-radius:50%;
+    object-fit:cover;
 }
 
 
