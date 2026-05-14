@@ -60,7 +60,7 @@ $backLink = ($role === 'sitter') ? 'profile.php' : 'profile.php';
 
 </head>
 
-<body style="background-color: #f8f9fa;">
+<body>
 
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
     <div class="signup-panel w-100">
@@ -68,7 +68,7 @@ $backLink = ($role === 'sitter') ? 'profile.php' : 'profile.php';
         <div class="text-center mb-4">
             <img src="/Pampeers/app/uploads/pampeerlogo.png" alt="Logo" style="width: 70px;">
             <p class="small text-muted mb-0">Update your information</p>
-            <h1 class="brand-name" style="font-size: 2rem; font-family: 'Poppins', sans-serif; font-weight: 600;">Edit Profile</h1>
+            <h1 class="brand-name" style="font-size: 2rem; font-family: 'Poppins', sans-serif; font-weight: 600; margin-top: 0.5rem;">Edit Profile</h1>
         </div>
 
         <form action="/Pampeers/app/controllers/user/updateProfile.php" 
@@ -160,7 +160,7 @@ $backLink = ($role === 'sitter') ? 'profile.php' : 'profile.php';
 
             <?php if ($isVerifiedSitter): ?>
                 <div class="col-12 mt-4 mb-1">
-                    <h5 class="fw-bold text-primary m-0" style="font-family: 'Poppins', sans-serif;"><i class="fa-regular fa-calendar me-2"></i>Sitter Settings</h5>
+                    <h5 class="fw-bold grey m-0" style="font-family: 'Poppins', sans-serif;"><i class="fa-regular fa-calendar me-2"></i>Sitter Settings</h5>
                 </div>
 
                 <div class="col-md-6">
@@ -176,7 +176,7 @@ $backLink = ($role === 'sitter') ? 'profile.php' : 'profile.php';
                 </div>
 
                 <div class="col-12 mt-3">
-                    <div class="form-check form-switch bg-light p-3 rounded-3 border">
+                    <div class="form-check form-switch bg-none p-3 rounded-3 border">
                         <input class="form-check-input ms-1 me-3" type="checkbox" name="isAvailable" id="availSwitch" <?= ($sitterData['isAvailable']) ? 'checked' : '' ?>>
                         <label class="form-check-label fw-bold" for="availSwitch">Currently Available for Bookings</label>
                     </div>
