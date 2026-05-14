@@ -1,0 +1,36 @@
+/* --- 1. GLOBAL STYLES --- */
+body {
+    background: #FFFDF7;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+}
+
+.card{
+    background-color: #FFF8DE;
+    border: 1px solid  black;
+    border-radius: 52px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.card-body img{ 
+    width: 300px; 
+    height: 300px; 
+
+    border: black solid 2px;
+    border-radius: 50px;
+    object-fit: cover; 
+}
+
+
+.book-now {
+    background-color: #AAC4F5;
+    color: black;
+    font-weight: bold;
+    border: 1px solid #333;
+    transition: 0.2s ease;
+}
+
+.book-now:hover {
+    background-color: #8ca9ff;
+    border: 1px solid #333;
+}

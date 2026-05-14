@@ -50,57 +50,57 @@ $isFavorited = $favCheck->get_result()->num_rows > 0;
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($sitter['firstName']) ?>'s Profile - Pampeers</title>
+    <link rel="icon" href="/Pampeers/app/uploads/pampeerlogo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Ribeye&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        body { background-color: #f8f9fa; font-family: 'Poppins', sans-serif; }
-        .profile-header { background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%); height: 150px; border-radius: 20px 20px 0 0; }
-        .profile-img { width: 150px; height: 150px; object-fit: cover; border: 5px solid white; margin-top: -75px; }
-    </style>
+    <link rel="stylesheet" href="../css/viewSitterProfile.css">
 </head>
 <body>
 
-<div class="container py-5 max-w-75" style="max-width: 800px;">
-    
-    <a href="guardianDashboard.php" class="btn btn-light rounded-circle shadow-sm mb-4">
-        <i class="fa-solid fa-arrow-left"></i>
-    </a>
-
-    <div class="card shadow-sm border-0 rounded-4 mb-4">
-        <div class="profile-header"></div>
-        <div class="card-body text-center px-5 pb-5">
-            <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($sitter['profilePic'] ?: 'default.jpg') ?>" class="rounded-circle profile-img shadow-sm mb-3">
+<div class="container-fluid py-5">
+    <div class="row justify-content-center mt-5">  
+        <div class="col-12 col-md-10 col-lg-6 d-flex flex-column align-items-center">
             
-            <h2 class="fw-bold mb-1"><?= htmlspecialchars($sitter['firstName'] . ' ' . $sitter['lastName']) ?></h2>
-            <p class="text-muted mb-3"><i class="fa-solid fa-location-dot me-2"></i><?= htmlspecialchars($sitter['cityMunicipality']) ?></p>
-
-            <div class="d-flex justify-content-center gap-3 mb-4">
-                <div class="bg-light px-4 py-2 rounded-3 border">
-                    <h5 class="fw-bold text-primary m-0">₱<?= number_format($sitter['hourlyRate'], 2) ?></h5>
-                    <small class="text-muted">per hour</small>
-                </div>
-                <div class="bg-light px-4 py-2 rounded-3 border">
-                    <h5 class="fw-bold m-0"><?= htmlspecialchars($sitter['experience']) ?> Years</h5>
-                    <small class="text-muted">Experience</small>
-                </div>
-            </div>
-
-            <p class="text-start mb-4" style="line-height: 1.8;">
-                <?= nl2br(htmlspecialchars($sitter['bio'] ?: 'This sitter has not written a bio yet.')) ?>
-            </p>
-
-            <div class="d-flex justify-content-center gap-3">
-                <a href="bookSitter.php?sitterID=<?= $sitter['sitterID'] ?>" class="btn btn-primary rounded-pill px-5 py-2 fw-bold w-50">
-                    Book Now
+            <div class="col-12">  
+                <a href="guardianDashboard.php" class="btn btn-light rounded-circle shadow-sm mb-4">
+                    <i class="fa-solid fa-arrow-left"></i>
                 </a>
-                
-                <button id="favBtn" class="btn btn-<?= $isFavorited ? 'danger' : 'outline-danger' ?> rounded-pill px-4 py-2 fw-bold" onclick="toggleFavourite(<?= $sitter['sitterID'] ?>)">
-                    <i class="fa-<?= $isFavorited ? 'solid' : 'regular' ?> fa-heart me-2" id="favIcon"></i> 
-                    <span id="favText"><?= $isFavorited ? 'Favorited' : 'Favourite' ?></span>
-                </button>
             </div>
 
+            <div class="card w-100 shadow-sm rounded-4 mb-4">
+                <!-- Changed flex-row to flex-column flex-md-row to allow mobile stacking -->
+                <div class="card-body d-flex flex-column flex-md-row align-items-center align-items-md-start px-3 py-4 px-md-5 py-md-5 g-2">
+                    
+                    <!-- Your original image (logic and design preserved) -->
+                    <img src="/Pampeers/app/uploads/profiles/<?= htmlspecialchars($sitter['profilePic'] ?: 'default.jpg') ?>" class="mb-3 mb-md-0">
+
+                    <div class="d-flex flex-column gap-3 ms-md-4 text-center text-md-start">
+                        <div class="personal-info">
+                            <!-- Typography preserved -->
+                            <?= nl2br(htmlspecialchars($sitter['bio'] ?: 'This sitter has not written a bio yet.')) ?>
+                            <h2 class="fw-bold mb-1"><?= htmlspecialchars($sitter['firstName'] . ' ' . $sitter['lastName']) ?></h2>
+                            <p class="text-muted mb-3"><i class="fa-solid fa-location-arrow me-2"></i><?= htmlspecialchars($sitter['cityMunicipality']) ?></p>
+                        </div>
+                        
+                        <div class="work-info justify-content-md-start">
+                            <p><i class="fa-solid fa-user-clock me-2"></i><?= htmlspecialchars($sitter['experience']) ?> Years Experience</p>
+                            <p><i class="fa-solid fa-money-bill-1 me-2"></i><?= number_format($sitter['hourlyRate'], 1) ?>/hr</p>
+                        </div>
+
+                        <div class="btns d-flex d-column justify-content-center align-content-between justify-content-md-start mt-2 gap-2">
+                            <a href="bookSitter.php?sitterID=<?= $sitter['sitterID'] ?>" class="book-now btn rounded-pill">
+                                Book Now
+                            </a>    
+                            <button id="favBtn" class="btn btn-<?= $isFavorited ? 'danger' : 'outline-danger' ?> rounded-pill px-4 py-2 fw-bold" onclick="toggleFavourite(<?= $sitter['sitterID'] ?>)">
+                                <i class="fa-<?= $isFavorited ? 'solid' : 'regular' ?> fa-heart" id="favIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -125,7 +125,7 @@ function toggleFavourite(sitterId) {
         } else if (data.status === 'removed') {
             btn.classList.replace('btn-danger', 'btn-outline-danger');
             icon.classList.replace('fa-solid', 'fa-regular');
-            text.innerText = 'Favourite';
+            text.innerText = 'Favorite';
         }
     })
     .catch(err => console.error('Error:', err));
