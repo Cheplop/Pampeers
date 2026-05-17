@@ -64,34 +64,31 @@ try {
             <p class="brand m-0">Pampeers</p>
         </div>
 
-        <div class="search-bar d-flex align-items-center justify-content-between">
-            <div class="search-labels d-flex align-items-center gap-3 flex-grow-1">
-                <div class="field-group">
-                    <label for="input-where">Where</label>
-                    <input type="text" id="input-where" placeholder="City or area" autocomplete="off" />
-                </div>
-                <div class="divider"></div>
-                <div class="field-group">
-                    <label for="input-when">When</label>
-                    <input type="date" id="input-when" />
-                </div>
-                <div class="divider"></div>
-                <div class="field-group">
-                    <label for="input-who">Who</label>
-                    <select id="input-who" class="form-control border-0 bg-transparent p-0 shadow-none text-muted">
-                        <option value="">Any Age</option>
-                        <option value="Baby">Baby (0-1 yrs)</option>
-                        <option value="Toddler">Toddler (1-3 yrs)</option>
-                        <option value="Child">Child (4-8 yrs)</option>
-                        <option value="Kid">Kid (9+ yrs)</option>
-                    </select>
-                </div>
-            </div>
+        <div class="search-bar d-flex align-items-center justify-content-between px-3">
+
+            <input
+                type="text"
+                id="search-input"
+                class="form-control border-0 shadow-none bg-transparent"
+                placeholder="Search sitters, users, or locations..."
+                autocomplete="off"
+            >
+
             <button class="search-btn" id="search-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="black"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                 </svg>
             </button>
+
         </div>
 
         <div class="right-side-p d-flex align-items-center gap-3">
@@ -214,44 +211,78 @@ function scrollCarousel(carouselId, direction) {
 }
 
 document.getElementById('search-button').addEventListener('click', function(e) {
-    e.preventDefault();
-    const where = document.getElementById('input-where').value.trim();
-    const when = document.getElementById('input-when').value; 
-    const who = document.getElementById('input-who').value.trim();
-    const params = new URLSearchParams({ location: where, date: when, keyword: who });
 
-    fetch(`/Pampeers/app/controllers/user/search.php?${params.toString()}`)
+    e.preventDefault();
+
+    const keyword = document.getElementById('search-input').value.trim();
+
+    fetch(`/Pampeers/app/controllers/user/search.php?keyword=${encodeURIComponent(keyword)}`)
         .then(res => res.json())
         .then(data => {
+
             const container = document.getElementById('avail-carousel');
-            container.innerHTML = ''; 
-            
-            // Toggle visibility of the "Nearby" section on search results
+
+            container.innerHTML = '';
+
+            // hide nearby section during search
             document.getElementById('nearby-header').style.display = 'none';
             document.getElementById('near-carousel').style.display = 'none';
 
             if (data.length > 0) {
+
                 data.forEach(sitter => {
+
                     container.innerHTML += `
                         <div class="carousel-card">
-                            <div class="small-card" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            <div class="small-card"
+                                 style="cursor:pointer;"
+                                 data-bs-toggle="modal"
+                                 data-bs-target="#staticBackdrop">
+
                                 <div class="card-img-container">
-                                    <button class="like-btn" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fa-regular fa-heart"></i></button>
-                                    <img src="../app/uploads/profiles/${sitter.profilePic || 'default.jpg'}" alt="Sitter">
+
+                                    <button class="like-btn"
+                                            onclick="event.stopPropagation();"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#staticBackdrop">
+
+                                        <i class="fa-regular fa-heart"></i>
+
+                                    </button>
+
+                                    <img src="../app/uploads/profiles/${sitter.profilePic || 'default.jpg'}"
+                                         alt="Sitter">
+
                                 </div>
+
                                 <h6>${sitter.firstName} ${sitter.lastName}</h6>
+
                                 <p class="city">${sitter.cityMunicipality}</p>
+
                                 <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <p class="m-0 fw-bold">₱${sitter.hourlyRate}/hr</p>
-                                    <button class="btn btn-sm btn-primary rounded-pill px-3" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Book</button>
+
+                                    <p class="m-0 fw-bold">
+                                        ₱${sitter.hourlyRate}/hr
+                                    </p>
+
                                 </div>
+
                             </div>
-                        </div>`;
+                        </div>
+                    `;
                 });
+
             } else {
-                container.innerHTML = '<div class="text-muted p-5 text-center w-100">No results found.</div>';
+
+                container.innerHTML = `
+                    <div class="text-muted p-5 text-center w-100">
+                        No results found.
+                    </div>
+                `;
             }
+
         });
+
 });
 
 function togglePasswordVisibility() {

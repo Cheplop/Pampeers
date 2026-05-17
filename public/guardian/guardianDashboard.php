@@ -83,42 +83,19 @@ $stmtN->close();
             <p class="brand m-0">Pampeers</p>
         </div>
 
-        <div class="search-bar d-flex align-items-center justify-content-between">
-            <div class="search-labels d-flex align-items-center gap-3 flex-grow-1">
-                
-                <div class="field-group">
-                    <label for="input-where">Where</label>
-                    <input type="text" id="input-where" placeholder="City or area" autocomplete="off" />
-                </div>
-                <div class="divider"></div>
-                
-                <div class="field-group">
-                    <label for="input-when">When</label>
-                    <input type="date" id="input-when" />
-                </div>
-                <div class="divider"></div>
-                
-                <div class="field-group">
-                    <label for="input-who">Who</label>
-                    <select id="input-who" class="form-control border-0 bg-transparent p-0 shadow-none text-muted">
-                        <option value="">Any Age</option>
-                        <option value="Baby">Baby (0-1 yrs)</option>
-                        <option value="Toddler">Toddler (1-3 yrs)</option>
-                        <option value="Child">Child (4-8 yrs)</option>
-                        <option value="Kid">Kid (9+ yrs)</option>
-                    </select>
-                </div>
-                
-            </div>
-            
-            <button class="search-btn" id="search-button" aria-label="Search">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                    viewBox="0 0 24 24" fill="none" stroke="black"
-                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"/>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                </svg>
+        <div class="search-bar d-flex align-items-center">
+
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Search babysitters or locations..."
+                autocomplete="off"
+            >
+
+            <button class="search-btn" id="search-button">
+                <i class="fa-solid fa-magnifying-glass"></i>
             </button>
+
         </div>
 
         <div class="right-side-p d-flex align-items-center gap-1">
@@ -226,13 +203,18 @@ $stmtN->close();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-// 1. Scroll Function for Arrows
 function scrollCarousel(carouselId, direction) {
+
     const container = document.getElementById(carouselId);
+
+    if (!container) return;
+
     const card = container.querySelector('.carousel-card');
+
     if (card) {
-        // Scroll by 1 card width + 20px gap
+
         const scrollAmount = card.offsetWidth + 20;
+
         container.scrollBy({
             left: direction * scrollAmount,
             behavior: 'smooth'
@@ -240,84 +222,182 @@ function scrollCarousel(carouselId, direction) {
     }
 }
 
-// 2. Updated Database Search Logic
-document.getElementById('search-button').addEventListener('click', function(e) {
-    e.preventDefault();
-    const where = document.getElementById('input-where').value.trim();
-    const when = document.getElementById('input-when').value;
-    const who = document.getElementById('input-who').value.trim();
-    
-    const params = new URLSearchParams({ location: where, date: when, keyword: who });
+/* ================= SEARCH ================= */
 
-    fetch(`/Pampeers/app/controllers/user/search.php?${params.toString()}`)
-        .then(res => res.json())
-        .then(data => {
-            const container = document.getElementById('avail-carousel');
-            container.innerHTML = ''; 
-            
-            // Hide "Near You" section on search results
-            if(document.getElementById('nearby-header')) document.getElementById('nearby-header').style.display = 'none';
-            if(document.getElementById('near-carousel')) document.getElementById('near-carousel').style.display = 'none';
-            if(document.getElementById('near-empty')) document.getElementById('near-empty').style.display = 'none';
+const searchInput = document.getElementById('search-input');
+const searchButton = document.getElementById('search-button');
 
-            if (data.length > 0) {
-                data.forEach(sitter => {
-                    const heartClass = sitter.isFavourite ? 'solid text-danger' : 'regular';
-                    container.innerHTML += `
-                        <div class="carousel-card">
-                            <div class="small-card" style="cursor: pointer;" onclick="window.location.href='viewSitterProfile.php?sitterID=${sitter.sitterID}'">
-                                <div class="card-img-container">
-                                    <button class="like-btn" data-id="${sitter.sitterID}" aria-label="Like" onclick="toggleFav(event, this)">
-                                        <i class="fa-${heartClass} fa-heart"></i>
-                                    </button>
-                                    <img src="/Pampeers/app/uploads/profiles/${sitter.profilePic || 'default.jpg'}" alt="Sitter">
-                                </div>
-                                <h6>${sitter.firstName} ${sitter.lastName}</h6>
-                                <p class="city">${sitter.cityMunicipality}</p>
-                                <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <p class="m-0 fw-bold">₱${sitter.hourlyRate}/hr</p>
-                                    <a href="bookSitter.php?sitterID=${sitter.sitterID}" class="btn btn-sm btn-primary rounded-pill px-3" onclick="event.stopPropagation();">Book</a>
-                                </div>
-                            </div>
-                        </div>`;
-                });
-            } else {
-                container.innerHTML = '<p class="text-muted p-4 w-100 text-center">No sitters found matching your search.</p>';
-            }
+function performSearch() {
+
+    const keyword = searchInput.value.trim();
+
+    fetch(`/Pampeers/app/controllers/user/search.php?keyword=${encodeURIComponent(keyword)}`)
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        console.log("SEARCH RESULT:", data);
+
+        const container = document.getElementById('avail-carousel');
+
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        /* TOGGLE NEARBY SECTION */
+        const nearbyHeader = document.getElementById('nearby-header');
+        const nearbyCarousel = document.getElementById('near-carousel');
+
+        if (keyword === '') {
+
+            if (nearbyHeader) nearbyHeader.style.display = 'flex';
+            if (nearbyCarousel) nearbyCarousel.style.display = 'flex';
+
+        } else {
+
+            if (nearbyHeader) nearbyHeader.style.display = 'none';
+            if (nearbyCarousel) nearbyCarousel.style.display = 'none';
+        }
+
+        /* NO RESULTS */
+        if (!Array.isArray(data) || data.length === 0) {
+
+            container.innerHTML = `
+                <div class="w-100 text-center text-muted p-5">
+                    No results found.
+                </div>
+            `;
+
+            return;
+        }
+
+        /* DISPLAY RESULTS */
+        data.forEach(sitter => {
+
+            container.innerHTML += `
+                <div class="carousel-card">
+
+                    <div class="small-card"
+                         style="cursor:pointer;"
+                         onclick="window.location.href='viewSitterProfile.php?sitterID=${sitter.sitterID}'">
+
+                        <div class="card-img-container">
+
+                            <button class="like-btn"
+                                    data-id="${sitter.sitterID}"
+                                    onclick="toggleFav(event, this)">
+
+                                <i class="fa-${parseInt(sitter.isFav) > 0 ? 'solid text-danger' : 'regular'} fa-heart"></i>
+
+                            </button>
+
+                            <img src="/Pampeers/app/uploads/profiles/${sitter.profilePic || 'default.jpg'}"
+                                 alt="Sitter">
+
+                        </div>
+
+                        <h6>${sitter.firstName} ${sitter.lastName}</h6>
+
+                        <p class="city">${sitter.cityMunicipality || 'Unknown Location'}</p>
+
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+
+                            <p class="m-0 fw-bold">
+                                ₱${sitter.hourlyRate}/hr
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
         });
+    })
+
+    .catch(error => {
+
+        console.error("SEARCH ERROR:", error);
+    });
+}
+
+/* SEARCH BUTTON */
+searchButton.addEventListener('click', function(e) {
+
+    e.preventDefault();
+
+    performSearch();
 });
 
-// 3. NEW: toggleFav Function handles both stopping the card redirect AND firing the DB logic
-function toggleFav(e, btn) {
-    e.preventDefault();
-    e.stopPropagation(); // Prevents the heart click from triggering the view profile redirect
-    
-    const sitterId = btn.getAttribute('data-id');
-    const icon = btn.querySelector('i');
-    
-    if(!sitterId) return;
+/* ENTER KEY SEARCH */
+searchInput.addEventListener('keydown', function(e) {
 
-    // Perform database update
+    if (e.key === 'Enter') {
+
+        e.preventDefault();
+
+        performSearch();
+    }
+});
+
+/* ================= FAVOURITES ================= */
+
+function toggleFav(e, btn) {
+
+    e.preventDefault();
+
+    e.stopPropagation();
+
+    const sitterId = btn.getAttribute('data-id');
+
+    const icon = btn.querySelector('i');
+
+    if (!sitterId) return;
+
     fetch('/Pampeers/app/controllers/user/toggleFavourite.php', {
+
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+
         body: `sitterId=${sitterId}`
     })
+
     .then(response => response.json())
+
     .then(data => {
-        // Apply your old heart-pop animation
+
         btn.classList.add('heart-pop');
-        setTimeout(() => { btn.classList.remove('heart-pop'); }, 300);
+
+        setTimeout(() => {
+
+            btn.classList.remove('heart-pop');
+
+        }, 300);
 
         if (data.status === 'added') {
+
             icon.classList.remove('fa-regular');
-            icon.classList.add('fa-solid', 'text-danger'); 
-        } else if (data.status === 'removed') {
+
+            icon.classList.add('fa-solid', 'text-danger');
+
+        }
+
+        else if (data.status === 'removed') {
+
             icon.classList.remove('fa-solid', 'text-danger');
-            icon.classList.add('fa-regular'); 
+
+            icon.classList.add('fa-regular');
         }
     })
-    .catch(err => console.error("Error toggling favourite:", err));
+
+    .catch(error => {
+
+        console.error("Favourite Error:", error);
+    });
 }
 </script>
 

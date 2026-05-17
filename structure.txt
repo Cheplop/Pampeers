@@ -70,6 +70,7 @@
 │   │   └── adminDashboard.php
 │   ├── css
 │   │   ├── adminDashboard.css
+│   │   ├── bookSitter.css
 │   │   ├── dashboard.css
 │   │   ├── guardianDashboard.css
 │   │   ├── guardianProfile.css
@@ -77,8 +78,7 @@
 │   │   ├── myfavourites.css
 │   │   ├── register.css
 │   │   ├── sitterDashboard.css
-│   │   ├── sitterProfile.css
-│   │   └── style.css
+│   │   └── viewSitterProfile.css
 │   ├── editProfile.php
 │   ├── guardian
 │   │   ├── bookSitter.php
