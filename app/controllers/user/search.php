@@ -1,72 +1,137 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) { session_start(); }
-require_once __DIR__ . '/../../config/config.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// DO NOT put requireAuth() here so Guests can use this file!
+require_once __DIR__ . '/../../config/config.php';
 
 header('Content-Type: application/json');
 
-// If logged in, get their ID. If Guest, default to 0.
 $userId = $_SESSION['user_id'] ?? 0;
+$keyword = trim($_GET['keyword'] ?? '');
 
-// 1. Grab the search inputs from the URL
-$location = trim($_GET['location'] ?? '');
-$date     = trim($_GET['date'] ?? '');
-$who      = trim($_GET['keyword'] ?? '');
+/* ================= BASE QUERY ================= */
 
-// 2. Start the base SQL query
-// If userId is 0 (Guest), `u.id != 0` just means it won't hide any sitters by mistake.
-$sql = "SELECT s.sitterID, s.hourlyRate, u.firstName, u.lastName, u.profilePic, u.cityMunicipality,
-        (SELECT COUNT(*) FROM favourites f WHERE f.sitter_id = s.sitterID AND f.guardian_id = ?) as isFavourite
-        FROM sitters s 
-        JOIN users u ON s.userID = u.id 
-        WHERE s.verificationStatus = 'verified' AND u.isActive = 1 AND s.isAvailable = 1 AND u.id != ?";
+$sql = "
+    SELECT 
+        s.sitterID,
+        s.hourlyRate,
+
+        u.firstName,
+        u.lastName,
+        u.username,
+        u.profilePic,
+        u.cityMunicipality,
+
+        (
+            SELECT COUNT(*)
+            FROM favourites f
+            WHERE f.sitter_id = s.sitterID
+            AND f.guardian_id = ?
+        ) AS isFav
+
+    FROM sitters s
+
+    INNER JOIN users u
+        ON s.userID = u.id
+
+    WHERE
+        s.verificationStatus = 'verified'
+        AND s.isAvailable = 1
+        AND u.isActive = 1
+        AND u.id != ?
+";
 
 $params = [$userId, $userId];
 $types = "ii";
 
-// 3. SMART FILTER: Where (Location)
-if ($location !== '') {
-    $sql .= " AND u.cityMunicipality LIKE ?";
-    $params[] = "%" . $location . "%"; 
-    $types .= "s";
+/* ================= SEARCH FILTER ================= */
+
+if (!empty($keyword)) {
+
+    $sql .= "
+        AND (
+            CONCAT(u.firstName, ' ', u.lastName) LIKE ?
+            OR u.firstName LIKE ?
+            OR u.lastName LIKE ?
+            OR u.username LIKE ?
+            OR u.cityMunicipality LIKE ?
+            OR u.province LIKE ?
+        )
+    ";
+
+    $search = "%" . $keyword . "%";
+
+    for ($i = 0; $i < 6; $i++) {
+        $params[] = $search;
+    }
+
+    $types .= "ssssss";
 }
 
-// 4. SMART FILTER: Who (Accepted Ages)
-if ($who !== '') {
-    $sql .= " AND s.acceptedAges LIKE ?";
-    $params[] = "%" . $who . "%";
-    $types .= "s";
-}
+/* ================= ORDER ================= */
 
-// 5. SMART FILTER: When (Date Check)
-if ($date !== '') {
-    $sql .= " AND s.sitterID NOT IN (
-                SELECT sitterID FROM bookings 
-                WHERE DATE(startDateTime) <= ? AND DATE(endDateTime) >= ? 
-                AND status IN ('pending', 'accepted')
-              )";
-    $params[] = $date;
-    $params[] = $date;
-    $types .= "ss";
-}
+$sql .= "
+    ORDER BY
+        s.ratingAverage DESC,
+        s.createdAt DESC
+";
 
-// 6. Execute the query
+/* ================= PREPARE ================= */
+
 $stmt = $conn->prepare($sql);
-if (!empty($params)) {
-    $stmt->bind_param($types, ...$params);
+
+if (!$stmt) {
+
+    echo json_encode([
+        "status" => "error",
+        "message" => $conn->error
+    ]);
+
+    exit();
 }
-$stmt->execute();
+
+/* ================= BIND ================= */
+
+$stmt->bind_param($types, ...$params);
+
+/* ================= EXECUTE ================= */
+
+if (!$stmt->execute()) {
+
+    echo json_encode([
+        "status" => "error",
+        "message" => $stmt->error
+    ]);
+
+    exit();
+}
+
+/* ================= FETCH ================= */
+
 $result = $stmt->get_result();
 
 $sitters = [];
+
 while ($row = $result->fetch_assoc()) {
-    $sitters[] = $row;
+
+    $sitters[] = [
+        "sitterID" => $row['sitterID'],
+        "hourlyRate" => $row['hourlyRate'],
+        "firstName" => $row['firstName'],
+        "lastName" => $row['lastName'],
+        "username" => $row['username'],
+        "profilePic" => $row['profilePic'],
+        "cityMunicipality" => $row['cityMunicipality'],
+        "isFav" => $row['isFav']
+    ];
 }
 
 $stmt->close();
 
-// 7. Send the results back to the Dashboard
+/* ================= RETURN ================= */
+
 echo json_encode($sitters);
+
 exit();
 ?>
